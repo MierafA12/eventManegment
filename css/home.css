@@ -1,0 +1,34 @@
+.hero-section {
+    background-image: url('../assets/eeeeeeeee.avif'); /* Change to your image URL */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .hero-overlay {
+    backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.5); /* dark overlay for readability */
+    padding: 60px;
+    border-radius: 20px;
+    text-align: center;
+  }
+
+  .hero-overlay h1 {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+
+  .hero-overlay p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .hero-overlay .btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
