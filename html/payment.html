@@ -1,119 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Gateway</title>
-    <link rel="stylesheet" href="../css/Payment.css">
-    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Gateway</title>
+  <link rel="stylesheet" href="../css/Payment.css" />
 </head>
 <body>
-    <div class="payment-container">
-        <h1>Complete Your Payment</h1>
-        
-        <form id="paymentForm">
-            <div class="form-group">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Select Bank for Transfer</label>
-                <div class="bank-options">
-                    <label class="bank-option">
-                        <input type="radio" name="bank" value="telebirr" checked>
-                        
-                        <div class="bank-info">
-                            <div class="bank-name">Telebirr</div>
-                        </div>
-                    </label>
-                    
-                    <label class="bank-option">
-                        <input type="radio" name="bank" value="cbe">
-                        
-                        <div class="bank-info">
-                            <div class="bank-name">Commercial Bank of Ethiopia</div>
-                        </div>
-                    </label>
-                    
-                    <label class="bank-option">
-                        <input type="radio" name="bank" value="awash">
-                       
-                        <div class="bank-info">
-                            <div class="bank-name">Awash Bank</div>
-                        </div>
-                    </label>
-                </div>
-                
-                <div id="accountNumber" class="account-number">
-                    Telebirr Account: 251911111111
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Upload Payment Receipt</label>
-                <div class="file-upload">
-                    <button type="button" class="file-upload-btn">Choose File</button>
-                    <input type="file" id="receipt" name="receipt" accept="image/*,.pdf" required>
-                </div>
-                <div id="fileName" class="file-name">No file chosen</div>
-            </div>
-            
-            <button type="submit" class="submit-btn">Complete Payment</button>
-        </form>
+  <nav class="navbar">
+    <div class="logo">Ethio Events</div>
+    <div class="nav-links" id="navLinks">
+      <a href="/html/index.html">Home</a>
+      <a href="/html/profile.html">Profile</a>
+      <a href="/html/index.html"><button class="logout-btn">Logout</button></a>
     </div>
-</body>
-<!-- <script src="js/auth.js"></script> -->
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const bankOptions = document.querySelectorAll('input[name="bank"]');
-            const accountNumber = document.getElementById('accountNumber');
-            const fileInput = document.getElementById('receipt');
-            const fileName = document.getElementById('fileName');
-            
-            // Bank selection logic - FIXED VERSION
-            bankOptions.forEach(option => {
-                option.addEventListener('change', function() {
-                    // Update selected style
-                    document.querySelectorAll('.bank-option').forEach(el => {
-                        el.classList.remove('selected');
-                    });
-                    this.closest('.bank-option').classList.add('selected');
-                    
-                    // Update account number based on selection
-                    if (this.value === 'telebirr') {
-                        accountNumber.textContent = 'Telebirr Account: 251911223344';
-                    } else if (this.value === 'cbe') {
-                        accountNumber.textContent = 'CBE Account: 1000534089988';
-                    } else if (this.value === 'awash') {
-                        accountNumber.textContent = 'Awash Bank Account: 2000365654';
-                        // ^^ Fixed the variable name here
-                    }
-                    
-                    accountNumber.classList.add('show');
-                });
-            });
-            
-            // Set first option as selected by default
-            document.querySelector('.bank-option').classList.add('selected');
-            accountNumber.classList.add('show');
-            
-            // File upload display
-            fileInput.addEventListener('change', function() {
-                if (this.files.length > 0) {
-                    fileName.textContent = this.files[0].name;
-                } else {
-                    fileName.textContent = 'No file chosen';
-                }
-            });
-            
-            // Form submission
-            document.getElementById('paymentForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Payment submitted successfully!');
-                // Here you would typically send the data to your server
-            });
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="payment-container">
+      <h1>Complete Your Payment</h1>
+      <form id="paymentForm">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required />
+        </div>
+
+        <div class="form-group">
+          <label>Select Bank for Transfer</label>
+          <div class="bank-options">
+            <label class="bank-option">
+              <input type="radio" name="bank" value="telebirr" checked />
+              <div class="bank-info">
+                <div class="bank-name">Telebirr</div>
+              </div>
+            </label>
+
+            <label class="bank-option">
+              <input type="radio" name="bank" value="cbe" />
+              <div class="bank-info">
+                <div class="bank-name">Commercial Bank of Ethiopia</div>
+              </div>
+            </label>
+
+            <label class="bank-option">
+              <input type="radio" name="bank" value="awash" />
+              <div class="bank-info">
+                <div class="bank-name">Awash Bank</div>
+              </div>
+            </label>
+          </div>
+
+          <div id="accountNumber" class="account-number">
+            Telebirr Account: 251911223344
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Payment Receipt</label>
+          <div class="file-upload">
+            <button type="button" class="file-upload-btn">Choose File</button>
+            <input type="file" id="receipt" name="receipt" accept="image/*,.pdf" required />
+          </div>
+          <div id="fileName" class="file-name">No file chosen</div>
+        </div>
+
+        <button type="submit" class="submit-btn">Complete Payment</button>
+      </form>
+    </div>
+  </main>
+   <script src="../js/main.js"></script>  
+      <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const bankOptions = document.querySelectorAll('input[name="bank"]');
+      const accountNumber = document.getElementById("accountNumber");
+      const fileInput = document.getElementById("receipt");
+      const fileName = document.getElementById("fileName");
+
+      bankOptions.forEach((option) => {
+        option.addEventListener("change", function () {
+          document.querySelectorAll(".bank-option").forEach((el) => {
+            el.classList.remove("selected");
+          });
+          this.closest(".bank-option").classList.add("selected");
+
+          if (this.value === "telebirr") {
+            accountNumber.textContent = "Telebirr Account: 251911223344";
+          } else if (this.value === "cbe") {
+            accountNumber.textContent = "CBE Account: 1000534089988";
+          } else if (this.value === "awash") {
+            accountNumber.textContent = "Awash Bank Account: 2000365654";
+          }
+
+          accountNumber.classList.add("show");
         });
-    </script>
+      });
+
+      document.querySelector(".bank-option").classList.add("selected");
+      accountNumber.classList.add("show");
+
+      fileInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+          fileName.textContent = this.files[0].name;
+        } else {
+          fileName.textContent = "No file chosen";
+        }
+      });
+
+      document.getElementById("paymentForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        alert("Payment submitted successfully!");
+      });
+    });
+  </script>
+</body>
 </html>
-    

@@ -1,177 +1,275 @@
-
+:root {
+    --primary-color: #4b2e1f;
+    --secondary-color: #2c3e50;
+    --accent-color: #8e44ad;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+    --card-background: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 * {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 20px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem 2rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    min-height: 100vh;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+}
+
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: #4b2e1f;
+  text-decoration: none;
+  font-size: 1rem;
+   font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #cf711f;
+}
+
+.logout-btn {
+  background-color: #4b2e1f;
+  border: none;
+  padding: 0.4rem 1rem;
+  color:white;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #cf711f;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.hamburger span {
+  height: 3px;
+  width: 25px;
+  background-color: #4b2e1f; 
+  border-radius: 2px;
+}
+
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    gap: 1rem;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: #ffffff;
 }
 
 .payment-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
-    padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
 }
 
 h1 {
-    color: #2c3e50;
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 24px;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
 }
 
 .form-group {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #34495e;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #34495e;
 }
 
 input[type="text"],
 input[type="file"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border 0.3s;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border 0.3s;
 }
 
 input[type="text"]:focus {
-    border-color:  #4b2e1f;;
-    outline: none;
+  border-color: #4b2e1f;
+  outline: none;
 }
 
 .bank-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .bank-option {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .bank-option:hover {
-    border-color:  #4b2e1f;
-    background-color: #f4ede8;
+  border-color: #4b2e1f;
+  background-color: #f4ede8;
 }
 
 .bank-option.selected {
-    border-color:  #4b2e1f;;
-    background-color: #f4ede8;
+  border-color: #4b2e1f;
+  background-color: #f4ede8;
 }
 
 .bank-option input {
-    margin-right: 15px;
-}
-
-.bank-logo {
-    width: 40px;
-    height: 40px;
-    margin-right: 15px;
-    object-fit: contain;
+  margin-right: 15px;
 }
 
 .bank-info {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .bank-name {
-    font-weight: 600;
-    margin-bottom: 3px;
+  font-weight: 600;
+  margin-bottom: 3px;
 }
 
 .account-number {
-    display: none;
-    background-color: #f4ede8;
-    padding: 15px;
-    border-radius: 5px;
-    margin-top: 10px;
-    font-family: monospace;
-    font-size: 16px;
-    text-align: center;
-    border: 1px dashed #ccc;
+  display: none;
+  background-color: #f4ede8;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-family: monospace;
+  font-size: 16px;
+  text-align: center;
+  border: 1px dashed #ccc;
 }
 
 .account-number.show {
-    display: block;
+  display: block;
 }
 
 .submit-btn {
-    width: 100%;
-    padding: 15px;
-    background-color: #4b2e1f;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 100%;
+  padding: 15px;
+  background-color: #4b2e1f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .submit-btn:hover {
-    background-color: #4b2e1f;;
+  background-color: #3e2519;
 }
 
 .file-upload {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-    width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
 }
 
 .file-upload-btn {
-    border: 1px dashed #4b2e1f;
-    background-color: #f4ede8;
-    padding: 12px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 600;
-    width: 100%;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
+  border: 1px dashed #4b2e1f;
+  background-color: #f4ede8;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .file-upload-btn:hover {
-    background-color: #f4ede8;
+  background-color: #f3e2d8;
 }
 
 .file-upload input[type="file"] {
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 
 .file-name {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #7f8c8d;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #7f8c8d;
 }
