@@ -1,5 +1,10 @@
 
-/* About Page Styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
 .about-page{
     padding: 5rem 0;
 }
@@ -16,12 +21,13 @@
     margin-top: 80px;
 }
 
-.about-text h1 {
-    
+.about-page h1 {
+    text-align: center;
     font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color:rgba(0, 0, 0, 0.7);
+    margin-bottom: 3rem;
+    color: var(--primary-color);
 }
+
 
 .about-text p {
     font-size: 1rem;
@@ -81,8 +87,9 @@
 
 .gallery-overlay h3 {
     font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;   
 }
+
 
 /* Team Section */
 .team-section {
@@ -91,11 +98,12 @@
 }
 
 .team-section h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--primary-color);
     text-align: center;
     margin-bottom: 2rem;
 }
+
 
 .team-grid {
     display: grid;
