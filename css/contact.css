@@ -1,0 +1,144 @@
+/* Container and general layout */
+.contact-page {
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+.contact-page .container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Headings */
+.contact-page h1,
+.contact-page h2 {
+  color: #4b2e1f;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.contact-page h1 {
+  font-size: 2.8rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* Flex container for form and info */
+.contact-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+}
+
+/* Contact Form Styling */
+.contact-form {
+  flex: 1 1 480px;
+  background-color: #fff;
+  padding: 30px 40px;
+  box-shadow: 0 4px 10px rgba(75, 46, 31, 0.1);
+  border-radius: 8px;
+}
+
+.contact-form h2 {
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+}
+
+.contact-form form .form-group {
+  margin-bottom: 20px;
+}
+
+.contact-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #4b2e1f;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  resize: vertical;
+}
+
+.contact-form input[type="text"]:focus,
+.contact-form input[type="email"]:focus,
+.contact-form textarea:focus {
+  border-color: #4b2e1f;
+  outline: none;
+}
+
+.contact-form textarea {
+  min-height: 120px;
+}
+
+.btn-primary {
+  display: inline-block;
+  background-color: #4b2e1f;
+  color: white;
+  font-weight: 600;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #6a4328;
+}
+
+/* Contact Info Styling */
+.contact-info {
+  flex: 1 1 350px;
+  background-color: #fff;
+  padding: 30px 40px;
+  box-shadow: 0 4px 10px rgba(75, 46, 31, 0.1);
+  border-radius: 8px;
+}
+
+.contact-info h2 {
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1rem;
+  color: #4b2e1f;
+}
+
+.contact-item i {
+  font-size: 1.5rem;
+  color: #4b2e1f;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .contact-content {
+    flex-direction: column;
+  }
+
+  .contact-form,
+  .contact-info {
+    flex: 1 1 100%;
+  }
+}

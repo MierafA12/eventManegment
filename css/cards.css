@@ -1,0 +1,146 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f1f4f9;
+    margin: 0;
+    /* padding: 2rem; */
+    overflow-x: hidden;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 50px 80px;
+    justify-items: center;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 30px 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.profile-pic img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: contain;
+    background-color: white; /* Optional: for better visuals */
+    padding: 5px;             /* Optional: adds space around the image */
+}
+
+
+
+.card h3 {
+    font-size: 1.2rem;
+    margin: 10px 0 5px;
+    font-weight: 600;
+}
+
+.card .title {
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.email {
+    color: #246421;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Dot indicators */
+.dot-indicators {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.dot.active {
+    background-color: #008a45;
+    transform: scale(1.4);
+}
+
+.dot:hover {
+    background-color: #008a45;
+    transform: scale(1.2);
+}
+
+/* Animation for cards */
+@keyframes slideCards {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    30% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    40% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    60% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    70% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

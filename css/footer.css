@@ -1,0 +1,118 @@
+:root {
+    --primary-color: #4b2e1f;
+    --secondary-color: #2c3e50;
+    --accent-color: #8e44ad;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+    --card-background: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+    background-color: #4b2e1f;
+    color: #fff;
+    padding: 40px 60px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border-bottom: 1px solid #0c7f4a;
+    padding-bottom: 30px;
+  }
+  
+  .footer-intro {
+    flex: 1 1 300px;
+    margin-bottom: 30px;
+  }
+  
+  .footer-intro h2 {
+    color: #c2db6c;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-intro h2 span {
+    color: #c2db6c;
+  }
+  
+  .footer-intro p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .contact-btn {
+    margin-top: 15px;
+    padding: 10px 25px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #005b2e;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+  }
+  
+  .footer-links {
+    display: flex;
+    flex: 2;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .footer-column {
+    flex: 1;
+    min-width: 180px;
+    margin-bottom: 20px;
+  }
+  
+  .footer-column h3 {
+    color: #c2db6c;
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .footer-column ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-column ul li {
+    margin-bottom: 10px;
+  }
+  
+  .footer-column ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+  }
+  
+  .footer-column ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 25px;
+  }
+  
+  .footer-contact p {
+    font-size: 15px;
+    margin: 4px 0;
+  }
+  
+  .footer-social a {
+    color: #fff;
+    margin: 0 8px;
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-social a:hover {
+    color: #c2db6c;
+  }
+  

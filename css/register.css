@@ -1,0 +1,139 @@
+
+/* General Container */
+:root {
+    --primary-color: #4b2e1f;
+    --secondary-color: #2c3e50;
+    --accent-color: #8e44ad;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+    --card-background: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f4f4f4;
+    font-family: 'Poppins', sans-serif;
+    padding: 40px 20px;
+}
+
+/* Auth Box */
+.auth-box {
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Header */
+.auth-header h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.auth-header p {
+    font-size: 15px;
+    text-align: center;
+    color: #777;
+    margin-bottom: 30px;
+}
+
+/* Form Styles */
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+/* Input Styles */
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fefefe;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Terms and Conditions */
+.terms {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.terms input {
+    margin-right: 8px;
+}
+
+.terms a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.terms a:hover {
+    text-decoration: underline;
+}
+
+/* Button */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color);
+}
+
+/* Footer Link */
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .auth-box {
+        padding: 30px 20px;
+    }
+
+    .auth-header h1 {
+        font-size: 28px;
+    }
+}

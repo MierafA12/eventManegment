@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Ethio Events</title>
+    <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Ethio Events</div>
+        <div class="nav-links">
+            <a href="/html/index.html">Home</a>
+            <a href="/html/about.html">About</a>
+            <a href="/html/events.html">Events</a>
+            <a href="/html/contact.html">Contact</a>
+            <a href="/html/login.html"><button onclick="login.html" id="loginBtn" class="login-btn">Login</button></a>
+        </div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>Ethio Events</h1>
+                <p>Create your account to start managing events</p>
+            </div>
+            
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <div class="input-group">
+                        <input type="text" id="name" placeholder="Enter your full name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Date of birth</label>
+                    <div class="input-group">
+                        <input type="date" id="age" placeholder="Enter your date of birth" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-group">
+                        <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-group">
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder="Create a password" required>
+                        
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                      
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="terms">
+                        <input type="checkbox" id="terms" required>
+                        <span>I agree to the <a href="#">Terms & Conditions</a></span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-primary" >Create Account</button>
+                
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="/html/login.html">Login here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>
