@@ -1,4 +1,4 @@
-/* General Section Styling */
+
 .events-page {
     padding: 80px 0;
     background: #f9f9f9;
@@ -12,7 +12,6 @@
     margin-bottom: 40px;
 }
 
-/* Filter Styling */
 .event-filters {
     display: flex;
     justify-content: center;
@@ -90,3 +89,10 @@
 .event-card button:hover {
     background-color: #cf711f;
 }
+.event-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+

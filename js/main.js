@@ -7,7 +7,7 @@ const events = [
     description: "Join us for an amazing night of live music performances",
     price: "500 Birr",
     category: "entertainment",
-    image: "images/music-festival.jpg"
+    image: "../images/music-festival.jpg"
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ const events = [
     description: "Learn about the latest technology trends",
     price: "1000 Birr",
     category: "tech",
-    image: "images/tech-conference.jpg"
+    image: "../images/tech-conference.jpg"
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const events = [
     description: "Support a good cause while staying active",
     price: "400 Birr",
     category: "sports",
-    image: "images/flowevent.jpg"
+    image: "../images/charity-run.jpg"
   },
   {
     id: 4,
@@ -37,78 +37,48 @@ const events = [
     description: "Explore contemporary art from local artists",
     price: "Free",
     category: "Art",
-    image: "images/art-exhibition.jpg"
+    image: "../images/art-exhibition.jpg"
   },
   {
     id: 5,
-    title: "Business Summit",
-    date: "2025-07-05",
-    time: "09:00 pm",
-    description: "Networking opportunities for business professionals",
-    price: "800 Birr",
-    category: "business",
-    image: "images/business-summit.jpg"
-  },
-  {
-    id: 6,
     title: "Food Festival",
     date: "2025-07-10",
     time: "11:00 am",
     description: "Taste your way through local and international cuisine",
     price: "300 Birr",
     category: "foods",
-    image: "images/food-festival.jpg"
+    image: "../images/food.jpg"
   },
   {
-    id: 9,
+    id: 6,
     title: "Fashion Show",
     date: "2025-07-25",
     time: "19:00 pm ",
     description: "Spring/Summer fashion collection showcase",
     price: "600 Birr",
     category: "entertainment",
-    image: "images/fashion-show.jpg"
+    image: "../images/fashion.jpg"
   },
   {
-    id: 10,
+    id: 7,
     title: "Science Fair",
     date: "2025-08-01",
     time: "13:00 am ",
     description: "Innovative projects and scientific demonstrations",
     price: "250 Birr",
     category: "tech",
-    image: "images/science-fair.jpg"
+    image: "../images/science.jpeg"
   },
   {
-    id: 12,
-    title: "Gaming Convention",
-    date: "2025-08-10",
-    time: "10:00 pm ",
-    description: "Gaming competitions and new releases showcase",
-    price: "350 Birr",
-    category: "entertainment",
-    image: "images/gaming-convention.jpg"
-  },
-  {
-    id: 13,
+    id: 10,
     title: "Book Fair",
     date: "2025-08-15",
     time: "11:00 am ",
     description: "Meet authors and discover new books",
     price: "100 Birr",
     category: "entertainment",
-    image: "images/book-fair.jpg"
+    image: "../images/book.jpg"
   },
-  {
-    id: 14,
-    title: "Startup Pitch",
-    date: "2025-08-25",
-    time: "14:00 pm ",
-    description: "Emerging startups showcase their innovations",
-    price: "500 Birr",
-    category: "business",
-    image: "images/startup-pitch.jpg"
-  }
 ];
 
 const categoryFilter = document.getElementById('categoryFilter');
@@ -121,6 +91,7 @@ function displayEvents(eventsToDisplay = events) {
     eventCard.className = 'event-card';
     eventCard.innerHTML = `
       <h3>${event.title}</h3>
+      <img src="${event.image}" alt="${event.title}" >
       <p><strong>Date:</strong> ${event.date}</p>
       <p><strong>Time:</strong> ${event.time}</p>
       <p>${event.description}</p>
