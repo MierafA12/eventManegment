@@ -70,7 +70,7 @@ const events = [
     image: "../images/science.jpeg"
   },
   {
-    id: 10,
+    id: 8,
     title: "Book Fair",
     date: "2025-08-15",
     time: "11:00 am ",
@@ -78,6 +78,16 @@ const events = [
     price: "100 Birr",
     category: "entertainment",
     image: "../images/book.jpg"
+  },
+   {
+    id: 9,
+    title: "Health",
+    date: "2025-07-25",
+    time: "09:00 am ",
+    description: "good health info about hiv/adis",
+    price: "100 Birr",
+    category: "Health",
+    image: "../images/health.webp"
   },
 ];
 
