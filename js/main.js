@@ -6,6 +6,8 @@ const events = [
     time: "18:00 pm",
     description: "Join us for an amazing night of live music performances",
     price: "500 Birr",
+    organizer:"sewasewmelthimidia",
+    location:"addisabeba,sheratenhotel",
     category: "entertainment",
     image: "../images/music-festival.jpg"
   },
@@ -17,6 +19,8 @@ const events = [
     description: "Learn about the latest technology trends",
     price: "1000 Birr",
     category: "tech",
+    organizer:"tectonic trib",
+    location:"dbu",
     image: "../images/tech-conference.jpg"
   },
   {
@@ -26,6 +30,8 @@ const events = [
     time: "07:00 am",
     description: "Support a good cause while staying active",
     price: "400 Birr",
+    organizer:"sport fedration",
+    location:"entoto park",
     category: "sports",
     image: "../images/charity-run.jpg"
   },
@@ -34,6 +40,8 @@ const events = [
     title: "Art Exhibition",
     date: "2025-06-25",
     time: "14:00 am",
+    organizer:"hohetesfa",
+    location:"dbu",
     description: "Explore contemporary art from local artists",
     price: "Free",
     category: "Art",
@@ -44,6 +52,8 @@ const events = [
     title: "Food Festival",
     date: "2025-07-10",
     time: "11:00 am",
+    organizer:"chocha food",
+    location:"chocha",
     description: "Taste your way through local and international cuisine",
     price: "300 Birr",
     category: "foods",
@@ -57,6 +67,8 @@ const events = [
     description: "Spring/Summer fashion collection showcase",
     price: "600 Birr",
     category: "entertainment",
+    organizer:"hewan",
+    location:"addiaabeba",
     image: "../images/fashion.jpg"
   },
   {
@@ -66,6 +78,8 @@ const events = [
     time: "13:00 am ",
     description: "Innovative projects and scientific demonstrations",
     price: "250 Birr",
+    organizer:"ASTU",
+    location:"ASTU",
     category: "tech",
     image: "../images/science.jpeg"
   },
@@ -76,6 +90,8 @@ const events = [
     time: "11:00 am ",
     description: "Meet authors and discover new books",
     price: "100 Birr",
+    organizer:"arts tv",
+    location:"addisabeba",
     category: "entertainment",
     image: "../images/book.jpg"
   },
@@ -85,6 +101,8 @@ const events = [
     date: "2025-07-25",
     time: "09:00 am ",
     description: "good health info about hiv/adis",
+    organizer:"hospital",
+    location:"debrebrihanospital",
     price: "100 Birr",
     category: "Health",
     image: "../images/health.webp"
@@ -105,6 +123,8 @@ function displayEvents(eventsToDisplay = events) {
       <p><strong>Date:</strong> ${event.date}</p>
       <p><strong>Time:</strong> ${event.time}</p>
       <p>${event.description}</p>
+      <p><strong>location:</strong> ${event.location}</p>
+      <p><strong>organizer:</strong> ${event.organizer}</p>
       <p><strong>Price:</strong> ${event.price}</p>
       <button onclick="handleEventRegistration(${event.id})">Register</button>
     `;

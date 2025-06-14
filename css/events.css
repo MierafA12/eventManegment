@@ -1,109 +1,51 @@
+/* ---------- Layout Container ---------- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
 
+/* ---------- Events Page ---------- */
 .events-page {
-    padding: 80px 0;
-    background: #f9f9f9;
-    font-family: 'Poppins', sans-serif;
+  padding: 80px 0;
+  background: #f9f9f9;
+  font-family: 'Poppins', sans-serif;
 }
 
 .events-page h1 {
-    text-align: center;
-    font-size: 3rem;
-    color: #2c3e50;
-    margin-bottom: 40px;
+  text-align: center;
+  font-size: 3rem;
+  color: #2c3e50;
+  margin-bottom: 40px;
 }
 
+/* ---------- Filter Dropdown ---------- */
 .event-filters {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 
 .event-filters select,
 .event-filters input[type="date"] {
-    padding: 10px 15px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-}
-
-
-.event-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    padding: 0 20px;
-}
-
-
-.event-card {
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.event-card:hover {
-    transform: translateY(-5px);
-}
-
-
-.event-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-
-
-.event-card h3 {
-    font-size: 1.5rem;
-    color: #34495e;
-    margin: 20px 20px 10px;
-}
-
-.event-card p {
-    margin: 0 20px 10px;
-    font-size: 0.95rem;
-    color: #555;
-}
-
-
-.event-card button {
-    margin: 20px;
-    padding: 14px;
-    background-color: #8B4513;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.event-card button:hover {
-    background-color: #cf711f;
-}
-.event-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
   border-radius: 8px;
+  outline: none;
 }
 
+/* ---------- Event Grid ---------- */
 .event-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
-  padding: 0 20px;
-  justify-items: center; 
+  justify-items: center;
 }
 
+/* ---------- Event Card ---------- */
 .event-card {
   background-color: #ffffff;
   border-radius: 15px;
@@ -112,8 +54,53 @@
   transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  max-width: 400px;  
-  width: 100%;       
+  justify-content: space-between;
+  width: 100%;
+  max-width: 350px;
+  min-height: 520px;
 }
 
+.event-card:hover {
+  transform: translateY(-5px);
+}
 
+.event-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+/* ---------- Card Text ---------- */
+.event-card h3 {
+  font-size: 1.5rem;
+  color: #34495e;
+  margin: 16px 20px 8px;
+}
+
+.event-card p {
+  margin: 0 20px 8px;
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+/* ---------- Register Button ---------- */
+.event-card button {
+  margin: 16px 20px 20px;
+  padding: 12px;
+  background-color: #8B4513;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.event-card button:hover {
+  background-color: #cf711f;
+}
