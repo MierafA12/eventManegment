@@ -16,14 +16,14 @@ export default function Login() {
 
     const role = await login(username, password);
 
-    if (role === "admin") navigate("/admin/dashboard");
-    else if (role === "superadmin") navigate("/superadmin/dashboard");
+    if (role === "admin") navigate("/admin/AdminDashboard");
+    else if (role === "superadmin") navigate("/superAdmin/SadminDashboard");
     else navigate("/user/dashboard");
   };
 
   return (
     <div className="h-screen bg-primary flex items-center justify-center">
-      <div className="bg-black/30 shadow-xl rounded-lg px-10 py-12 w-[380px] text-white">
+      <div className="bg-black/30 shadow-xl rounded-lg px-10 py-12 w-[380px] text-text1">
         {/* Icon */}
         <div className="flex justify-center mb-5">
           <svg
@@ -47,7 +47,7 @@ export default function Login() {
           <label className="text-sm tracking-wider">USERNAME</label>
           <input
             type="text"
-            className="w-full bg-transparent border-b-2 mb-8 border-secondary outline-none py-2 text-white"
+            className="w-full bg-transparent border-b-2 mb-8 border-secondary outline-none py-2 text-text1"
             onChange={(e) => setUsername(e.target.value)}
           />
 
@@ -56,7 +56,7 @@ export default function Login() {
           <div className="relative w-full mb-10">
             <input
                 type={showPassword ? "text" : "password"}
-                className="w-full bg-transparent border-b-2 border-secondary outline-none py-2 pr-10 text-white"
+                className="w-full bg-transparent border-b-2 border-secondary outline-none py-2 pr-10 text-text1"
                 onChange={(e) => setPassword(e.target.value)}
             />
             
