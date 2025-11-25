@@ -8,7 +8,8 @@ export const adminMenu = [
 
 export const superAdminMenu = [
   { name: "Overview", icon: "FiHome", path: "/superAdmin/SadminDashboard" },
-  { name: "Manage Admins", icon: "FiUsers", path: "/super/admins" },
+  { name: "Create Admins", icon: "FiUsers", path: "/superAdmin/CreateAdmin" },
+  { name: "Manage Admins", icon: "FiUsers", path: "/superAdmin/ManageAdmin" },
   { name: "Manage Events", icon: "FiCalendar", path: "/super/events" },
   { name: "Reports", icon: "FiActivity", path: "/super/reports" },
   { name: "System Settings", icon: "FiSettings", path: "/super/settings" },
