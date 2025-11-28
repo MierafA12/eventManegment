@@ -5,6 +5,7 @@ import SearchAdmin from "../../components/search";
 import FilterAdmin from "../../components/filter";
 import AdminRow from "../../components/AdminRow";
 import AdminDeleteModal from "../../components/AdminDelate";
+import AdminEditModal from "./editAdmin";
 
 const MOCK_ADMINS = [
   { id: 1, fullName: "Samuel Robel", username: "samuel", status: "active" },
@@ -16,9 +17,11 @@ export default function ManageAdmin() {
   const [admins, setAdmins] = useState(MOCK_ADMINS);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
-  const [deleteTarget, setDeleteTarget] = useState(null);
 
-  // filter + search
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [editTarget, setEditTarget] = useState(null);
+
+  // search + filter
   const filtered = admins.filter((a) => {
     const matchesSearch =
       a.fullName.toLowerCase().includes(search.toLowerCase()) ||
@@ -29,20 +32,16 @@ export default function ManageAdmin() {
     return matchesSearch && matchesStatus;
   });
 
-  // activate / deactivate admin
-  const toggleStatus = (id) => {
+  // update admin
+  const saveUpdated = (updatedAdmin) => {
     setAdmins((prev) =>
-      prev.map((a) =>
-        a.id === id
-          ? { ...a, status: a.status === "active" ? "inactive" : "active" }
-          : a
-      )
+      prev.map((a) => (a.id === updatedAdmin.id ? updatedAdmin : a))
     );
   };
 
   // delete admin
-  const confirmDelete = (id) => {
-    setAdmins((prev) => prev.filter((a) => a.id !== id));
+  const confirmDelete = () => {
+    setAdmins((prev) => prev.filter((a) => a.id !== deleteTarget.id));
     setDeleteTarget(null);
   };
 
@@ -52,8 +51,8 @@ export default function ManageAdmin() {
         Manage Admins
       </h1>
 
-      {/* ⭐ Search + Filter Side By Side */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      {/* Search + Filter */}
+      <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
         <SearchAdmin search={search} setSearch={setSearch} />
         <FilterAdmin value={status} onChange={setStatus} />
       </div>
@@ -72,23 +71,31 @@ export default function ManageAdmin() {
 
           <tbody>
             {filtered.length === 0 ? (
-                <tr>
+              <tr>
                 <td colSpan={4} className="text-center py-4 text-gray-500">
-                    No data available
+                  No data available
                 </td>
-                </tr>
+              </tr>
             ) : (
-                filtered.map((admin) => (
+              filtered.map((admin) => (
                 <AdminRow
-                    key={admin.id}
-                    admin={admin}
-                    onToggleStatus={toggleStatus}
-                    onDelete={() => setDeleteTarget(admin)}
+                  key={admin.id}
+                  admin={admin}
+                  onToggleStatus={(id) =>
+                    setAdmins((prev) =>
+                      prev.map((a) =>
+                        a.id === id
+                          ? { ...a, status: a.status === "active" ? "inactive" : "active" }
+                          : a
+                      )
+                    )
+                  }
+                  onDelete={() => setDeleteTarget(admin)}
+                  onEdit={() => setEditTarget(admin)}
                 />
-                ))
+              ))
             )}
-            </tbody>
-
+          </tbody>
         </table>
       </div>
 
@@ -97,6 +104,13 @@ export default function ManageAdmin() {
         admin={deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={confirmDelete}
+      />
+
+      {/* Edit Modal */}
+      <AdminEditModal
+        admin={editTarget}
+        onClose={() => setEditTarget(null)}
+        onSave={saveUpdated}
       />
     </AdminLayout>
   );
