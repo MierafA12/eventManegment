@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AdminLayout from "../../layouts/Adminlayout";
+import {Button1} from "../../components/Button";
 
 export default function CreateAdmin() {
   const [form, setForm] = useState({
@@ -74,12 +75,11 @@ export default function CreateAdmin() {
             />
           </div>
 
-          <button
+          <Button1
             type="submit"
-            className="w-full bg-primary text-white py-3 rounded-lg hover:bg-buttonHover transition"
           >
             Create Admin
-          </button>
+          </Button1>
         </form>
       </div>
     </AdminLayout>

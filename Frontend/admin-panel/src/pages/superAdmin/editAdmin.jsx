@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
-import button from "../../components/Button";
+import {Button1} from "../../components/Button";
 
 export default function AdminEditModal({ admin, onClose, onSave }) {
   if (!admin) return null;
@@ -77,12 +77,12 @@ export default function AdminEditModal({ admin, onClose, onSave }) {
         </div>
 
     
-          <button
+          <Button1
             onClick={handleSave}
             
           >
             Save Changes
-          </button>
+          </Button1>
         </div>
       </div>
   );
