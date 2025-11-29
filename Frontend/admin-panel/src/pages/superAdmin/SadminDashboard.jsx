@@ -26,22 +26,22 @@ export default function SuperAdminDashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
         
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-secondary">
+        <div className="p-6 rounded-2xl shadow bg-text1 border-l-4 border-secondary">
           <h2 className="text-lg font-medium text-primary">Total Admins</h2>
           <p className="text-3xl font-bold mt-2">{stats.totalAdmins}</p>
         </div>
 
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-green-500">
+        <div className="p-6 rounded-2xl shadow bg-text1 border-l-4 border-success">
           <h2 className="text-lg font-medium text-primary">Active Admins</h2>
           <p className="text-3xl font-bold mt-2">{stats.activeAdmins}</p>
         </div>
 
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-red-500">
+        <div className="p-6 rounded-2xl shadow bg-text1 border-l-4 border-error">
           <h2 className="text-lg font-medium text-primary">Inactive Admins</h2>
           <p className="text-3xl font-bold mt-2">{stats.inactiveAdmins}</p>
         </div>
 
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-buttonHover">
+        <div className="p-6 rounded-2xl shadow bg-text1 border-l-4 border-buttonHover">
           <h2 className="text-lg font-medium text-primary">Total Events</h2>
           <p className="text-3xl font-bold mt-2">{stats.totalEvents}</p>
         </div>
