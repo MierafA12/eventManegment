@@ -25,18 +25,17 @@ export default function AdminEditModal({ admin, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 relative">
+    <div className="fixed inset-0 bg-primary0 flex items-center justify-center z-50 px-4 ">
+      <div className="bg-text1 w-full max-w-md rounded-xl shadow-lg p-6 relative dark:text-text1 dark:bg-bgDark">
 
-        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-primary"
+          className="absolute top-3 right-3 text-primary hover:text-secondary dark:text-text1 dark:hover:text-text1"
         >
           <FiX size={22} />
         </button>
 
-        <h2 className="text-xl font-semibold text-primary mb-4">Edit Admin</h2>
+        <h2 className="text-xl font-semibold text-primary mb-4 dark:text-text1">Edit Admin</h2>
 
         {/* Success Message */}
         {saved && <p className="text-success mb-3">✓ Changes saved successfully!</p>}
@@ -44,7 +43,7 @@ export default function AdminEditModal({ admin, onClose, onSave }) {
         {/* Form */}
         <div className="flex flex-col gap-4">
           <div>
-            <label className="text-sm font-medium">Full Name</label>
+            <label className="text-sm font-medium dark:text-text1">Full Name</label>
             <input
               type="text"
               className="w-full border px-3 py-2 rounded mt-1"
@@ -54,7 +53,7 @@ export default function AdminEditModal({ admin, onClose, onSave }) {
           </div>
 
           <div>
-            <label className="text-sm font-medium">Username</label>
+            <label className="text-sm font-medium dark:text-text1">Username</label>
             <input
               type="text"
               className="w-full border px-3 py-2 rounded mt-1"
@@ -64,9 +63,9 @@ export default function AdminEditModal({ admin, onClose, onSave }) {
           </div>
 
           <div>
-            <label className="text-sm font-medium">Status</label>
+            <label className="text-sm font-medium dark:text-text1">Status</label>
             <select
-              className="w-full border px-3 py-2 rounded mt-1"
+              className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             >

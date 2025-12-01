@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AdminLayout from "../../layouts/Adminlayout";
+import AdminLayout from "../../layouts/AdminLayout";
 import {Button1} from "../../components/Button";
 
 export default function CreateAdmin() {
@@ -20,8 +20,8 @@ export default function CreateAdmin() {
 
   return (
     <AdminLayout>
-      <div className="max-w-xl mx-auto bg-white shadow-lg rounded-xl p-8">
-        <h1 className="text-2xl font-semibold text-primary mb-6">
+      <div className="max-w-xl mx-auto bg-text1 shadow-lg rounded-xl p-8 dark:bg-bgDark">
+        <h1 className="text-2xl font-semibold text-primary mb-6 dark:text-text1">
           Create New Admin
         </h1>
 
@@ -29,7 +29,7 @@ export default function CreateAdmin() {
 
           {/* Full Name */}
           <div>
-            <label className="block text-primary font-medium mb-1">
+            <label className="block text-primary font-medium mb-1 dark:text-text1">
               Full Name
             </label>
             <input
@@ -45,7 +45,7 @@ export default function CreateAdmin() {
 
           {/* Username */}
           <div>
-            <label className="block text-primary font-medium mb-1">
+            <label className="block text-primary font-medium mb-1 dark:text-text1">
               Username
             </label>
             <input
@@ -61,7 +61,7 @@ export default function CreateAdmin() {
 
           {/* Password */}
           <div>
-            <label className="block text-primary font-medium mb-1">
+            <label className="block text-primary font-medium mb-1 dark:text-text1">
               Password
             </label>
             <input

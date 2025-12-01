@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AdminLayout from "../../layouts/Adminlayout";
+import AdminLayout from "../../layouts/AdminLayout";
 
 import SearchAdmin from "../../components/search";
 import FilterAdmin from "../../components/filter";
@@ -47,7 +47,7 @@ export default function ManageAdmin() {
 
   return (
     <AdminLayout>
-      <h1 className="text-2xl font-semibold text-primary mb-6">
+      <h1 className="text-2xl font-semibold text-primary dark:text-text1 mb-6">
         Manage Admins
       </h1>
 
@@ -58,9 +58,9 @@ export default function ManageAdmin() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white shadow rounded-lg">
+      <div className="overflow-x-auto bg-bg dark:bg-bgDark shadow rounded-lg">
         <table className="w-full border-collapse">
-          <thead className="bg-secondary text-primary">
+          <thead className="bg-secondary dark:bg-secondaryDark text-primary dark:text-primaryDark">
             <tr>
               <th className="px-4 py-3 text-left">Full Name</th>
               <th className="px-4 py-3 text-left">Username</th>
@@ -69,10 +69,10 @@ export default function ManageAdmin() {
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="text-primary dark:text-text1Dark">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-4 text-gray-500">
+                <td colSpan={4} className="text-center py-4 text-gray-500 dark:text-gray-400">
                   No data available
                 </td>
               </tr>
