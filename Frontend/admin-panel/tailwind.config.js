@@ -1,4 +1,5 @@
 export default {
+    darkMode: "class",
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -17,6 +18,9 @@ export default {
         inactiveBg: "#FEE2E2",
         activeText: "#15803D",
         inactiveText: "#B91C1C",
+        text1Dark: "#ffffff", // dark mode text
+        bg: "#ffffff",
+        bgDark: "#1f1f1f",
       },
     },
   },
