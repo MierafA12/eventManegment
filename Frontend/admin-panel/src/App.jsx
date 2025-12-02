@@ -7,11 +7,14 @@ import SadminDashboard from "./pages/superAdmin/SadminDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CreateAdmin from "./pages/superAdmin/CreateAdmin";
 import ManageAdmin from "./pages/superAdmin/ManageAdmin";
+import SettingsPage from "./components/setting";
+import { ThemeProvider } from "./context/ThemeContext";
 
 
 
 export default function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -50,10 +53,19 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-            
-          
+         <Route
+            path="/superadmin/SettingsPage"
+            element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
