@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SadminDashboard from "./pages/superAdmin/SadminDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import CreateAdmin from "./pages/superAdmin/createAdmin";
+import CreateAdmin from "./pages/superAdmin/CreateAdmin";
 import ManageAdmin from "./pages/superAdmin/ManageAdmin";
 
 
@@ -50,8 +50,8 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
-
+            
+          
         </Routes>
       </BrowserRouter>
     </AuthProvider>
