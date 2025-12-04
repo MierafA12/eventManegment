@@ -1,8 +1,8 @@
-import AdminLayout from "../../layouts/Adminlayout";
+import AdminLayout from "../../layouts/AdminLayout";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import StatusCard from "../../components/statusCards";
 
 export default function SuperAdminDashboard() {
-  // MOCK DATA
   const stats = {
     totalAdmins: 12,
     activeAdmins: 9,
@@ -19,38 +19,40 @@ export default function SuperAdminDashboard() {
 
   return (
     <AdminLayout>
-      <h1 className="text-2xl font-semibold mb-6 text-primary">
+      <h1 className="text-2xl font-semibold mb-6 text-primary dark:text-text1">
         Super Admin Dashboard
       </h1>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
-        
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-secondary">
-          <h2 className="text-lg font-medium text-primary">Total Admins</h2>
-          <p className="text-3xl font-bold mt-2">{stats.totalAdmins}</p>
-        </div>
+        <StatusCard
+          title="Total Admins"
+          value={stats.totalAdmins}
+          borderColor="border-secondary"
+        />
 
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-green-500">
-          <h2 className="text-lg font-medium text-primary">Active Admins</h2>
-          <p className="text-3xl font-bold mt-2">{stats.activeAdmins}</p>
-        </div>
+        <StatusCard
+          title="Active Admins"
+          value={stats.activeAdmins}
+          borderColor="border-success"
+        />
 
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-red-500">
-          <h2 className="text-lg font-medium text-primary">Inactive Admins</h2>
-          <p className="text-3xl font-bold mt-2">{stats.inactiveAdmins}</p>
-        </div>
+        <StatusCard
+          title="Inactive Admins"
+          value={stats.inactiveAdmins}
+          borderColor="border-error"
+        />
 
-        <div className="p-6 rounded-2xl shadow bg-white border-l-4 border-buttonHover">
-          <h2 className="text-lg font-medium text-primary">Total Events</h2>
-          <p className="text-3xl font-bold mt-2">{stats.totalEvents}</p>
-        </div>
-
+        <StatusCard
+          title="Total Events"
+          value={stats.totalEvents}
+          borderColor="border-secondary"
+        />
       </div>
 
       {/* Pie Chart */}
-      <div className="bg-white p-6 rounded-2xl shadow w-full h-[350px]">
-        <h2 className="text-lg font-semibold mb-4 text-primary">
+      <div className="bg-text1 dark:bg-bgDark p-6 rounded-2xl shadow w-full h-[350px]">
+        <h2 className="text-lg font-semibold mb-4 text-primary dark:text-text1">
           Admin Status Overview
         </h2>
 

@@ -12,5 +12,5 @@ export const superAdminMenu = [
   { name: "Manage Admins", icon: "FiUsers", path: "/superAdmin/ManageAdmin" },
   { name: "Manage Events", icon: "FiCalendar", path: "/super/events" },
   { name: "Reports", icon: "FiActivity", path: "/super/reports" },
-  { name: "System Settings", icon: "FiSettings", path: "/super/settings" },
+  { name: "System Settings", icon: "FiSettings", path: "/superadmin/SettingsPage" },
 ];
