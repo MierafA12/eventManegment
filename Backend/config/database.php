@@ -1,14 +1,27 @@
 <?php
+class Database {
+    private $host = "localhost";
+    private $db_name = "event_management";
+    private $username = "root";
+    private $password = "";
+    public $conn;
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "event_management";
-
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
+    public function connect() {
+        $this->conn = null;
+        try {
+            $this->conn = new PDO(
+                "mysql:host={$this->host};dbname={$this->db_name};charset=utf8",
+                $this->username,
+                $this->password
+            );
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $e) {
+            echo json_encode([
+                "status" => "error",
+                "message" => "Database connection failed: " . $e->getMessage()
+            ]);
+            exit;
+        }
+        return $this->conn;
+    }
 }
-?>
