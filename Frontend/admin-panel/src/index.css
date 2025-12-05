@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.dark body {
+  @apply bg-[#121212] text-text1;
+}

@@ -13,7 +13,8 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
   return (
     <aside
       className={`
-        bg-text1 shadow-lg border-r border-gray-200 
+        bg-bg text-primary shadow-lg border-r border-gray-200 
+        dark:bg-bgDark dark:text-text1Dark
         h-screen fixed md:relative z-40
         flex flex-col justify-between
         transition-all duration-300 ease-in-out
@@ -21,7 +22,6 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
         ${collapsed ? "w-20 px-3" : "w-64 px-4"}
       `}
     >
-
       {/* Profile section */}
       <div className="w-full mt-6 flex justify-center">
         {collapsed ? <ProfileBox size="sm" /> : <ProfileBox size="lg" />}
@@ -39,11 +39,11 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2 rounded-lg transition
-                    ${
-                      isActive
-                        ? "bg-secondary text-primary font-semibold"
-                        : "hover:bg-buttonHover hover:text-secondary"
-                    }`
+                      ${
+                        isActive
+                          ? "bg-secondary text-primary font-semibold dark:bg-secondaryDark dark:text-primaryDark"
+                          : "hover:bg-buttonHover hover:text-secondary dark:hover:bg-secondaryDark dark:hover:text-primaryDark"
+                      }`
                   }
                 >
                   <Icon className="text-xl" />
@@ -61,13 +61,12 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
       <div className="absolute bottom-4 left-4 w-[85%]">
         <button
           onClick={logout}
-          className="flex items-center gap-3 text-error px-4 py-3 rounded-lg hover:bg-red-100 w-full transition"
+          className="flex items-center gap-3 text-error px-4 py-3 rounded-lg hover:bg-red-100 dark:hover:bg-red-700 w-full transition"
         >
           <Icons.FiLogOut size={20} />
           {!collapsed && <span>Log Out</span>}
         </button>
       </div>
-      
     </aside>
   );
 }

@@ -1,9 +1,9 @@
 export const adminMenu = [
-  { name: "Overview", icon: "FiHome", path: "/admin/dashboard" },
-  { name: "Events", icon: "FiCalendar", path: "/admin/events" },
-  { name: "Registrations", icon: "FiUsers", path: "/admin/registrations" },
-  { name: "Activity", icon: "FiActivity", path: "/admin/activity" },
-  { name: "Settings", icon: "FiSettings", path: "/admin/settings" },
+  { name: "Overview", icon: "FiHome", path: "/admin/AdminDashboard" },
+  { name: "Create Events", icon: "FiCalendar", path: "/admin/CreateEvents" },
+  { name: "Manage Events", icon: "FiCalendar", path: "/admin/ManageEvents" },
+  { name: "Registrations", icon: "FiUsers", path: "/admin/UserRegistration" },
+  { name: "System Settings", icon: "FiSettings", path: "/admin/SettingsPage" },
 ];
 
 export const superAdminMenu = [
@@ -12,5 +12,5 @@ export const superAdminMenu = [
   { name: "Manage Admins", icon: "FiUsers", path: "/superAdmin/ManageAdmin" },
   { name: "Manage Events", icon: "FiCalendar", path: "/super/events" },
   { name: "Reports", icon: "FiActivity", path: "/super/reports" },
-  { name: "System Settings", icon: "FiSettings", path: "/super/settings" },
+  { name: "System Settings", icon: "FiSettings", path: "/superadmin/SettingsPage" },
 ];

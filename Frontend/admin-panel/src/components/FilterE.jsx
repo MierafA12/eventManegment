@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 
-export default function Filter({ value, onChange }) {
+export default function FilterE({ value, onChange }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
 
   const options = [
-    { label: "All Admins", value: "all" },
-    { label: "Active Admins", value: "active" },
-    { label: "Inactive Admins", value: "inactive" },
+    { label: "All Events", value: "all" },
+    { label: "Past Events", value: "past" },
+    { label: "Upcoming Events", value: "upcoming" },
   ];
 
   // close dropdown when clicking outside
