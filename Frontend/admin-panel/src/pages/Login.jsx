@@ -14,7 +14,7 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const role = await login(username, password);
+    const role = await login(username, password); // if username is email, OK
 
     if (role === "admin") navigate("/admin/AdminDashboard");
     else if (role === "superadmin") navigate("/superAdmin/SadminDashboard");
@@ -43,7 +43,6 @@ export default function Login() {
         </h1>
 
         <form onSubmit={handleLogin}>
-          {/* Username */}
           <label className="text-sm tracking-wider">USERNAME</label>
           <input
             type="text"
@@ -51,7 +50,7 @@ export default function Login() {
             onChange={(e) => setUsername(e.target.value)}
           />
 
-          {/* Password */}
+
           <label className="text-sm tracking-wider">PASSWORD</label>
           <div className="relative w-full mb-10">
             <input
@@ -60,7 +59,6 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
             />
             
-            {/* Eye Icon */}
             <button
                 type="button"
                 className="absolute right-0 top-1/2 transform -translate-y-1/2 text-secondary"
@@ -92,7 +90,6 @@ export default function Login() {
                 )}
             </button>
             </div>
-          {/* Reusable Button */}
           <div className="flex justify-end">
             <Button type="submit">LOGIN</Button>
           </div>
