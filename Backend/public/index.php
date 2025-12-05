@@ -23,6 +23,7 @@ require_once "../model/User.php";
 require_once "../controller/AuthController.php";
 require_once "../controller/ParticipantController.php";
 require_once "../route/UserRoute.php";
+ require_once "../controller/statusController.php";
 
 // ---------------- ROUTER ----------------
 $method = $_SERVER["REQUEST_METHOD"];
