@@ -15,19 +15,19 @@ import StatusCard from "../../components/statusCards";
 export default function AdminDashboard() {
   // Example statistics
   const stats = {
-    upcomingEvents: 8,
-    pastEvents: 26,
-    totalEvents: 34,
+    upcomingEvents: 3,
+    pastEvents: 6,
+    totalEvents: 9,
   };
 
   // Example line chart data (replace with API later)
   const eventData = [
-    { month: "Jan", events: 2 },
-    { month: "Feb", events: 5 },
-    { month: "Mar", events: 3 },
-    { month: "Apr", events: 6 },
-    { month: "May", events: 4 },
-    { month: "Jun", events: 7 },
+    { month: "Jan", events: 1 },
+    { month: "Feb", events: 0 },
+    { month: "Mar", events: 2 },
+    { month: "Apr", events: 1 },
+    { month: "May", events: 1 },
+    { month: "Jun", events: 1 },
   ];
 
   return (

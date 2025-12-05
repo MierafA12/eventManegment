@@ -5,8 +5,11 @@ import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SadminDashboard from "./pages/superAdmin/SadminDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import CreateEvent from "./pages/admin/CreateEvents";
 import CreateAdmin from "./pages/superAdmin/CreateAdmin";
 import ManageAdmin from "./pages/superAdmin/ManageAdmin";
+import ManageEvents from "./pages/admin/ManageEvents";
+import UserRegistration from "./pages/admin/UserRegistration";
 import SettingsPage from "./components/setting";
 import { ThemeProvider } from "./context/ThemeContext";
 
@@ -20,6 +23,14 @@ export default function App() {
         <Routes>
 
           <Route path="/" element={<Login />} />
+            <Route
+              path="/admin/CreateEvents"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <CreateEvent />
+                </ProtectedRoute>
+              }
+            />
 
            <Route
             path="/superadmin/SadminDashboard"
@@ -53,10 +64,34 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/ManageEvents"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ManageEvents />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/UserRegistration"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <UserRegistration />
+              </ProtectedRoute>
+            }
+          />
          <Route
             path="/superadmin/SettingsPage"
             element={
               <ProtectedRoute allowedRoles={["superadmin"]}>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/SettingsPage"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <SettingsPage />
               </ProtectedRoute>
             }
