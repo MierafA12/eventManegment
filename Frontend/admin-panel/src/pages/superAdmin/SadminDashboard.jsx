@@ -1,21 +1,48 @@
 import AdminLayout from "../../layouts/AdminLayout";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import StatusCard from "../../components/statusCards";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function SuperAdminDashboard() {
-  const stats = {
-    totalAdmins: 12,
-    activeAdmins: 9,
-    inactiveAdmins: 3,
-    totalEvents: 34,
-  };
-
-  const pieData = [
-    { name: "Active Admins", value: stats.activeAdmins },
-    { name: "Inactive Admins", value: stats.inactiveAdmins },
-  ];
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const COLORS = ["#c2db6c", "#4b2e1f"];
+
+  // Fetch stats on mount
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost/EthioEvents/Backend/public/admin-status"
+        );
+
+        if (res.data.status === "success") {
+          setStats(res.data.data);
+        } else {
+          setError("Failed to fetch stats");
+        }
+      } catch (err) {
+        setError(err.message || "Server error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  // Loading and error states
+  if (loading) return <div>Loading dashboard...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  // Pie chart data
+  const pieData = [
+    { name: "Active Admins", value: stats?.activeAdmins ?? 0 },
+    { name: "Inactive Admins", value: stats?.inactiveAdmins ?? 0 },
+  ];
 
   return (
     <AdminLayout>
@@ -27,25 +54,22 @@ export default function SuperAdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
         <StatusCard
           title="Total Admins"
-          value={stats.totalAdmins}
+          value={stats?.totalAdmins ?? 0}
           borderColor="border-secondary"
         />
-
         <StatusCard
           title="Active Admins"
-          value={stats.activeAdmins}
+          value={stats?.activeAdmins ?? 0}
           borderColor="border-success"
         />
-
         <StatusCard
           title="Inactive Admins"
-          value={stats.inactiveAdmins}
+          value={stats?.inactiveAdmins ?? 0}
           borderColor="border-error"
         />
-
         <StatusCard
           title="Total Events"
-          value={stats.totalEvents}
+          value={stats?.totalEvents ?? 0}
           borderColor="border-secondary"
         />
       </div>
