@@ -1,0 +1,98 @@
+-- 1. Users Table (all roles: participant, admin, superadmin)
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('participant','admin','superadmin') NOT NULL DEFAULT 'participant',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Participants Table (optional extra info for participants)
+CREATE TABLE participants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    dob DATE,
+    phone_number VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- 3. Events Table
+CREATE TABLE events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    location VARCHAR(255),
+    date DATE,
+    time TIME,
+    description TEXT,
+    price DECIMAL(10,2),
+    capacity INT,
+    created_by INT NOT NULL, -- admin or superadmin who created event
+    FOREIGN KEY (created_by) REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- 4. Registrations Table (participants registering for events)
+CREATE TABLE registrations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    participant_id INT NOT NULL,
+    event_id INT NOT NULL,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    registration_start_date DATE,
+    registration_end_date DATE,
+    FOREIGN KEY (participant_id) REFERENCES participants(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- 5. Payments Table
+CREATE TABLE payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    registration_id INT UNIQUE NOT NULL,
+    payment_way VARCHAR(50),
+    payment_status ENUM('pending','completed','failed') DEFAULT 'pending',
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (registration_id) REFERENCES registrations(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- CONTACT MESSAGES TABLE
+CREATE TABLE contact_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    subject VARCHAR(200) NOT NULL,
+    message TEXT NOT NULL,
+    status ENUM('unread','read') DEFAULT 'unread',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- NOTIFICATIONS TABLE
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,         -- who triggered notification
+    admin_id INT NULL,        -- who should receive it (optional)
+    role_target ENUM('admin','superadmin','all') DEFAULT 'all',
+    type VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    link VARCHAR(255) DEFAULT NULL,
+    is_read TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (admin_id) REFERENCES users(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
+

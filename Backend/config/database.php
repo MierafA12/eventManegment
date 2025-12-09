@@ -5,7 +5,7 @@ class Database {
     private $username = "root";
     private $password = "";
     public $conn;
-
+   
     public function connect() {
         $this->conn = null;
         try {
