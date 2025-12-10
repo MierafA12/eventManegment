@@ -12,26 +12,27 @@ class AuthController {
     public function login($request) {
         $data = json_decode($request, true);
 
-        if (!$data || empty($data["username"]) || empty($data["password"])) {
+        if (!$data || empty($data["email"]) || empty($data["password"])) {
             http_response_code(400);
-            return ["success" => false, "message" => "Username and password required"];
+            return ["success" => false, "message" => "Email and password are required"];
         }
 
-        $username = $data["username"];
+        $email = $data["email"];
         $password = $data["password"];
 
-        $user = $this->userModel->getByUsername($username);
+        $user = $this->userModel->getByEmail($email);
 
         if (!$user) {
             http_response_code(401);
-            return ["success" => false, "message" => "Invalid username or password"];
+            return ["success" => false, "message" => "Invalid email or password"];
         }
 
         if (!password_verify($password, $user["password"])) {
             http_response_code(401);
-            return ["success" => false, "message" => "Invalid username or password"];
+            return ["success" => false, "message" => "Invalid email or password"];
         }
 
+        // Generate JWT
         $token = generateJwtToken($user["id"], $user["role"]);
 
         return [
@@ -40,6 +41,7 @@ class AuthController {
             "jwt" => $token,
             "user" => [
                 "id" => $user["id"],
+                "email" => $user["email"],
                 "username" => $user["username"],
                 "role" => $user["role"]
             ]

@@ -8,11 +8,11 @@ class User {
     }
 
     public function createUser($username, $email, $password, $role = "participant") {
-        // Hash password before storing
         $hashed = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $this->conn->prepare(
-            "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)"
+            "INSERT INTO users (username, email, password, role) 
+             VALUES (:username, :email, :password, :role)"
         );
 
         return $stmt->execute([
@@ -23,9 +23,9 @@ class User {
         ]);
     }
 
-    public function getByUsername($username) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = :username");
-        $stmt->execute([":username" => $username]);
+    public function getByEmail($email) {
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute([":email" => $email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
