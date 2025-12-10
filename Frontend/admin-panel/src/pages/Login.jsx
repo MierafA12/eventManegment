@@ -7,18 +7,18 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const role = await login(username, password); // if username is email, OK
+    const role = await login(email, password); // if username is email, OK
 
     if (role === "admin") navigate("/admin/AdminDashboard");
     else if (role === "superadmin") navigate("/superAdmin/SadminDashboard");
-    else navigate("/user/dashboard");
+    else navigate("/404");
   };
 
   return (
@@ -43,7 +43,7 @@ export default function Login() {
         </h1>
 
         <form onSubmit={handleLogin}>
-          <label className="text-sm tracking-wider">USERNAME</label>
+          <label className="text-sm tracking-wider">EMAIL</label>
           <input
             type="text"
             className="w-full bg-transparent border-b-2 mb-8 border-secondary outline-none py-2 text-text1"
