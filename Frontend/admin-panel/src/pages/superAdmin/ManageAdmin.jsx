@@ -1,117 +1,149 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
-
 import SearchAdmin from "../../components/search";
 import FilterAdmin from "../../components/filter";
 import AdminRow from "../../components/AdminRow";
 import AdminDeleteModal from "../../components/AdminDelate";
-import AdminEditModal from "./editAdmin";
+import AdminEditModal from "../../pages/superAdmin/editAdmin";
 
-const MOCK_ADMINS = [
-  { id: 1, fullName: "Samuel Robel", username: "samuel", status: "active" },
-  { id: 2, fullName: "Mieraf Abebe", username: "mieraf", status: "inactive" },
-  { id: 3, fullName: "Kalkidan Daniel", username: "kal", status: "active" },
-];
+import {
+  getAdmins,
+  toggleAdminStatus,
+  deleteAdmin,
+  updateAdmin,
+} from "../../api/adminApi";
 
 export default function ManageAdmin() {
-  const [admins, setAdmins] = useState(MOCK_ADMINS);
+  const [admins, setAdmins] = useState([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
-
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
 
-  // search + filter
-  const filtered = admins.filter((a) => {
-    const matchesSearch =
-      a.fullName.toLowerCase().includes(search.toLowerCase()) ||
-      a.username.toLowerCase().includes(search.toLowerCase());
+  // Fetch admins
+  useEffect(() => {
+    const loadAdmins = async () => {
+      try {
+        const res = await getAdmins();
+        // Ensure we get an array
+        setAdmins(Array.isArray(res.data.admins) ? res.data.admins : []);
+      } catch (err) {
+        console.error("Failed to load admins:", err);
+        setAdmins([]);
+      }
+    };
+    loadAdmins();
+  }, []);
 
-    const matchesStatus = status === "all" ? true : a.status === status;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  // update admin
-  const saveUpdated = (updatedAdmin) => {
+  // Toggle status
+// Toggle status
+const handleToggleStatus = async (admin) => {
+  const newStatus = admin.status === "active" ? "inactive" : "active";
+  try {
+    await toggleAdminStatus({ ...admin, status: newStatus });
     setAdmins((prev) =>
-      prev.map((a) => (a.id === updatedAdmin.id ? updatedAdmin : a))
+      prev.map((a) =>
+        a.id === admin.id ? { ...a, status: newStatus } : a
+      )
     );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// Save edit
+const saveUpdated = async (updatedAdmin) => {
+  try {
+    await updateAdmin(updatedAdmin);
+    setAdmins((prev) =>
+      prev.map((a) =>
+        a.id === updatedAdmin.id
+          ? { ...a, full_name: updatedAdmin.full_name, username: updatedAdmin.username, status: updatedAdmin.status }
+          : a
+      )
+    );
+    setEditTarget(null);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+  // Delete
+  const confirmDelete = async () => {
+    try {
+      await deleteAdmin(deleteTarget.id);
+      setAdmins((prev) => prev.filter((a) => a.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  // delete admin
-  const confirmDelete = () => {
-    setAdmins((prev) => prev.filter((a) => a.id !== deleteTarget.id));
-    setDeleteTarget(null);
-  };
+  const filtered = admins.filter((a) => {
+    const matchSearch =
+      a.full_name.toLowerCase().includes(search.toLowerCase()) ||
+      a.username.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = status === "all" ? true : a.status === status;
+    return matchSearch && matchStatus;
+  });
 
   return (
     <AdminLayout>
-      <h1 className="text-2xl font-semibold text-primary dark:text-text1 mb-6">
-        Manage Admins
-      </h1>
+      <div className="container mx-auto p-6 max-w-5xl">
+        <h2 className="text-3xl font-bold mb-6">Manage Admins</h2>
 
-      {/* Search + Filter */}
-      <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
-        <SearchAdmin search={search} setSearch={setSearch} />
-        <FilterAdmin value={status} onChange={setStatus} />
-      </div>
+        <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
+          <SearchAdmin search={search} setSearch={setSearch} />
+          <FilterAdmin value={status} onChange={setStatus} />
+        </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto bg-bg dark:bg-bgDark shadow rounded-lg">
-        <table className="w-full border-collapse">
-          <thead className="bg-secondary dark:bg-secondaryDark text-primary dark:text-primaryDark">
-            <tr>
-              <th className="px-4 py-3 text-left">Full Name</th>
-              <th className="px-4 py-3 text-left">Username</th>
-              <th className="px-4 py-3 text-left">Status</th>
-              <th className="px-4 py-3 text-left">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody className="text-primary dark:text-text1Dark">
-            {filtered.length === 0 ? (
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+          <table className="min-w-full border-collapse">
+            <thead className="bg-gray-200">
               <tr>
-                <td colSpan={4} className="text-center py-4 text-gray-500 dark:text-gray-400">
-                  No data available
-                </td>
+
+                <th className="px-4 py-2 text-left">Full Name</th>
+                <th className="px-4 py-2 text-left">Username</th>
+                <th className="px-4 py-2 text-left">Status</th>
+                <th className="px-4 py-2 text-left">Actions</th>
               </tr>
-            ) : (
-              filtered.map((admin) => (
-                <AdminRow
-                  key={admin.id}
-                  admin={admin}
-                  onToggleStatus={(id) =>
-                    setAdmins((prev) =>
-                      prev.map((a) =>
-                        a.id === id
-                          ? { ...a, status: a.status === "active" ? "inactive" : "active" }
-                          : a
-                      )
-                    )
-                  }
-                  onDelete={() => setDeleteTarget(admin)}
-                  onEdit={() => setEditTarget(admin)}
-                />
-              ))
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.length > 0 ? (
+                filtered.map((admin, index) => (
+                  <AdminRow
+                    key={admin.id}
+                    index={index + 1}
+                    admin={admin}
+                    onToggleStatus={() => handleToggleStatus(admin)}
+                    onEdit={() => setEditTarget(admin)}
+                    onDelete={() => setDeleteTarget(admin)}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center py-4">
+                    No admins found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <AdminDeleteModal
+          admin={deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          onConfirm={confirmDelete}
+        />
+
+        <AdminEditModal
+          admin={editTarget}
+          onClose={() => setEditTarget(null)}
+          onSave={saveUpdated}
+        />
       </div>
-
-      {/* Delete Modal */}
-      <AdminDeleteModal
-        admin={deleteTarget}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={confirmDelete}
-      />
-
-      {/* Edit Modal */}
-      <AdminEditModal
-        admin={editTarget}
-        onClose={() => setEditTarget(null)}
-        onSave={saveUpdated}
-      />
     </AdminLayout>
   );
 }
