@@ -1,6 +1,6 @@
 <?php
+require_once __DIR__ . '/../Model/user.php';
 require_once __DIR__ . '/../Model/participant.php';
-require_once __DIR__ . '/../Model/User.php';
 
 class ParticipantController {
 
@@ -8,8 +8,8 @@ class ParticipantController {
     private $participantModel;
 
     public function __construct($db) {
-        $this->userModel = new User($db);
-        $this->participantModel = new Participant($db);
+        $this->userModel = new UserModel($db);        // ✅ Use UserModel
+        $this->participantModel = new ParticipantModel($db); // ✅ Use ParticipantModel
     }
 
     public function signup($request) {
@@ -27,7 +27,6 @@ class ParticipantController {
         $email = $data["email"] ?? "";
         $password = $data["password"] ?? "";
 
-        // Validate all required fields
         if (!$full_name || !$username || !$dob || !$phone_number || !$email || !$password) {
             http_response_code(400);
             return ["success" => false, "message" => "All fields are required"];
@@ -45,10 +44,7 @@ class ParticipantController {
         $userId = $user["id"];
 
         // Create participant record
-        $saveParticipant = $this->participantModel->createParticipant(
-            $userId, $full_name, $dob, $phone_number
-        );
-
+        $saveParticipant = $this->participantModel->createParticipant($userId, $full_name, $dob, $phone_number);
         if (!$saveParticipant) {
             http_response_code(500);
             return ["success" => false, "message" => "Failed to save participant info"];
@@ -61,4 +57,3 @@ class ParticipantController {
         ];
     }
 }
-?>
