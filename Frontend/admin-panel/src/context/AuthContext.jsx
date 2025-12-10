@@ -6,11 +6,11 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-const login = async (username, password) => {
+const login = async (email, password) => {
   try {
     const { data } = await axios.post(
       "http://localhost/EthioEvents/Backend/public/login",
-      { username, password },
+      { email, password },
       {
         withCredentials: true,
         headers: { "Content-Type": "application/json" }
@@ -18,13 +18,13 @@ const login = async (username, password) => {
     );
 
     if (!data.success) {
-      alert(data.message || "Invalid username or password");
+      alert(data.message || "Invalid email or password");
       return null;
     }
 
     setUser({
       id: data.user.id,
-      username: data.user.username,
+      email: data.user.email,
       role: data.user.role,
       jwt: data.jwt
     });

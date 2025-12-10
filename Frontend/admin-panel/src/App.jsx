@@ -12,6 +12,7 @@ import ManageEvents from "./pages/admin/ManageEvents";
 import UserRegistration from "./pages/admin/UserRegistration";
 import SettingsPage from "./components/setting";
 import { ThemeProvider } from "./context/ThemeContext";
+import NotFound from "./pages/404";
 
 
 
@@ -96,7 +97,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
+           <Route path="*" element={<NotFound />} />
 
         </Routes>
       </BrowserRouter>

@@ -4,22 +4,34 @@ const API = axios.create({
   baseURL: "http://localhost/EthioEvents/Backend/public",
 });
 
-// GET all admins
 export const getAdmins = () => API.get("/admins");
 
-// Toggle status
-export const toggleAdminStatus = (id, status) =>
-  API.post("/admin/toggle", { id, status });
-
-// Delete admin
-export const deleteAdmin = (id) =>
-  API.delete("/admin/delete", { data: { id } });
-
-// Edit admin
-export const updateAdmin = (admin) =>
-  API.put("/admin/edit", {
-    id: admin.id,
+export const createAdmin = (admin) =>
+  API.post("/admin/create", {
+    full_name: admin.fullName,
     username: admin.username,
+    email: admin.email,
+    password: admin.password,
   });
+
+
+export const toggleAdminStatus = (id) =>
+  API.post("/admin/status", { id });
+
+
+export const deleteAdmin = (id) =>
+  API.post("/admin/delete", { id });
+
+export const updateAdmin = (admin) =>
+  API.post("/admin/update", {
+    id: admin.id,
+    full_name: admin.full_name,
+    username: admin.username,
+    email: admin.email,
+    status: admin.status
+  });
+
+
+
 
 export default API;
