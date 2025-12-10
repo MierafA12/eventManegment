@@ -1,10 +1,13 @@
 // src/pages/Login.jsx
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import MainLayout from '../layout/mainLayout';
+import { loginUser } from "../api/userApi";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,103 +15,127 @@ export default function Login() {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email === 'admin@ethioevents.com' && password === '123456') {
-      setMessage('Login successful! Welcome back!');
-      setIsError(false);
-    } else {
-      setMessage('Invalid email or password. Try: admin@ethioevents.com / 123456');
+    setMessage("");
+    setIsError(false);
+
+    try {
+      const res = await loginUser(email, password);
+
+      if (res.data.success) {
+        setMessage("Login successful!");
+        setIsError(false);
+
+        navigate("/payment");
+
+      } else {
+        setMessage(res.data.message || "Invalid login credentials");
+        setIsError(true);
+      }
+
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Server error");
       setIsError(true);
     }
-    setTimeout(() => setMessage(''), 5000);
+
+    setTimeout(() => setMessage(""), 5000);
   };
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-white flex items-center justify-center px-4">
+      <div className="min-h-screen bg-lightBg flex items-center justify-center px-4">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-3xl shadow-2xl p-10 border border-purple-100">
+          <div className="bg-bg rounded-3xl shadow-2xl p-10 border border-secondary">
+
             <div className="text-center mb-10">
-              <h1 className="text-4xl font-bold text-purple-700 mb-3">Ethio Events</h1>
-              <p className="text-gray-600 text-lg">Welcome back! Please login to continue.</p>
+              <h1 className="text-4xl font-bold text-primary mb-3">Ethio Events</h1>
+              <p className="text-primary text-lg">Welcome back! Please login to continue.</p>
             </div>
 
             {message && (
-              <div className={`mb-6 p-4 rounded-lg text-center font-medium ${
-                isError 
-                  ? 'bg-red-100 text-red-700 border border-red-300' 
-                  : 'bg-green-100 text-green-700 border border-green-300'
-              }`}>
+              <div
+                className={`mb-6 p-4 rounded-lg text-center font-medium ${
+                  isError
+                    ? "bg-inactiveBg text-inactiveText border border-inactiveText"
+                    : "bg-activeBg text-activeText border border-activeText"
+                }`}
+              >
                 {message}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Email Address</label>
+                <label className="block text-primary font-semibold mb-2">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition"
-                  placeholder="admin@ethioevents.com"
+                  className="w-full px-4 py-4 border border-primary rounded-xl"
+                  placeholder="Enter your email"
                   required
                 />
               </div>
-
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Password</label>
+                <label className="block text-primary font-semibold mb-2">
+                  Password
+                </label>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-4 border border-primary rounded-xl"
                     placeholder="Enter your password"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-purple-600 hover:text-purple-800"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-primary"
                   >
                     {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>
                 </div>
               </div>
-
               <div className="flex items-center justify-between">
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={remember}
                     onChange={(e) => setRemember(e.target.checked)}
-                    className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500"
+                    className="w-5 h-5 text-primary rounded"
                   />
-                  <span className="text-gray-700">Remember me</span>
+                  <span className="text-primary">Remember me</span>
                 </label>
-                <a href="#" className="text-purple-600 hover:text-purple-800 font-medium">
+
+                <a href="#" className="text-primary hover:text-buttonHover font-medium">
                   Forgot Password?
                 </a>
               </div>
 
+              {/* login button */}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-700 to-pink-600 text-white py-4 rounded-xl font-bold text-lg hover:from-purple-800 hover:to-pink-700 transition transform hover:scale-105 shadow-lg"
+                className="w-full bg-primary text-text1 py-4 rounded-xl font-bold text-lg hover:bg-buttonHover"
               >
                 Login
               </button>
             </form>
 
+            {/* footer */}
             <div className="mt-8 text-center">
-              <p className="text-gray-600">
+              <p className="text-primary">
                 Don't have an account?{' '}
-                <Link to="/register" className="text-purple-600 font-bold hover:text-purple-800">
+                <Link to="/register" className="text-secondary font-bold hover:text-buttonHover">
                   Register here
                 </Link>
               </p>
             </div>
+
           </div>
         </div>
       </div>
