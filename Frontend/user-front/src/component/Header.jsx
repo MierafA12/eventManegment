@@ -16,7 +16,7 @@ export default function Header() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-secondary hover:text-primary">
+          <Link to="/" className="text-primary hover:text-secondary">
             Home
           </Link>
           <Link to="/about" className="text-primary font-bold">

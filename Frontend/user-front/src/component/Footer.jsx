@@ -6,15 +6,15 @@ export default function Footer() {
       <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12">
         <div>
           <h2 className="text-4xl font-bold mb-4">
-            Ready To <span className="text-primary">talk?</span>
+            Ready To <span className="text-secondary">talk?</span>
           </h2>
 
-          <p className="text-secondary mb-6">
+          <p className="text-text1 mb-6">
             We deliver exceptional experiences with precision and creativity.
           </p>
 
           <Link to="/contact">
-            <button className="bg-primary hover:bg-buttonHover px-8 py-4 rounded-full text-lg font-semibold transition">
+            <button className="bg-secondary hover:bg-buttonHover px-8 py-4 rounded-full text-lg font-semibold transition">
               Contact Us!
             </button>
           </Link>
@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4 text-text1">Company</h3>
-            <ul className="space-y-2 text-secondary">
+            <ul className="space-y-2 text-text1">
               <li><Link to="/">Home</Link></li>
               <li><Link to="/about">About Us</Link></li>
               <li><a href="#">What We Do</a></li>
@@ -34,7 +34,7 @@ export default function Footer() {
 
           <div>
             <h3 className="text-xl font-bold mb-4 text-text1">Services</h3>
-            <ul className="space-y-2 text-secondary">
+            <ul className="space-y-2 text-text1">
               <li><a href="#">Corporate Events</a></li>
               <li><a href="#">Event Services</a></li>
               <li><a href="#">Stand Construction</a></li>

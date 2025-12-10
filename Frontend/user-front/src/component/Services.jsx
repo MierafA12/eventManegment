@@ -41,7 +41,7 @@ export default function Services() {
                 {service.title}
               </h3>
 
-              <p className="text-secondary leading-relaxed">
+              <p className="text-primary leading-relaxed">
                 {service.description}
               </p>
             </div>

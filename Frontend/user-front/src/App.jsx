@@ -7,6 +7,7 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Payment from './pages/Payment';
+import NotFound from '../../admin-panel/src/pages/404.jsx';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/payment" element={<Payment />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
