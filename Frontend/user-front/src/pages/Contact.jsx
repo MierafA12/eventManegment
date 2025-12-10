@@ -14,7 +14,7 @@ export default function Contact() {
 
   return (
     <MainLayout>
-      <section className="pt-24 pb-20 bg-gradient-to-br from-secondary to-primary/20">
+      <section className="pt-24 pb-20 ">
         <div className="container mx-auto px-4">
 
           <h1 className="text-5xl md:text-6xl font-bold text-center text-primary mb-16">

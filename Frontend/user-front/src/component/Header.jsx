@@ -16,16 +16,16 @@ export default function Header() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-primary hover:text-secondary">
+          <Link to="/" className="text-primary hover:text-secondary font-bold">
             Home
           </Link>
-          <Link to="/about" className="text-primary font-bold">
+          <Link to="/about" className="text-primary  hover:text-secondary font-bold">
             About
           </Link>
-          <Link to="/events" className="text-secondary hover:text-primary">
+          <Link to="/events" className="text-primary hover:text-secondary font-bold">
             Events
           </Link>
-          <Link to="/contact" className="text-secondary hover:text-primary">
+          <Link to="/contact" className="text-primary hover:text-secondary font-bold">
             Contact
           </Link>
 

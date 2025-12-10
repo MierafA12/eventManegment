@@ -19,7 +19,7 @@ export default function About() {
           <h1 className="text-5xl md:text-6xl font-bold text-primary dark:text-text1 mb-8">About Us</h1>
 
           <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-            <div className="text-left space-y-6 text-secondary dark:text-text1 text-lg">
+            <div className="text-left space-y-6 text-primary dark:text-text1 text-lg">
               <p>Welcome to <strong className="text-primary dark:text-secondary">Ethio Events</strong>, where we transform ordinary moments into extraordinary experiences.</p>
               <p>Our team brings creativity, passion, and precision to every event.</p>
               <p>We specialize in unforgettable corporate events, conferences, workshops, and more.</p>
@@ -59,8 +59,8 @@ export default function About() {
                 </div>
                 <div className="p-8 text-center">
                   <h3 className="text-2xl font-bold text-primary dark:text-text1">{member.name}</h3>
-                  <p className="text-secondary dark:text-primary font-medium mt-2">{member.title}</p>
-                  <p className="mt-4 text-secondary/80 dark:text-text1/80 text-sm">{member.email}</p>
+                  <p className="text-primary dark:text-primary font-medium mt-2">{member.title}</p>
+                  <p className="mt-4 text-primary/80 dark:text-text1/80 text-sm">{member.email}</p>
                 </div>
               </div>
             ))}
