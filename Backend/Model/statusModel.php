@@ -1,23 +1,27 @@
 <?php
-class StatusModel {
-    private $conn;
+require_once "BaseModel.php";
 
-    public function __construct($db) {
-        $this->conn = $db;
+class StatusModel extends BaseModel {
+    public function __construct(mysqli $conn) {
+        parent::__construct($conn, "users"); // pass mysqli connection
     }
 
-    public function getStats() {
-        $stmt = $this->conn->query("SELECT COUNT(*) AS total FROM users WHERE role='admin'");
-        $totalAdmins = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    public function getStats(): array {
+        // Total admins
+        $result = $this->conn->query("SELECT COUNT(*) AS total FROM users WHERE role='admin'");
+        $totalAdmins = $result->fetch_assoc()['total'];
 
-        $stmt = $this->conn->query("SELECT COUNT(*) AS active FROM users WHERE role='admin' AND status='active'");
-        $activeAdmins = $stmt->fetch(PDO::FETCH_ASSOC)['active'];
+        // Active admins
+        $result = $this->conn->query("SELECT COUNT(*) AS active FROM users WHERE role='admin' AND status='active'");
+        $activeAdmins = $result->fetch_assoc()['active'];
 
-        $stmt = $this->conn->query("SELECT COUNT(*) AS inactive FROM users WHERE role='admin' AND status='inactive'");
-        $inactiveAdmins = $stmt->fetch(PDO::FETCH_ASSOC)['inactive'];
+        // Inactive admins
+        $result = $this->conn->query("SELECT COUNT(*) AS inactive FROM users WHERE role='admin' AND status='inactive'");
+        $inactiveAdmins = $result->fetch_assoc()['inactive'];
 
-        $stmt = $this->conn->query("SELECT COUNT(*) AS events FROM events");
-        $totalEvents = $stmt->fetch(PDO::FETCH_ASSOC)['events'];
+        // Total events
+        $result = $this->conn->query("SELECT COUNT(*) AS events FROM events");
+        $totalEvents = $result->fetch_assoc()['events'];
 
         return [
             "totalAdmins" => (int)$totalAdmins,
@@ -27,3 +31,5 @@ class StatusModel {
         ];
     }
 }
+
+?>

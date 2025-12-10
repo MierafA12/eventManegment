@@ -1,76 +1,45 @@
 <?php
+require_once "BaseModel.php";
 
-class AdminModel
-{
-    private $conn;
-    private $table = "users";
-
-    public function __construct($db)
-    {
-        $this->conn = $db;
+class AdminModel extends BaseModel {
+    public function __construct(mysqli $conn) {
+        parent::__construct($conn, "users"); // ✅ pass mysqli connection first
     }
 
-    // Get all admins
-    public function getAdmins()
-    {
-        $sql = "SELECT id, username, full_name, email, status 
-                FROM {$this->table} 
-                WHERE role = 'admin'";
-        $stmt = $this->conn->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Example: get all admins
+    public function getAdmins(): array {
+        $result = $this->conn->query("SELECT * FROM users WHERE role='admin'");
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Create new admin
-    public function createAdmin($full_name, $username, $email, $password)
-    {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-        $sql = "INSERT INTO {$this->table} 
-                (full_name, username, email, password, role, status, created_at)
-                VALUES (:full_name, :username, :email, :password, 'admin', 'active', NOW())";
-
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            ":full_name" => $full_name,
-            ":username"  => $username,
-            ":email"     => $email,
-            ":password"  => $hashedPassword
+    public function createAdmin($full_name, $username, $email, $password, $status = 'active'): bool {
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        return $this->insert([
+            "full_name" => $full_name,
+            "username" => $username,
+            "email" => $email,
+            "password" => $hashed,
+            "role" => "admin",
+            "status" => $status
         ]);
     }
 
-    // Update admin info
-    public function updateAdmin($id, $full_name, $username, $email, $status)
-    {
-        $sql = "UPDATE {$this->table} 
-                SET full_name = :full_name, 
-                    username = :username, 
-                    email = :email, 
-                    status = :status
-                WHERE id = :id";
-
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            ":full_name" => $full_name,
-            ":username"  => $username,
-            ":email"     => $email,
-            ":status"    => $status,
-            ":id"        => $id
-        ]);
+    public function updateAdmin($id, $full_name, $username, $email, $status): bool {
+        $stmt = $this->conn->prepare("UPDATE users SET full_name=?, username=?, email=?, status=? WHERE id=?");
+        $stmt->bind_param("ssssi", $full_name, $username, $email, $status, $id);
+        return $stmt->execute();
     }
 
-    // Toggle status
-    public function updateStatus($id, $status)
-    {
-        $sql = "UPDATE {$this->table} SET status = :status WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([":status" => $status, ":id" => $id]);
+    public function deleteAdmin($id): bool {
+        $stmt = $this->conn->prepare("DELETE FROM users WHERE id=? AND role='admin'");
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
     }
 
-    // Delete admin
-    public function deleteAdmin($id)
-    {
-        $sql = "DELETE FROM {$this->table} WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([":id" => $id]);
+    public function updateStatus($id, $status): bool {
+        $stmt = $this->conn->prepare("UPDATE users SET status=? WHERE id=? AND role='admin'");
+        $stmt->bind_param("si", $status, $id);
+        return $stmt->execute();
     }
 }
+?>

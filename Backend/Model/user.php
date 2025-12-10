@@ -1,31 +1,27 @@
 <?php
-class User {
-    private $conn;
-    private $table = "users";
+require_once "BaseModel.php";
 
-    public function __construct($db) {
-        $this->conn = $db;
+require_once "BaseModel.php";
+
+class UserModel extends BaseModel {
+    public function __construct(mysqli $conn) {
+        parent::__construct($conn, "users"); // ✅ pass mysqli first, then table name
     }
 
-    public function createUser($username, $email, $password, $role = "participant") {
+    public function createUser($username, $email, $password, $role="participant") {
         $hashed = password_hash($password, PASSWORD_DEFAULT);
-
-        $stmt = $this->conn->prepare(
-            "INSERT INTO users (username, email, password, role) 
-             VALUES (:username, :email, :password, :role)"
-        );
-
-        return $stmt->execute([
-            ":username" => $username,
-            ":email" => $email,
-            ":password" => $hashed,
-            ":role" => $role
+        return $this->insert([
+            "username" => $username,
+            "email" => $email,
+            "password" => $hashed,
+            "role" => $role
         ]);
     }
 
     public function getByEmail($email) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
-        $stmt->execute([":email" => $email]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->findBy(["email" => $email]);
     }
 }
+
+
+?>

@@ -39,7 +39,8 @@ $path = strtolower($path);
 $routeKey = "$method $path";
 
 // DB connection
-$db = (new Database())->connect();
+$db = (new Database())->getConnection();
+
 
 // Request body
 $request = file_get_contents("php://input");
