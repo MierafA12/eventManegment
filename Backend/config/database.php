@@ -23,5 +23,6 @@ class Database {
             exit;
         }
         return $this->conn;
-    }
+
+    }  
 }
