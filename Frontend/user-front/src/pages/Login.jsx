@@ -16,32 +16,34 @@ export default function Login() {
   const [isError, setIsError] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    setIsError(false);
+  e.preventDefault();
+  setMessage("");
+  setIsError(false);
 
-    try {
-      const res = await loginUser(email, password);
+  try {
+    const res = await loginUser(email, password); 
 
-      if (res.data.success) {
-        setMessage("Login successful!");
-        setIsError(false);
+    const data = res.data || res;
 
-        navigate("/payment");
-
-      } else {
-        setMessage(res.data.message || "Invalid login credentials");
+    if (data.success) {
+      if (data.user.role !== "participant") {
+        setMessage("use valid email and password .");
         setIsError(true);
+        return;
       }
-
-    } catch (error) {
-      setMessage(error.response?.data?.message || "Server error");
+      navigate("/payment"); 
+    } else {
+      setMessage(data.message || "Invalid login credentials");
       setIsError(true);
     }
 
-    setTimeout(() => setMessage(""), 5000);
-  };
+  } catch (error) {
+    setMessage(error.response?.data?.message || "Server error");
+    setIsError(true);
+  }
 
+  setTimeout(() => setMessage(""), 5000);
+};
   return (
     <MainLayout>
       <div className="min-h-screen bg-lightBg flex items-center justify-center px-4">

@@ -122,9 +122,9 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Full Name */}
               <div className="relative">
-                <label className="block text-secondary font-semibold mb-2">Full Name</label>
+                <label className="block text-primary font-semibold mb-2">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-4 text-primary" size={22} />
+                  <User className="absolute left-4 top-4 text-secondary" size={22} />
                   <input
                     type="text"
                     name="name"
@@ -139,9 +139,9 @@ export default function Register() {
 
               {/* Date of Birth */}
               <div>
-                <label className="block text-secondary font-semibold mb-2">Date of Birth</label>
+                <label className="block text-primary font-semibold mb-2">Date of Birth</label>
                 <div className="relative">
-                  <Calendar className="absolute left-4 top-4 text-primary" size={22} />
+                  <Calendar className="absolute left-4 top-4 text-secondary" size={22} />
                   <input
                     type="date"
                     name="dob"
@@ -155,9 +155,9 @@ export default function Register() {
 
               {/* Phone */}
               <div>
-                <label className="block text-secondary font-semibold mb-2">Phone Number</label>
+                <label className="block text-primary font-semibold mb-2">Phone Number</label>
                 <div className="relative">
-                  <Phone className="absolute left-4 top-4 text-primary" size={22} />
+                  <Phone className="absolute left-4 top-4 text-secondary" size={22} />
                   <input
                     type="tel"
                     name="phone"
@@ -172,9 +172,9 @@ export default function Register() {
 
               {/* Username */}
               <div>
-                <label className="block text-secondary font-semibold mb-2">Username</label>
+                <label className="block text-primary font-semibold mb-2">Username</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-4 text-primary" size={22} />
+                  <User className="absolute left-4 top-4 text-secondary" size={22} />
                   <input
                     type="text"
                     name="username"
@@ -189,9 +189,9 @@ export default function Register() {
 
               {/* Email */}
               <div>
-                <label className="block text-secondary font-semibold mb-2">Email Address</label>
+                <label className="block text-primary font-semibold mb-2">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-4 text-primary" size={22} />
+                  <Mail className="absolute left-4 top-4 text-secondary" size={22} />
                   <input
                     type="email"
                     name="email"
@@ -206,9 +206,9 @@ export default function Register() {
 
               {/* Password */}
               <div>
-                <label className="block text-secondary font-semibold mb-2">Password</label>
+                <label className="block text-primary font-semibold mb-2">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-4 text-primary" size={22} />
+                  <Lock className="absolute left-4 top-4 text-secondary" size={22} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
@@ -221,7 +221,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-4 text-primary hover:text-buttonHover"
+                    className="absolute right-4 top-4 text-secondary hover:text-buttonHover"
                   >
                     {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>
@@ -232,7 +232,7 @@ export default function Register() {
               <div>
                 <label className="block text-secondary font-semibold mb-2">Confirm Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-4 text-primary" size={22} />
+                  <Lock className="absolute left-4 top-4 text-secondary" size={22} />
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     name="confirmPassword"
@@ -249,7 +249,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-4 text-primary hover:text-buttonHover"
+                    className="absolute right-4 top-4 text-secondary hover:text-buttonHover"
                   >
                     {showConfirmPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>

@@ -1,21 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import {Button} from "../components/Button"; // import the reusable button
+import { Button } from "../components/Button"; 
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setUsername] = useState("");
+  // ✅ Correct state names
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const role = await login(email, password); // if username is email, OK
+    // Call login function from context
+    const role = await login(email, password);
 
+    // Navigate based on role
     if (role === "admin") navigate("/admin/AdminDashboard");
     else if (role === "superadmin") navigate("/superAdmin/SadminDashboard");
     else navigate("/404");
@@ -43,53 +46,59 @@ export default function Login() {
         </h1>
 
         <form onSubmit={handleLogin}>
+          {/* Email input */}
           <label className="text-sm tracking-wider">EMAIL</label>
           <input
             type="text"
             className="w-full bg-transparent border-b-2 mb-8 border-secondary outline-none py-2 text-text1"
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)} // ✅ Fixed setter
           />
 
-
+          {/* Password input */}
           <label className="text-sm tracking-wider">PASSWORD</label>
           <div className="relative w-full mb-10">
             <input
-                type={showPassword ? "text" : "password"}
-                className="w-full bg-transparent border-b-2 border-secondary outline-none py-2 pr-10 text-text1"
-                onChange={(e) => setPassword(e.target.value)}
+              type={showPassword ? "text" : "password"}
+              className="w-full bg-transparent border-b-2 border-secondary outline-none py-2 pr-10 text-text1"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            
+
+            {/* Toggle show/hide password */}
             <button
-                type="button"
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 text-secondary"
-                onClick={() => setShowPassword(!showPassword)}
+              type="button"
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 text-secondary"
+              onClick={() => setShowPassword(!showPassword)}
             >
-                {showPassword ? (
+              {showPassword ? (
                 <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                    <path d="M13.875 18.825A10.05 10.05 0 0 1 12 19c-5 0-9-4-9-9 0-1.12.2-2.19.575-3.2M1 1l22 22" />
+                  <path d="M13.875 18.825A10.05 10.05 0 0 1 12 19c-5 0-9-4-9-9 0-1.12.2-2.19.575-3.2M1 1l22 22" />
                 </svg>
-                ) : (
+              ) : (
                 <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
-                )}
+              )}
             </button>
-            </div>
+          </div>
+
+          {/* Login button */}
           <div className="flex justify-end">
             <Button type="submit">LOGIN</Button>
           </div>
