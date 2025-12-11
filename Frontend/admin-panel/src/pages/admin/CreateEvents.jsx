@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { Button1 } from "../../components/Button";
 
@@ -18,13 +18,42 @@ export default function CreateEvent() {
 
   const [preview, setPreview] = useState(null);
 
+  const fileInputRef = useRef(null); // <-- Add ref for file input
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Event Created:", form); // later you will connect to backend
+
+    // Simulate successful creation
+    console.log("Event Created:", form);
+
+    // Show alert message
+    alert("Event created successfully!");
+
+    // Clear the form
+    setForm({
+      title: "",
+      description: "",
+      category: "",
+      eventType: "",
+      location: "",
+      eventLink: "",
+      datetime: "",
+      fee: "",
+      capacity: "",
+      image: null,
+    });
+
+    // Clear image preview
+    setPreview(null);
+
+    // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
   };
 
   return (
@@ -91,7 +120,7 @@ export default function CreateEvent() {
             </select>
           </div>
 
-          {/* Location (Shown only if Physical) */}
+          {/* Location */}
           {form.eventType === "Physical" && (
             <div>
               <label className="block text-primary font-medium mb-1 dark:text-text1">
@@ -108,7 +137,8 @@ export default function CreateEvent() {
               />
             </div>
           )}
-{/* Online Link (Shown only if Online) */}
+
+          {/* Online Link */}
           {form.eventType === "Online" && (
             <div>
               <label className="block text-primary font-medium mb-1 dark:text-text1">
@@ -174,35 +204,34 @@ export default function CreateEvent() {
             />
           </div>
 
-     {/* Capacity (shown only if Physical) */}
-{form.eventType === "Physical" && (
-  <div>
-    <label className="block text-primary font-medium mb-1 dark:text-text1">
-      Capacity
-    </label>
-    <input
-      type="number"
-      name="capacity"
-      placeholder="Enter capacity"
-      value={form.capacity}
-      onChange={handleChange}
-      min="1"
-      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
-      required={form.eventType === "Physical"}
-    />
-  </div>
-)}
-
+          {/* Capacity */}
+          {form.eventType === "Physical" && (
+            <div>
+              <label className="block text-primary font-medium mb-1 dark:text-text1">
+                Capacity
+              </label>
+              <input
+                type="number"
+                name="capacity"
+                placeholder="Enter capacity"
+                value={form.capacity}
+                onChange={handleChange}
+                min="1"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+                required={form.eventType === "Physical"}
+              />
+            </div>
+          )}
 
           {/* Event Image */}
           <div>
             <label className="block text-primary font-medium mb-1 dark:text-text1">
               Event Image
             </label>
-
             <input
               type="file"
               accept="image/*"
+              ref={fileInputRef} // <-- attach ref
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (file) {
