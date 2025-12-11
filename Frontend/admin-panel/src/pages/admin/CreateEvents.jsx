@@ -7,11 +7,16 @@ export default function CreateEvent() {
     title: "",
     description: "",
     category: "",
+    eventType: "",
     location: "",
+    eventLink: "",
     datetime: "",
     fee: "",
     capacity: "",
+    image: null,
   });
+
+  const [preview, setPreview] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,7 +24,7 @@ export default function CreateEvent() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Event Created:", form); // will later connect to PHP backend
+    console.log("Event Created:", form); // later you will connect to backend
   };
 
   return (
@@ -46,6 +51,7 @@ export default function CreateEvent() {
               required
             />
           </div>
+
           {/* Category */}
           <div>
             <label className="block text-primary font-medium mb-1 dark:text-text1">
@@ -66,22 +72,61 @@ export default function CreateEvent() {
               <option value="Culture">Culture</option>
             </select>
           </div>
-          {/* Location */}
+
+          {/* Event Type */}
           <div>
             <label className="block text-primary font-medium mb-1 dark:text-text1">
-              Location
+              Event Type
             </label>
-            <input
-              type="text"
-              name="location"
-              placeholder="Enter event location"
-              value={form.location}
+            <select
+              name="eventType"
+              value={form.eventType}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
               required
-            />
+            >
+              <option value="">Select event type</option>
+              <option value="Physical">Physical</option>
+              <option value="Online">Online</option>
+            </select>
           </div>
-             {/* Description */}
+
+          {/* Location (Shown only if Physical) */}
+          {form.eventType === "Physical" && (
+            <div>
+              <label className="block text-primary font-medium mb-1 dark:text-text1">
+                Location
+              </label>
+              <input
+                type="text"
+                name="location"
+                placeholder="Enter event location"
+                value={form.location}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+                required
+              />
+            </div>
+          )}
+{/* Online Link (Shown only if Online) */}
+          {form.eventType === "Online" && (
+            <div>
+              <label className="block text-primary font-medium mb-1 dark:text-text1">
+                Online Event Link (Zoom / Google Meet / etc.)
+              </label>
+              <input
+                type="url"
+                name="eventLink"
+                placeholder="Enter online meeting link"
+                value={form.eventLink}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+                required
+              />
+            </div>
+          )}
+
+          {/* Description */}
           <div>
             <label className="block text-primary font-medium mb-1 dark:text-text1">
               Description
@@ -96,6 +141,7 @@ export default function CreateEvent() {
               required
             ></textarea>
           </div>
+
           {/* Date & Time */}
           <div>
             <label className="block text-primary font-medium mb-1 dark:text-text1">
@@ -128,21 +174,53 @@ export default function CreateEvent() {
             />
           </div>
 
-          {/* Capacity */}
+     {/* Capacity (shown only if Physical) */}
+{form.eventType === "Physical" && (
+  <div>
+    <label className="block text-primary font-medium mb-1 dark:text-text1">
+      Capacity
+    </label>
+    <input
+      type="number"
+      name="capacity"
+      placeholder="Enter capacity"
+      value={form.capacity}
+      onChange={handleChange}
+      min="1"
+      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+      required={form.eventType === "Physical"}
+    />
+  </div>
+)}
+
+
+          {/* Event Image */}
           <div>
             <label className="block text-primary font-medium mb-1 dark:text-text1">
-              Capacity
+              Event Image
             </label>
+
             <input
-              type="number"
-              name="capacity"
-              placeholder="Enter capacity"
-              value={form.capacity}
-              onChange={handleChange}
-              min="1"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
-              required
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setForm({ ...form, image: file });
+                  setPreview(URL.createObjectURL(file));
+                }
+              }}
+              className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-secondary focus:outline-none"
             />
+
+            {/* Image Preview */}
+            {preview && (
+              <img
+                src={preview}
+                alt="Event Preview"
+                className="mt-3 w-40 h-28 object-cover rounded-lg shadow"
+              />
+            )}
           </div>
 
           {/* Submit Button */}
@@ -154,5 +232,3 @@ export default function CreateEvent() {
     </AdminLayout>
   );
 }
-
-
