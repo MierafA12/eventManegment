@@ -31,7 +31,7 @@ export default function Login() {
         setIsError(true);
         return;
       }
-      navigate("/payment"); 
+      navigate("/events"); 
     } else {
       setMessage(data.message || "Invalid login credentials");
       setIsError(true);

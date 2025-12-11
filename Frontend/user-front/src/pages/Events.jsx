@@ -1,8 +1,15 @@
-import { useState } from "react";
-import MainLayout from "../layout/mainLayout";
+import { useState, useContext } from "react";
+import MainLayout from "../layout/mainLayout.jsx"; // public layout
+import Header2 from "../component/Header2.jsx"; // private header
+import Notification from "../component/messages.jsx";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/userContext.jsx";
 
 export default function Events() {
+  const { user } = useContext(UserContext);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [notification, setNotification] = useState(null);
+  const navigate = useNavigate();
 
   const events = [
     { id: 1, title: "Addis Tech Summit 2025", date: "March 15, 2025", location: "Millennium Hall", category: "tech", image: "/images/tech-conference.jpg" },
@@ -13,97 +20,110 @@ export default function Events() {
     { id: 6, title: "Startup Pitch Night", date: "August 22, 2025", location: "Iceaddis Hub", category: "tech", image: "/images/startup.jpg" },
   ];
 
-  const filteredEvents =
-    selectedCategory === "all"
-      ? events
-      : events.filter((event) => event.category === selectedCategory);
+  const filteredEvents = selectedCategory === "all"
+    ? events
+    : events.filter(e => e.category === selectedCategory);
 
-  return (
-    <MainLayout activePage="/events">
+  const handleViewDetails = (id) => {
+    if (!user) {
+      setNotification({ type: "error", message: "Please login first!" });
+      setTimeout(() => {
+        setNotification(null);
+        navigate("/login", { state: { from: `/events/${id}` } });
+      }, 1500);
+    } else {
+      navigate(`/events/${id}`);
+    }
+  };
 
-      {/* Events Hero */}
-      <section className="pt-32 pb-20 bg-lightBg">
-        <div className="container mx-auto px-4">
+  // Always render the events section
+  const EventsContent = (
+    <section className="pt-32 pb-20 bg-lightBg">
+      <div className="container mx-auto px-4">
+        <h1 className="text-5xl md:text-6xl font-bold text-center text-primary mb-8">
+          Upcoming Events
+        </h1>
+        <p className="text-center text-xl text-secondary mb-12">
+          Discover amazing events happening across Ethiopia
+        </p>
 
-          <h1 className="text-5xl md:text-6xl font-bold text-center text-primary mb-8">
-            Upcoming Events
-          </h1>
+        {/* Category Selector */}
+        <div className="max-w-md mx-auto mb-16">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full px-6 py-4 rounded-full border-2 border-secondary bg-bg text-primary font-medium focus:outline-none focus:border-primary transition shadow-md"
+          >
+            <option value="all">All Categories</option>
+            <option value="tech">Technology</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="Health">Health</option>
+            <option value="sports">Sports</option>
+            <option value="Art">Art</option>
+          </select>
+        </div>
 
-          <p className="text-center text-xl text-secondary mb-12">
-            Discover amazing events happening across Ethiopia
-          </p>
-
-          {/* Category Filter */}
-          <div className="max-w-md mx-auto mb-16">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-6 py-4 rounded-full border-2 border-secondary bg-bg text-primary font-medium focus:outline-none focus:border-primary transition shadow-md"
+        {/* Event Cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {filteredEvents.map((event) => (
+            <div
+              key={event.id}
+              className="bg-bg rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-3 duration-300"
             >
-              <option value="all">All Categories</option>
-              <option value="tech">Technology</option>
-              <option value="entertainment">Entertainment</option>
-              <option value="Health">Health</option>
-              <option value="sports">Sports</option>
-              <option value="Art">Art</option>
-            </select>
-          </div>
+              <div className="h-56 bg-secondary relative">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-4 right-4 bg-primary text-text1 px-4 py-2 rounded-full text-sm font-bold">
+                  {event.category.toUpperCase()}
+                </div>
+              </div>
 
-          {/* Events Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-bg rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-3 duration-300"
-                >
-                  <div className="h-56 bg-secondary relative">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="w-full h-full object-cover"
-                    />
-
-                    <div className="absolute top-4 right-4 bg-primary text-text1 px-4 py-2 rounded-full text-sm font-bold">
-                      {event.category.toUpperCase()}
-                    </div>
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-primary mb-3">{event.title}</h3>
+                <div className="space-y-3 text-secondary">
+                  <div className="flex items-center">
+                    <i className="fas fa-calendar-alt mr-3 text-primary"></i>
+                    <span>{event.date}</span>
                   </div>
-
-                  <div className="p-6">
-                    <h3 className="text-2xl font-bold text-primary mb-3">
-                      {event.title}
-                    </h3>
-
-                    <div className="space-y-3 text-secondary">
-                      <div className="flex items-center">
-                        <i className="fas fa-calendar-alt mr-3 text-primary"></i>
-                        <span>{event.date}</span>
-                      </div>
-
-                      <div className="flex items-center">
-                        <i className="fas fa-map-marker-alt mr-3 text-primary"></i>
-                        <span>{event.location}</span>
-                      </div>
-                    </div>
-
-                    <button className="mt-6 w-full bg-primary text-text1 py-3 rounded-full font-semibold hover:bg-buttonHover transition">
-                      View Details
-                    </button>
-
+                  <div className="flex items-center">
+                    <i className="fas fa-map-marker-alt mr-3 text-primary"></i>
+                    <span>{event.location}</span>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-20">
-                <p className="text-2xl text-secondary">
-                  No events found in this category yet.
-                </p>
+                <button
+                  onClick={() => handleViewDetails(event.id)}
+                  className="mt-6 w-full bg-primary text-text1 py-3 rounded-full font-semibold hover:bg-buttonHover transition"
+                >
+                  View Details
+                </button>
               </div>
-            )}
-          </div>
-
+            </div>
+          ))}
         </div>
-      </section>
-    </MainLayout>
+
+        {notification && (
+          <Notification
+            type={notification.type}
+            message={notification.message}
+            onClose={() => setNotification(null)}
+          />
+        )}
+      </div>
+    </section>
   );
+
+  // Render public layout or private layout
+  if (user) {
+    return (
+      <div>
+        <Header2 /> {/* private header */}
+        {EventsContent}
+      </div>
+    );
+  } else {
+    return <MainLayout activePage="/events">{EventsContent}</MainLayout>; // public layout
+  }
 }

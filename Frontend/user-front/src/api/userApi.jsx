@@ -8,7 +8,6 @@ const API = axios.create({
   },
 });
 
-// ✅ REGISTER USER API
 export const registerUser = (user) =>
   API.post("/signup", {
     name: user.name,

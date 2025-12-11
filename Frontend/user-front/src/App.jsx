@@ -1,5 +1,7 @@
 // src/App.jsx
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from "react-router-dom";
+import { UserProvider } from "./context/userContext.jsx";
+
 import Home from './pages/Home';
 import About from './pages/About';
 import Events from './pages/Events';
@@ -7,20 +9,30 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Payment from './pages/Payment';
+import Profile from './pages/profile.jsx';
+import EventDetail from './pages/eventDetail.jsx';
 import NotFound from '../../admin-panel/src/pages/404.jsx';
-
+import ProtectedRoute from './component/protectedRoute.jsx';
+import EditProfile from './pages/editProfile.jsx';
+import EventRegister from "./pages/eventRegister.jsx";
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/events" element={<Events />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/payment" element={<Payment />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <UserProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/events/:id" element={<ProtectedRoute><EventDetail /></ProtectedRoute>} />
+        <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/editProfile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+        <Route path="/events/:id/register" element={<ProtectedRoute><EventRegister /></ProtectedRoute>} />  //
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </UserProvider>
   );
 }
 
