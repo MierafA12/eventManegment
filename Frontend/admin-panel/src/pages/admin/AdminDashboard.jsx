@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import {
   LineChart,
@@ -9,26 +10,42 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-
 import StatusCard from "../../components/statusCards";
 
 export default function AdminDashboard() {
-  // Example statistics
-  const stats = {
-    upcomingEvents: 3,
-    pastEvents: 6,
-    totalEvents: 9,
-  };
+  // State for stats
+  const [stats, setStats] = useState({
+    upcomingEvents: 0,
+    pastEvents: 0,
+    totalEvents: 0,
+  });
 
-  // Example line chart data (replace with API later)
-  const eventData = [
-    { month: "Jan", events: 1 },
-    { month: "Feb", events: 0 },
-    { month: "Mar", events: 2 },
-    { month: "Apr", events: 1 },
-    { month: "May", events: 1 },
-    { month: "Jun", events: 1 },
-  ];
+  // State for chart data
+  const [eventData, setEventData] = useState([]);
+
+  // Loading states
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [loadingChart, setLoadingChart] = useState(true);
+
+  useEffect(() => {
+    // Fetch dashboard stats
+    fetch("http://localhost/EthioEvents/Backend/public/index.php?action=getStats")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setStats(data.stats);
+      })
+      .catch(err => console.error("Stats fetch error:", err))
+      .finally(() => setLoadingStats(false));
+
+    // Fetch event trend chart
+    fetch("http://localhost/EthioEvents/Backend/public/index.php?action=getTrend")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setEventData(data.eventData);
+      })
+      .catch(err => console.error("Chart fetch error:", err))
+      .finally(() => setLoadingChart(false));
+  }, []);
 
   return (
     <AdminLayout>
@@ -38,23 +55,27 @@ export default function AdminDashboard() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-        <StatusCard
-          title="Total Events"
-          value={stats.totalEvents}
-          borderColor="border-secondary"
-        />
-
-        <StatusCard
-          title="Upcoming Events"
-          value={stats.upcomingEvents}
-          borderColor="border-success"
-        />
-
-        <StatusCard
-          title="Past Events"
-          value={stats.pastEvents}
-          borderColor="border-error"
-        />
+        {loadingStats ? (
+          <p>Loading stats...</p>
+        ) : (
+          <>
+            <StatusCard
+              title="Total Events"
+              value={stats.totalEvents}
+              borderColor="border-secondary"
+            />
+            <StatusCard
+              title="Upcoming Events"
+              value={stats.upcomingEvents}
+              borderColor="border-success"
+            />
+            <StatusCard
+              title="Past Events"
+              value={stats.pastEvents}
+              borderColor="border-error"
+            />
+          </>
+        )}
       </div>
 
       {/* Line Chart */}
@@ -63,26 +84,28 @@ export default function AdminDashboard() {
           Events Trend Overview
         </h2>
 
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={eventData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-
-            <Line
-              type="monotone"
-              dataKey="events"
-              stroke="#4b2e1f"
-              strokeWidth={3}
-              dot={{ r: 5 }}
-              activeDot={{ r: 7 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {loadingChart ? (
+          <p>Loading chart...</p>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={eventData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="events"
+                stroke="#4b2e1f"
+                strokeWidth={3}
+                dot={{ r: 5 }}
+                activeDot={{ r: 7 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </AdminLayout>
   );
 }
-
