@@ -7,9 +7,9 @@ class ParticipantController {
     private $userModel;
     private $participantModel;
 
-    public function __construct($db) {
-        $this->userModel = new UserModel($db);        // ✅ Use UserModel
-        $this->participantModel = new ParticipantModel($db); // ✅ Use ParticipantModel
+    public function __construct(UserModel $userModel, ParticipantModel $participantModel) {
+        $this->userModel = $userModel;
+        $this->participantModel = $participantModel;
     }
 
     public function signup($request) {

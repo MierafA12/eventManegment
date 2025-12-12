@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Button } from "../components/Button"; 
+import { Button } from "../components/Button";
 
 export default function Login() {
   const { login } = useAuth();
@@ -20,7 +20,7 @@ export default function Login() {
 
     // Navigate based on role
     if (role === "admin") navigate("/admin/AdminDashboard");
-    else if (role === "superadmin") navigate("/superAdmin/SadminDashboard");
+    else if (role === "super_admin") navigate("/superAdmin/SadminDashboard");
     else navigate("/404");
   };
 

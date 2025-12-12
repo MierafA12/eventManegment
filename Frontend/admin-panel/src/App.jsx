@@ -19,11 +19,11 @@ import NotFound from "./pages/404";
 export default function App() {
   return (
     <ThemeProvider>
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
 
-          <Route path="/" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route
               path="/admin/CreateEvents"
               element={
@@ -33,75 +33,76 @@ export default function App() {
               }
             />
 
-           <Route
-            path="/superadmin/SadminDashboard"
-            element={
-              <ProtectedRoute allowedRoles={["superadmin"]}>
-                <SadminDashboard />
-              </ProtectedRoute>
-            }
-          />
-           <Route
-            path="/superadmin/CreateAdmin"
-            element={
-              <ProtectedRoute allowedRoles={["superadmin"]}>
-                <CreateAdmin />
-              </ProtectedRoute>
-            }
-          />
-           <Route
-            path="/superadmin/ManageAdmin"
-            element={
-              <ProtectedRoute allowedRoles={["superadmin"]}>
-                <ManageAdmin />
-              </ProtectedRoute>
-            }
-          />
             <Route
-            path="/admin/AdminDashboard"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/ManageEvents"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ManageEvents />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/UserRegistration"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <UserRegistration />
-              </ProtectedRoute>
-            }
-          />
-         <Route
-            path="/superadmin/SettingsPage"
-            element={
-              <ProtectedRoute allowedRoles={["superadmin"]}>
-                <SettingsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/SettingsPage"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <SettingsPage />
-              </ProtectedRoute>
-            }
-          />
-           <Route path="*" element={<NotFound />} />
+              path="/superAdmin/SadminDashboard"
+              element={
+                <ProtectedRoute allowedRoles={["super_admin"]}>
+                  <SadminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/superAdmin/CreateAdmin"
+              element={
+                <ProtectedRoute allowedRoles={["super_admin"]}>
+                  <CreateAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/superAdmin/ManageAdmin"
+              element={
+                <ProtectedRoute allowedRoles={["super_admin"]}>
+                  <ManageAdmin />
+                </ProtectedRoute>
+              }
+            />
 
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route
+              path="/admin/AdminDashboard"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/ManageEvents"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <ManageEvents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/UserRegistration"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <UserRegistration />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/superAdmin/SettingsPage"
+              element={
+                <ProtectedRoute allowedRoles={["super_admin"]}>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/SettingsPage"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

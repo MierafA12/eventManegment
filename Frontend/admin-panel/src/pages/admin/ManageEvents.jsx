@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import Search from "../../components/SearchE";
-import Filter from "../../components/FilterE"; 
+import Filter from "../../components/FilterE";
 import EventRow from "../../components/EventRow";
 import EventDeleteModal from "../../components/EventDelete";
 import EventEditModal from "./EditEvents";
@@ -11,80 +11,106 @@ export default function ManageEvents() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
 
   // ------------------ Fetch Events ------------------
-  useEffect(() => {
-    fetch("http://localhost/EthioEvents/Backend/public/index.php?action=getAll")
+  const fetchEvents = () => {
+    setLoading(true);
+
+    // Build query params
+    let apiUrl = "http://localhost/EthioEvents/Backend/Controller/EventController.php?action=getAll";
+
+    // Use searchAndFilter if there are filters or search
+    if (search || filterType !== "all" || categoryFilter !== "all") {
+      apiUrl = "http://localhost/EthioEvents/Backend/Controller/EventController.php?action=searchAndFilter";
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (filterType !== "all") params.append('status', filterType);
+      if (categoryFilter !== "all") params.append('category', categoryFilter);
+      apiUrl += '&' + params.toString();
+    }
+
+    fetch(apiUrl)
       .then(res => res.json())
       .then(data => {
-        if (data) setEvents(data); // adjust if backend returns {events: [...]}
+        // Handle both direct array and {success, events} format
+        if (data.success && data.events) {
+          setEvents(data.events);
+        } else if (Array.isArray(data)) {
+          setEvents(data);
+        } else {
+          setEvents([]);
+        }
       })
-      .catch(err => console.error("Error fetching events:", err))
+      .catch(err => {
+        console.error("Error fetching events:", err);
+        setEvents([]);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  // ------------------ Filter + Search ------------------
-  const filtered = events.filter((event) => {
-    const today = new Date();
-    const eventDate = new Date(event.date);
-
-    // Filter by type
-    let matchesFilter = true;
-    if (filterType === "past") matchesFilter = eventDate < today;
-    if (filterType === "upcoming") matchesFilter = eventDate >= today;
-
-    // Search filter
-    const searchLower = search.toLowerCase();
-    const matchesSearch =
-      event.title.toLowerCase().includes(searchLower) ||
-      event.location.toLowerCase().includes(searchLower) ||
-      event.date.toLowerCase().includes(searchLower);
-
-    return matchesFilter && matchesSearch;
-  });
+  useEffect(() => {
+    fetchEvents();
+  }, [search, filterType, categoryFilter]);
 
   // ------------------ Save Edited Event ------------------
-  const saveUpdated = (updatedEvent) => {
-    fetch("http://localhost/EthioEvents/Backend/public/index.php?action=update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedEvent),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setEvents((prev) =>
-            prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
-          );
-        } else {
-          alert("Failed to update event");
+  const saveUpdated = async (updatedEvent) => {
+    try {
+      const formData = new FormData();
+      for (const key in updatedEvent) {
+        if (updatedEvent[key] !== null && updatedEvent[key] !== undefined) {
+          formData.append(key, updatedEvent[key]);
         }
+      }
+
+      const res = await fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=update", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Event updated successfully!");
+        fetchEvents(); // Refresh the list
         setEditTarget(null);
-      })
-      .catch(err => console.error("Error updating event:", err));
+      } else {
+        alert("Failed to update event: " + (data.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Error updating event:", err);
+      alert("Error updating event");
+    }
   };
 
   // ------------------ Delete Event ------------------
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!deleteTarget) return;
 
-    fetch("http://localhost/EthioEvents/Backend/public/index.php?action=delete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: deleteTarget.id }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setEvents((prev) => prev.filter((e) => e.id !== deleteTarget.id));
-        } else {
-          alert("Failed to delete event");
-        }
+    try {
+      const formData = new FormData();
+      formData.append('id', deleteTarget.id);
+
+      const res = await fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=delete", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Event deleted successfully!");
+        fetchEvents(); // Refresh the list
         setDeleteTarget(null);
-      })
-      .catch(err => console.error("Error deleting event:", err));
+      } else {
+        alert("Failed to delete event: " + (data.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Error deleting event:", err);
+      alert("Error deleting event");
+    }
   };
 
   // ------------------ Render ------------------
@@ -97,7 +123,21 @@ export default function ManageEvents() {
       {/* Search + Filter */}
       <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
         <Search search={search} setSearch={setSearch} />
-        <Filter value={filterType} onChange={setFilterType} />
+        <div className="flex gap-3">
+          <Filter value={filterType} onChange={setFilterType} />
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none bg-white dark:bg-gray-800 dark:text-white"
+          >
+            <option value="all">All Categories</option>
+            <option value="Conference">Conference</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Music">Music</option>
+            <option value="Technology">Technology</option>
+            <option value="Culture">Culture</option>
+          </select>
+        </div>
       </div>
 
       {/* Table */}
@@ -120,14 +160,14 @@ export default function ManageEvents() {
             </thead>
 
             <tbody className="text-primary dark:text-text1Dark">
-              {filtered.length === 0 ? (
+              {events.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="text-center py-4 text-gray-500 dark:text-gray-400">
                     No events available
                   </td>
                 </tr>
               ) : (
-                filtered.map((event) => (
+                events.map((event) => (
                   <EventRow
                     key={event.id}
                     event={event}

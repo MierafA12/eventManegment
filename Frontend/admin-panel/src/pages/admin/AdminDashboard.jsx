@@ -29,7 +29,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     // Fetch dashboard stats
-    fetch("http://localhost/EthioEvents/Backend/public/index.php?action=getStats")
+    fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=getStats")
       .then(res => res.json())
       .then(data => {
         if (data.success) setStats(data.stats);
@@ -38,7 +38,7 @@ export default function AdminDashboard() {
       .finally(() => setLoadingStats(false));
 
     // Fetch event trend chart
-    fetch("http://localhost/EthioEvents/Backend/public/index.php?action=getTrend")
+    fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=getTrend")
       .then(res => res.json())
       .then(data => {
         if (data.success) setEventData(data.eventData);

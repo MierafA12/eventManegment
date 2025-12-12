@@ -16,14 +16,13 @@ class EventController {
     // Get all events
     public function getAll() {
         $events = $this->eventModel->getEvents();
-        echo json_encode($events);
+        return ['success' => true, 'events' => $events];
     }
 
     // Get single event
-    public function getOne() {
-        $id = $_GET['id'] ?? 0;
+    public function getOne($id) {
         $event = $this->eventModel->getEventById($id);
-        echo json_encode($event);
+        return ['success' => true, 'event' => $event];
     }
 
     // Create event
@@ -55,7 +54,7 @@ class EventController {
             $imagePath
         );
 
-        echo json_encode(['success' => true, 'message' => 'Event created']);
+        return ['success' => true, 'message' => 'Event created'];
     }
 
     // Update event
@@ -87,44 +86,51 @@ class EventController {
             $imagePath
         );
 
-        echo json_encode(['success' => true, 'message' => 'Event updated']);
+        return ['success' => true, 'message' => 'Event updated'];
     }
 
     // Delete event
-    public function delete() {
-        $id = $_POST['id'] ?? 0;
+    public function delete($id) {
         $this->eventModel->deleteEvent($id);
-        echo json_encode(['success' => true, 'message' => 'Event deleted']);
+        return ['success' => true, 'message' => 'Event deleted'];
     }
 
     // ---------------- Dashboard Stats ----------------
 
     public function getDashboardStats() {
         $stats = $this->eventModel->fetchDashboardStats();
-        echo json_encode(['success' => true, 'stats' => $stats]);
+        return ['success' => true, 'stats' => $stats];
     }
 
     public function getEventTrend() {
         $trend = $this->eventModel->fetchEventTrend();
-        echo json_encode(['success' => true, 'eventData' => $trend]);
+        return ['success' => true, 'eventData' => $trend];
+    }
+
+    // ---------------- Search & Filter ----------------
+
+    public function search($query) {
+        $events = $this->eventModel->searchEvents($query);
+        return ['success' => true, 'events' => $events];
+    }
+
+    public function filter($filters) {
+        $events = $this->eventModel->filterEvents($filters);
+        return ['success' => true, 'events' => $events];
+    }
+
+    public function searchAndFilter($search, $filters) {
+        $events = $this->eventModel->searchAndFilter($search, $filters);
+        return ['success' => true, 'events' => $events];
+    }
+
+    public function getCategories() {
+        $categories = $this->eventModel->getEventsByCategory();
+        return ['success' => true, 'categories' => $categories];
     }
 }
 
-// ---------------- Route Handling ----------------
-
-$conn = (new Database())->getConnection();
-$controller = new EventController($conn);
-
-$action = $_GET['action'] ?? '';
-
-switch ($action) {
-    case 'getAll': $controller->getAll(); break;
-    case 'getOne': $controller->getOne(); break;
-    case 'create': $controller->create(); break;
-    case 'update': $controller->update(); break;
-    case 'delete': $controller->delete(); break;
-    case 'getStats': $controller->getDashboardStats(); break;
-    case 'getTrend': $controller->getEventTrend(); break;
-    default: echo json_encode(['success' => false, 'message' => 'Invalid action']);
-}
+// Note: Route handling moved to AdminRoute.php
+// This controller is now instantiated only when needed by the router
 ?>
+

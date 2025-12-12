@@ -46,7 +46,7 @@ export default function CreateEvent() {
         if (form[key] !== null) formData.append(key, form[key]);
       }
 
-      const res = await fetch("http://localhost/EthioEvents/Backend/public/index.php?action=create", {
+      const res = await fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=create", {
         method: "POST",
         body: formData,
       });
