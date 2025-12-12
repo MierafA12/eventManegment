@@ -20,21 +20,26 @@ CREATE TABLE participants (
 );
 
 -- 3. Events Table
+DROP TABLE IF EXISTS events;
 CREATE TABLE events (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    category VARCHAR(100) NOT NULL,
-    location VARCHAR(255),
-    date DATE,
-    time TIME,
+
+    title VARCHAR(255) NOT NULL,
     description TEXT,
-    price DECIMAL(10,2),
-    capacity INT,
-    created_by INT NOT NULL, -- admin or superadmin who created event
-    FOREIGN KEY (created_by) REFERENCES users(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    category VARCHAR(100) NOT NULL,
+    eventType VARCHAR(100) NOT NULL,
+
+    location VARCHAR(255),
+    eventLink VARCHAR(255),
+
+    datetime DATETIME NOT NULL,
+
+    fee DECIMAL(10,2) DEFAULT 0,
+    capacity INT DEFAULT 0,
+
+    image VARCHAR(255) DEFAULT NULL
 );
+
 
 -- 4. Registrations Table (participants registering for events)
 CREATE TABLE registrations (
