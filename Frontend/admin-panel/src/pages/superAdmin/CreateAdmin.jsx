@@ -14,21 +14,34 @@ export default function CreateAdmin() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(form.email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+
+  if (form.password.length < 8) {
+    alert("Password must be at least 8 characters long.");
+    return;
+  }
+
   try {
     const res = await createAdmin(form);
     if (res.data.success) {
       alert("Admin created successfully!");
-      setForm({ fullName: "", username: "", password: "" }); // Reset form
+      setForm({ fullName: "", username: "", email: "", password: "" }); 
     } else {
       alert(res.data.message);
     }
   } catch (err) {
     console.error(err);
-    alert("Error creating admin.");
+    alert("Error creating admin. Please try again.");
   }
 };
+
 
     return (
     <AdminLayout>
