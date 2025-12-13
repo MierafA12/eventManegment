@@ -3,18 +3,17 @@ require_once "../controller/AuthController.php";
 require_once "../controller/ParticipantController.php";
 require_once "../controller/AdminController.php";
 require_once "../controller/statusController.php";
+require_once "../controller/UserController.php";
 require_once "../Model/user.php";
 require_once "../Model/participant.php";
 require_once "../Model/adminModel.php";
 require_once "../Model/statusModel.php";
 
 $routes = [
-    "POST /signup" => function($db, $request) {
-        $userModel = new UserModel($db);
-        $participantModel = new ParticipantModel($db);
-        $controller = new ParticipantController($userModel, $participantModel);
-        return $controller->signup($request);
-    },
+"POST /signup" => function($db, $request) {
+    $controller = new ParticipantController($db); // pass mysqli only
+    return $controller->signup($request);
+},
 
     "POST /login" => function($db, $request) {
         $userModel = new UserModel($db);
@@ -57,5 +56,10 @@ $routes = [
         $controller = new AdminController($adminModel);
         return $controller->deleteAdmin($request);
     },
+     "GET /profile" => function($db, $request) {
+    $userController = new UserController(new UserModel($db), new ParticipantModel($db));
+    return $userController->getProfile($request);
+},
+
 ];
 ?>

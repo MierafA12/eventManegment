@@ -37,6 +37,8 @@ $path = strtolower($path);
 
 // Route key
 $routeKey = "$method $path";
+session_start();
+
 
 // DB connection
 $db = (new Database())->getConnection();
