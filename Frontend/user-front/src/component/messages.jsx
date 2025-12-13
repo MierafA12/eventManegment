@@ -1,6 +1,6 @@
 import { CheckCircle, XCircle } from "lucide-react";
 
-export default function message({ type, message, onClose }) {
+export default function Message({ type, message, onClose }) {
   const isSuccess = type === "success";
   const bgColor = isSuccess ? "bg-green-500" : "bg-red-500";
 

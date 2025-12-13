@@ -32,33 +32,50 @@ export default function Register() {
     terms: false,
   });
 
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const validatePassword = (password) => {
+    // Minimum 8 characters, at least one letter, one special character
+    return /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
-    if (!passwordMatch) return setPasswordMatch(false);
+    // Front-end validation
+    if (!validateEmail(formData.email)) {
+      return setErrorMessage('Please enter a valid email address.');
+    }
+
+    if (!validatePassword(formData.password)) {
+      return setErrorMessage(
+        'Password must be at least 8 characters and include at least one letter and one special character.'
+      );
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordMatch(false);
+      return setErrorMessage('Passwords do not match.');
+    }
 
     try {
       const payload = {
         name: formData.name,
         username: formData.username,
         dob: formData.dob,
-        phone_number: formData.phone,  // match backend
+        phone_number: formData.phone, // match backend
         email: formData.email,
         password: formData.password,
       };
-
-      console.log("Payload sent to backend:", payload);
 
       const res = await registerUser(payload);
 
       if (res.data.success) {
         setShowSuccess(true);
-
-        // Redirect to login after 2 seconds
         setTimeout(() => {
           setShowSuccess(false);
-          navigate('/login'); // adjust route if needed
+          navigate('/login');
         }, 2000);
 
         setFormData({
@@ -75,23 +92,27 @@ export default function Register() {
         setErrorMessage(res.data.message || 'Registration failed.');
       }
     } catch (err) {
-      setErrorMessage(err.response?.data?.message || 'Something went wrong.');
+      setErrorMessage(err.response?.data?.message || 'Server error. Please try again later.');
     }
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+  const { name, value, type, checked } = e.target;
+  setFormData(prev => ({
+    ...prev,
+    [name]: type === 'checkbox' ? checked : value,
+  }));
 
-    if (name === 'password' || name === 'confirmPassword') {
-      setPasswordMatch(
-        name === 'password' ? value === formData.confirmPassword : formData.password === value
-      );
-    }
-  };
+  // Reset error if user types
+  if (errorMessage) setErrorMessage('');
+
+  if (name === 'password' || name === 'confirmPassword') {
+    setPasswordMatch(
+      name === 'password' ? value === formData.confirmPassword : formData.password === value
+    );
+  }
+};
+
 
   return (
     <MainLayout>
