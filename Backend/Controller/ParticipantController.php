@@ -7,10 +7,10 @@ class ParticipantController {
     private $userModel;
     private $participantModel;
 
-    public function __construct($db) {
-        $this->userModel = new UserModel($db);        // ✅ Use UserModel
-        $this->participantModel = new ParticipantModel($db); // ✅ Use ParticipantModel
-    }
+public function __construct(mysqli $conn) {
+    $this->userModel = new UserModel($conn);
+    $this->participantModel = new ParticipantModel($conn);
+}
 
     public function signup($request) {
         $data = json_decode($request, true);
