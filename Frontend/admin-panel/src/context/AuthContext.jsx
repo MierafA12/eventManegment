@@ -1,30 +1,42 @@
 import { createContext, useContext, useState } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const login = async (username, password) => {
-    /**
-     * TODO: Replace with PHP API
-     * const res = await fetch("http://localhost/api/login.php", {...})
-     * const data = await res.json();
-     * setUser(data)
-     */
+const login = async (username, password) => {
+  try {
+    const { data } = await axios.post(
+      "http://localhost/EthioEvents/Backend/public/login",
+      { username, password },
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" }
+      }
+    );
 
-    // MOCK LOGIN FOR NOW
-    if (username === "admin" && password === "123") {
-      setUser({ username, role: "admin" });
-      return "admin";
-    } else if (username === "super" && password === "123") {
-      setUser({ username, role: "superadmin" });
-      return "superadmin";
-    } else {
-      setUser({ username, role: "user" });
-      return "user";
+    if (!data.success) {
+      alert(data.message || "Invalid username or password");
+      return null;
     }
-  };
+
+    setUser({
+      id: data.user.id,
+      username: data.user.username,
+      role: data.user.role,
+      jwt: data.jwt
+    });
+
+    return data.user.role;
+  } catch (error) {
+    console.log("AXIOS LOGIN ERROR:", error);
+    alert("Server error");
+    return null;
+  }
+};
+
 
   const logout = () => setUser(null);
 
