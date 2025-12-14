@@ -1,7 +1,6 @@
 <?php
 require_once "BaseModel.php";
 
-require_once "BaseModel.php";
 
 class ParticipantModel extends BaseModel {
     public function __construct(mysqli $conn) {

@@ -20,9 +20,12 @@ export const registerUser = (user) =>
 
 // ✅ LOGIN USER API
 export const loginUser = (email, password) =>
-  API.post("/login", {
-    email,
-    password,
+  API.post("/login", { email, password });
+
+// ✅ GET PROFILE API (send JWT)
+export const getProfile = (jwt) =>
+  API.get("/profile", {
+    headers: { Authorization: `Bearer ${jwt}` },
   });
 
 export default API;

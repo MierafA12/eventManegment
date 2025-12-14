@@ -1,15 +1,15 @@
-import { useContext } from "react";
-import { UserContext } from "../context/userContext.jsx";
+import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
 
 export default function ProfileBox({ size = "md" }) {
-  const { user } = useContext(UserContext);
+  const { user } = useAuth(); // ✅ uses updated AuthContext
 
-  const getInitials = (name) => {
-    if (!name) return "U";
-    const parts = name.split(" ");
-    return parts.length === 1
-      ? parts[0][0].toUpperCase()
-      : (parts[0][0] + parts[1][0]).toUpperCase();
+  const getInitials = () => {
+    const name = user?.full_name || user?.username || user?.email;
+    if (!name) return "U"; // fallback only if nothing exists
+
+    const parts = name.split(" ").filter(Boolean); // remove empty strings
+    if (parts.length === 1) return parts[0][0].toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
   const sizeClasses = {
@@ -30,7 +30,7 @@ export default function ProfileBox({ size = "md" }) {
         <div
           className={`${sizeClasses[size]} rounded-full bg-primary text-text1 flex items-center justify-center font-bold border-2 border-primary`}
         >
-          {getInitials(user?.fullname || user?.username)}
+          {getInitials()}
         </div>
       )}
     </div>

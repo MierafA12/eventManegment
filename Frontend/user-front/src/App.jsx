@@ -1,6 +1,7 @@
 // src/App.jsx
 import { Routes, Route } from "react-router-dom";
 import { UserProvider } from "./context/userContext.jsx";
+import { AuthProvider } from "../../admin-panel/src/context/AuthContext.jsx";
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -14,10 +15,11 @@ import EventDetail from './pages/eventDetail.jsx';
 import NotFound from '../../admin-panel/src/pages/404.jsx';
 import ProtectedRoute from './component/protectedRoute.jsx';
 import EditProfile from './pages/editProfile.jsx';
-import EventRegister from "./pages/eventRegister.jsx";
+import EventRegister from "./pages/EventRegiatration.jsx";
 function App() {
   return (
     <UserProvider>
+      <AuthProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -25,14 +27,16 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/events/:id" element={<ProtectedRoute><EventDetail /></ProtectedRoute>} />
+        <Route path="/events/:id" element={<EventDetail />} />
         <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/editProfile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
-        <Route path="/events/:id/register" element={<ProtectedRoute><EventRegister /></ProtectedRoute>} />  //
+         <Route path="/events/:id/register" element={<ProtectedRoute><EventRegister /></ProtectedRoute>} /> 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </AuthProvider>
     </UserProvider>
+
   );
 }
 

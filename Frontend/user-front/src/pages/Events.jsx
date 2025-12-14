@@ -1,12 +1,11 @@
-import { useState, useContext } from "react";
-import MainLayout from "../layout/mainLayout.jsx"; // public layout
-import Header2 from "../component/Header2.jsx"; // private header
+import { useState } from "react";
+import MainLayout from "../layout/mainLayout.jsx";
 import Notification from "../component/messages.jsx";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/userContext.jsx";
+import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
 
 export default function Events() {
-  const { user } = useContext(UserContext);
+  const { user } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
@@ -22,21 +21,27 @@ export default function Events() {
 
   const filteredEvents = selectedCategory === "all"
     ? events
-    : events.filter(e => e.category === selectedCategory);
+    : events.filter((e) => e.category === selectedCategory);
 
+  // View details WITHOUT login
   const handleViewDetails = (id) => {
-    if (!user) {
-      setNotification({ type: "error", message: "Please login first!" });
-      setTimeout(() => {
-        setNotification(null);
-        navigate("/login", { state: { from: `/events/${id}` } });
-      }, 1500);
-    } else {
-      navigate(`/events/${id}`);
-    }
+    navigate(`/events/${id}`);
   };
 
-  // Always render the events section
+  // Register REQUIRES login
+ const handleRegister = (id) => {
+  if (!user) {
+    setNotification({ type: "error", message: "Please login to register!" });
+    setTimeout(() => {
+      setNotification(null);
+      // pass the target page in state
+      navigate("/login", { state: { from: `/events/${id}/register` } });
+    }, 1500);
+  } else {
+    navigate(`/events/${id}/register`);
+  }
+};
+
   const EventsContent = (
     <section className="pt-32 pb-20 bg-lightBg">
       <div className="container mx-auto px-4">
@@ -70,7 +75,7 @@ export default function Events() {
               key={event.id}
               className="bg-bg rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-3 duration-300"
             >
-              <div className="h-56 bg-secondary relative">
+              <div className="h-56 relative">
                 <img
                   src={event.image}
                   alt={event.title}
@@ -82,7 +87,10 @@ export default function Events() {
               </div>
 
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-primary mb-3">{event.title}</h3>
+                <h3 className="text-2xl font-bold text-primary mb-3">
+                  {event.title}
+                </h3>
+
                 <div className="space-y-3 text-secondary">
                   <div className="flex items-center">
                     <i className="fas fa-calendar-alt mr-3 text-primary"></i>
@@ -93,12 +101,23 @@ export default function Events() {
                     <span>{event.location}</span>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleViewDetails(event.id)}
-                  className="mt-6 w-full bg-primary text-text1 py-3 rounded-full font-semibold hover:bg-buttonHover transition"
-                >
-                  View Details
-                </button>
+
+                {/* Buttons */}
+                <div className="grid grid-cols-2 gap-3 mt-6">
+                  <button
+                    onClick={() => handleViewDetails(event.id)}
+                    className="w-full bg-primary text-text1 py-3 rounded-full font-semibold hover:bg-buttonHover transition"
+                  >
+                    View Details
+                  </button>
+
+                  <button
+                    onClick={() => handleRegister(event.id)}
+                    className="w-full bg-green-600 text-text1 py-3 rounded-full font-semibold hover:bg-green-700 transition"
+                  >
+                    Register
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -115,15 +134,5 @@ export default function Events() {
     </section>
   );
 
-  // Render public layout or private layout
-  if (user) {
-    return (
-      <div>
-        <Header2 /> {/* private header */}
-        {EventsContent}
-      </div>
-    );
-  } else {
-    return <MainLayout activePage="/events">{EventsContent}</MainLayout>; // public layout
-  }
+  return <MainLayout activePage="/events">{EventsContent}</MainLayout>;
 }

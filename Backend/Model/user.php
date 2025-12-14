@@ -21,6 +21,10 @@ class UserModel extends BaseModel {
     public function getByEmail($email) {
         return $this->findBy(["email" => $email]);
     }
+   public function getUserById($id) {
+    $rows = $this->select(["id", "full_name", "username", "email", "role"], ["id" => $id]);
+    return $rows ? $rows[0] : null; 
+}
 }
 
 

@@ -2,7 +2,7 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 
 export default function AdminRow({ admin, onToggleStatus, onDelete, onEdit }) {
   return (
-    <tr className="border-b hover:bg-lightBg dark:hover:bg-primary">
+    <tr className="border-b hover:bg-lightBg dark:hover:bg-activeBg">
       <td className="px-4 py-3">{admin.full_name}</td>
       <td className="px-4 py-3">{admin.username}</td>
 

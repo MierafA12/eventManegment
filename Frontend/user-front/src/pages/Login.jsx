@@ -1,49 +1,46 @@
-// src/pages/Login.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import MainLayout from '../layout/mainLayout';
-import { loginUser } from "../api/userApi";
+import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
+import { useLocation } from "react-router-dom";
 
 export default function Login() {
+  const { login } = useAuth();
   const navigate = useNavigate();
+   const location = useLocation();
+
+  const redirectPath = location.state?.from || "/events";
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+   const [remember, setRemember] = useState(false);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMessage("");
-  setIsError(false);
+    e.preventDefault();
+    setMessage("");
+    setIsError(false);
 
-  try {
-    const res = await loginUser(email, password); 
+    const role = await login(email, password);
 
-    const data = res.data || res;
-
-    if (data.success) {
-      if (data.user.role !== "participant") {
-        setMessage("use valid email and password .");
-        setIsError(true);
-        return;
-      }
-      navigate("/events"); 
-    } else {
-      setMessage(data.message || "Invalid login credentials");
+    if (!role) {
+      setMessage("Invalid email or password");
       setIsError(true);
+      return;
     }
 
-  } catch (error) {
-    setMessage(error.response?.data?.message || "Server error");
-    setIsError(true);
-  }
+    if (role !== "participant") {
+      setMessage("Use valid email & password.");
+      setIsError(true);
+      return;
+    }
 
-  setTimeout(() => setMessage(""), 5000);
-};
+    // redirect to the original page if exists
+    navigate(redirectPath);
+  };
   return (
     <MainLayout>
       <div className="min-h-screen bg-lightBg flex items-center justify-center px-4">
