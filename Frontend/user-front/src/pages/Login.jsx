@@ -24,22 +24,22 @@ export default function Login() {
     setMessage("");
     setIsError(false);
 
-    const role = await login(email, password);
+    const result = await login(email, password);
 
-    if (!role) {
-      setMessage("Invalid email or password");
-      setIsError(true);
-      return;
-    }
+if (!result.success) {
+  setMessage(result.message);
+  setIsError(true);
+  return;
+}
 
-    if (role !== "participant") {
-      setMessage("Use valid email & password.");
-      setIsError(true);
-      return;
-    }
+if (result.user.role !== "participant") {
+  setMessage("Only participants can login here.");
+  setIsError(true);
+  return;
+}
 
-    // redirect to the original page if exists
-    navigate(redirectPath);
+// ✅ success → redirect
+navigate(redirectPath);
   };
   return (
     <MainLayout>
