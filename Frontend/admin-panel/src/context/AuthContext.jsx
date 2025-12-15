@@ -12,28 +12,37 @@ const login = async (email, password) => {
       "http://localhost/EthioEvents/Backend/public/login",
       { email, password },
       {
-        withCredentials: true,
         headers: { "Content-Type": "application/json" }
       }
     );
 
+    // success response (200)
     if (!data.success) {
-      alert(data.message || "Invalid email or password");
-      return null;
+      return data;
     }
 
     setUser({
       id: data.user.id,
       email: data.user.email,
       role: data.user.role,
+      status: data.user.status,
       jwt: data.jwt
     });
 
-    return data.user.role;
+    return data;
+
   } catch (error) {
-    console.log("AXIOS LOGIN ERROR:", error);
-    alert("Server error");
-    return null;
+    // ✅ IMPORTANT PART
+    if (error.response && error.response.data) {
+      // 401, 403, 400 messages from backend
+      return error.response.data;
+    }
+
+    // network / server down
+    return {
+      success: false,
+      message: "Server error. Please try again later."
+    };
   }
 };
 
