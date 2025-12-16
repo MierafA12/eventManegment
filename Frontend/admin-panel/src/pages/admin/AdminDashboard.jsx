@@ -11,6 +11,7 @@ import {
   Legend,
 } from "recharts";
 import StatusCard from "../../components/statusCards";
+import API from "../../api/adminApi";
 
 export default function AdminDashboard() {
   // State for stats
@@ -29,18 +30,19 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     // Fetch dashboard stats
-    fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=getStats")
-      .then(res => res.json())
-      .then(data => {
+    // Fetch dashboard stats
+    API.get("/admin/dashboard/stats")
+      .then(res => {
+        const data = res.data;
         if (data.success) setStats(data.stats);
       })
       .catch(err => console.error("Stats fetch error:", err))
       .finally(() => setLoadingStats(false));
 
     // Fetch event trend chart
-    fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=getTrend")
-      .then(res => res.json())
-      .then(data => {
+    API.get("/admin/dashboard/event-trend")
+      .then(res => {
+        const data = res.data;
         if (data.success) setEventData(data.eventData);
       })
       .catch(err => console.error("Chart fetch error:", err))

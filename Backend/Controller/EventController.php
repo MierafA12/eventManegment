@@ -1,4 +1,4 @@
-<?php
+ <?php
 require_once "../Model/eventModel.php";
 require_once "../config/database.php";
 require_once "../Middleware/AuthMiddleware.php";
@@ -133,4 +133,4 @@ class EventController {
 // Note: Route handling moved to AdminRoute.php
 // This controller is now instantiated only when needed by the router
 ?>
-
+ 

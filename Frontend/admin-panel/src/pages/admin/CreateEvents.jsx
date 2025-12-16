@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { Button1 } from "../../components/Button";
+import API from "../../api/adminApi";
 
 export default function CreateEvent() {
   const [form, setForm] = useState({
@@ -46,12 +47,11 @@ export default function CreateEvent() {
         if (form[key] !== null) formData.append(key, form[key]);
       }
 
-      const res = await fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=create", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await API.post("/event/create", formData);
 
-      const data = await res.json();
+      const data = res.data;
+
+
 
       if (data.success) {
         alert("Event created successfully!");

@@ -5,6 +5,7 @@ import Filter from "../../components/FilterE";
 import EventRow from "../../components/EventRow";
 import EventDeleteModal from "../../components/EventDelete";
 import EventEditModal from "./EditEvents";
+import API from "../../api/adminApi";
 
 export default function ManageEvents() {
   const [events, setEvents] = useState([]);
@@ -20,35 +21,48 @@ export default function ManageEvents() {
     setLoading(true);
 
     // Build query params
-    let apiUrl = "http://localhost/EthioEvents/Backend/Controller/EventController.php?action=getAll";
-
     // Use searchAndFilter if there are filters or search
     if (search || filterType !== "all" || categoryFilter !== "all") {
-      apiUrl = "http://localhost/EthioEvents/Backend/Controller/EventController.php?action=searchAndFilter";
-      const params = new URLSearchParams();
-      if (search) params.append('search', search);
-      if (filterType !== "all") params.append('status', filterType);
-      if (categoryFilter !== "all") params.append('category', categoryFilter);
-      apiUrl += '&' + params.toString();
+      const params = {};
+      if (search) params.search = search;
+      if (filterType !== "all") params.status = filterType;
+      if (categoryFilter !== "all") params.category = categoryFilter;
+
+      API.get("/events/search-filter", { params })
+        .then((res) => {
+          const data = res.data;
+          if (data.success && data.events) {
+            setEvents(data.events);
+          } else if (Array.isArray(data)) {
+            setEvents(data);
+          } else {
+            setEvents([]);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching events:", err);
+          setEvents([]);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      API.get("/events")
+        .then((res) => {
+          const data = res.data;
+          if (data.success && data.events) {
+            setEvents(data.events);
+          } else if (Array.isArray(data)) {
+            setEvents(data);
+          } else {
+            setEvents([]);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching events:", err);
+          setEvents([]);
+        })
+        .finally(() => setLoading(false));
     }
 
-    fetch(apiUrl)
-      .then(res => res.json())
-      .then(data => {
-        // Handle both direct array and {success, events} format
-        if (data.success && data.events) {
-          setEvents(data.events);
-        } else if (Array.isArray(data)) {
-          setEvents(data);
-        } else {
-          setEvents([]);
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching events:", err);
-        setEvents([]);
-      })
-      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -65,12 +79,8 @@ export default function ManageEvents() {
         }
       }
 
-      const res = await fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=update", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
+      const res = await API.post("/event/update", formData);
+      const data = res.data;
 
       if (data.success) {
         alert("Event updated successfully!");
@@ -93,12 +103,8 @@ export default function ManageEvents() {
       const formData = new FormData();
       formData.append('id', deleteTarget.id);
 
-      const res = await fetch("http://localhost/EthioEvents/Backend/Controller/EventController.php?action=delete", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
+      const res = await API.post("/event/delete", formData);
+      const data = res.data;
 
       if (data.success) {
         alert("Event deleted successfully!");

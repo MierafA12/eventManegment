@@ -23,13 +23,13 @@ export default function App() {
         <BrowserRouter>
           <Routes>
 
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<AdminDashboard />} />
             <Route
               path="/admin/CreateEvents"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                // <ProtectedRoute allowedRoles={["admin"]}>
                   <CreateEvent />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
 
@@ -58,28 +58,28 @@ export default function App() {
               }
             />
 
-            <Route
+            {/* <Route
               path="/admin/AdminDashboard"
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <AdminDashboard />
                 </ProtectedRoute>
               }
-            />
+            /> */}
             <Route
               path="/admin/ManageEvents"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                // <ProtectedRoute allowedRoles={["admin"]}>
                   <ManageEvents />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route
               path="/admin/UserRegistration"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                // <ProtectedRoute allowedRoles={["admin"]}>
                   <UserRegistration />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route
@@ -93,9 +93,9 @@ export default function App() {
             <Route
               path="/admin/SettingsPage"
               element={
-                <ProtectedRoute allowedRoles={["admin"]}>
+                // <ProtectedRoute allowedRoles={["admin"]}>
                   <SettingsPage />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route path="*" element={<NotFound />} />

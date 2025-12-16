@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 require_once "../Controller/EventController.php";
 
@@ -66,4 +66,4 @@ $routes["POST /event/delete"] = function($db, $request) {
     // Controller reads $_POST['id'] directly
     return $controller->delete($_POST['id'] ?? 0);
 };
-?>
+?> 
