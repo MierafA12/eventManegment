@@ -104,6 +104,7 @@ export default function CreateEvent() {
             />
           </div>
 
+
           {/* Category */}
           <div>
             <label className="block text-primary font-medium mb-1 dark:text-text1">Category</label>
@@ -122,6 +123,8 @@ export default function CreateEvent() {
               <option value="Culture">Culture</option>
             </select>
           </div>
+
+          {/* Event Type */}
 
           {/* Event Type */}
           <div>
@@ -198,6 +201,7 @@ export default function CreateEvent() {
               required
             />
           </div>
+
 
           {/* Date & Time */}
           <div>
