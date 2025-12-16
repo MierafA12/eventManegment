@@ -10,7 +10,7 @@ class EventModel {
     // ---------------- CRUD ----------------
 
     public function getEvents() {
-        $result = $this->conn->query("SELECT * FROM events ORDER BY datetime DESC");
+        $result = $this->conn->query("SELECT * FROM events ORDER BY event_date DESC, event_time DESC");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -22,19 +22,23 @@ class EventModel {
     }
 
     public function createEvent($title, $desc, $category, $eventType, $loc, $eventLink, $datetime, $fee, $capacity, $image = null) {
+        $date = date('Y-m-d', strtotime($datetime));
+        $time = date('H:i:s', strtotime($datetime));
+
         $stmt = $this->conn->prepare("
-            INSERT INTO events(title, description, category, eventType, location, eventLink, datetime, fee, capacity, image)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO events(title, description, category, eventType, location, eventLink, event_date, event_time, fee, capacity, image)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->bind_param(
-            "sssssssdis",
+            "ssssssssdis",
             $title,
             $desc,
             $category,
             $eventType,
             $loc,
             $eventLink,
-            $datetime,
+            $date,
+            $time,
             $fee,
             $capacity,
             $image
@@ -43,20 +47,24 @@ class EventModel {
     }
 
     public function updateEvent($id, $title, $desc, $category, $eventType, $loc, $eventLink, $datetime, $fee, $capacity, $image = null) {
+        $date = date('Y-m-d', strtotime($datetime));
+        $time = date('H:i:s', strtotime($datetime));
+
         $stmt = $this->conn->prepare("
             UPDATE events
-            SET title=?, description=?, category=?, eventType=?, location=?, eventLink=?, datetime=?, fee=?, capacity=?, image=?
+            SET title=?, description=?, category=?, eventType=?, location=?, eventLink=?, event_date=?, event_time=?, fee=?, capacity=?, image=?
             WHERE id=?
         ");
         $stmt->bind_param(
-            "sssssssdisi",
+            "ssssssssdisi",
             $title,
             $desc,
             $category,
             $eventType,
             $loc,
             $eventLink,
-            $datetime,
+            $date,
+            $time,
             $fee,
             $capacity,
             $image,
@@ -75,8 +83,8 @@ class EventModel {
 
     public function fetchDashboardStats() {
         $total = $this->conn->query("SELECT COUNT(*) AS total FROM events")->fetch_assoc()['total'];
-        $upcoming = $this->conn->query("SELECT COUNT(*) AS upcoming FROM events WHERE datetime > NOW()")->fetch_assoc()['upcoming'];
-        $past = $this->conn->query("SELECT COUNT(*) AS past FROM events WHERE datetime <= NOW()")->fetch_assoc()['past'];
+        $upcoming = $this->conn->query("SELECT COUNT(*) AS upcoming FROM events WHERE CONCAT(event_date, ' ', event_time) > NOW()")->fetch_assoc()['upcoming'];
+        $past = $this->conn->query("SELECT COUNT(*) AS past FROM events WHERE CONCAT(event_date, ' ', event_time) <= NOW()")->fetch_assoc()['past'];
 
         return [
             "totalEvents" => (int)$total,
@@ -87,11 +95,11 @@ class EventModel {
 
     public function fetchEventTrend() {
         $result = $this->conn->query("
-            SELECT MONTHNAME(datetime) AS month, COUNT(*) AS events
+            SELECT MONTHNAME(event_date) AS month, COUNT(*) AS events
             FROM events
-            WHERE YEAR(datetime) = YEAR(CURDATE())
-            GROUP BY MONTH(datetime)
-            ORDER BY MONTH(datetime)
+            WHERE YEAR(event_date) = YEAR(CURDATE())
+            GROUP BY MONTH(event_date)
+            ORDER BY MONTH(event_date)
         ");
         $trend = [];
         while ($row = $result->fetch_assoc()) {
@@ -110,7 +118,7 @@ class EventModel {
         $stmt = $this->conn->prepare("
             SELECT * FROM events 
             WHERE title LIKE ? OR description LIKE ?
-            ORDER BY datetime DESC
+            ORDER BY event_date DESC
         ");
         $stmt->bind_param("ss", $searchTerm, $searchTerm);
         $stmt->execute();
@@ -139,21 +147,21 @@ class EventModel {
         // Filter by status (upcoming/past)
         if (!empty($filters['status'])) {
             if ($filters['status'] === 'upcoming') {
-                $conditions[] = "datetime > NOW()";
+                $conditions[] = "CONCAT(event_date, ' ', event_time) > NOW()";
             } elseif ($filters['status'] === 'past') {
-                $conditions[] = "datetime <= NOW()";
+                $conditions[] = "CONCAT(event_date, ' ', event_time) <= NOW()";
             }
         }
 
         // Filter by date range
         if (!empty($filters['startDate'])) {
-            $conditions[] = "datetime >= ?";
+            $conditions[] = "event_date >= ?";
             $params[] = $filters['startDate'];
             $types .= "s";
         }
 
         if (!empty($filters['endDate'])) {
-            $conditions[] = "datetime <= ?";
+            $conditions[] = "event_date <= ?";
             $params[] = $filters['endDate'];
             $types .= "s";
         }
@@ -163,7 +171,7 @@ class EventModel {
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
-        $sql .= " ORDER BY datetime DESC";
+        $sql .= " ORDER BY event_date DESC, event_time DESC";
 
         // Execute
         if (!empty($params)) {
@@ -207,21 +215,21 @@ class EventModel {
         // Filter by status (upcoming/past)
         if (!empty($filters['status'])) {
             if ($filters['status'] === 'upcoming') {
-                $conditions[] = "datetime > NOW()";
+                $conditions[] = "CONCAT(event_date, ' ', event_time) > NOW()";
             } elseif ($filters['status'] === 'past') {
-                $conditions[] = "datetime <= NOW()";
+                $conditions[] = "CONCAT(event_date, ' ', event_time) <= NOW()";
             }
         }
 
         // Filter by date range
         if (!empty($filters['startDate'])) {
-            $conditions[] = "datetime >= ?";
+            $conditions[] = "event_date >= ?";
             $params[] = $filters['startDate'];
             $types .= "s";
         }
 
         if (!empty($filters['endDate'])) {
-            $conditions[] = "datetime <= ?";
+            $conditions[] = "event_date <= ?";
             $params[] = $filters['endDate'];
             $types .= "s";
         }
@@ -231,7 +239,7 @@ class EventModel {
         if (!empty($conditions)) {
             $sql .= " WHERE " . implode(" AND ", $conditions);
         }
-        $sql .= " ORDER BY datetime DESC";
+        $sql .= " ORDER BY event_date DESC, event_time DESC";
 
         // Execute
         if (!empty($params)) {

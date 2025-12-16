@@ -16,6 +16,25 @@ export default function ManageEvents() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
 
+  // Helper to split datetime
+  const processEvents = (rawData) => {
+    let list = [];
+    if (rawData.success && rawData.events) {
+      list = rawData.events;
+    } else if (Array.isArray(rawData)) {
+      list = rawData;
+    }
+
+    return list.map(ev => {
+      // Backend now returns event_date and event_time
+      return {
+        ...ev,
+        date: ev.event_date || ev.date || (ev.datetime ? ev.datetime.split(' ')[0] : ''),
+        time: ev.event_time || ev.time || (ev.datetime ? ev.datetime.split(' ')[1] : '')
+      };
+    });
+  };
+
   // ------------------ Fetch Events ------------------
   const fetchEvents = () => {
     setLoading(true);
@@ -31,13 +50,7 @@ export default function ManageEvents() {
       API.get("/events/search-filter", { params })
         .then((res) => {
           const data = res.data;
-          if (data.success && data.events) {
-            setEvents(data.events);
-          } else if (Array.isArray(data)) {
-            setEvents(data);
-          } else {
-            setEvents([]);
-          }
+          setEvents(processEvents(data));
         })
         .catch((err) => {
           console.error("Error fetching events:", err);
@@ -48,13 +61,7 @@ export default function ManageEvents() {
       API.get("/events")
         .then((res) => {
           const data = res.data;
-          if (data.success && data.events) {
-            setEvents(data.events);
-          } else if (Array.isArray(data)) {
-            setEvents(data);
-          } else {
-            setEvents([]);
-          }
+          setEvents(processEvents(data));
         })
         .catch((err) => {
           console.error("Error fetching events:", err);
@@ -74,9 +81,15 @@ export default function ManageEvents() {
     try {
       const formData = new FormData();
       for (const key in updatedEvent) {
+        if (key === 'date' || key === 'time') continue; // Skip separate date/time, we combine them
         if (updatedEvent[key] !== null && updatedEvent[key] !== undefined) {
           formData.append(key, updatedEvent[key]);
         }
+      }
+
+      // Combine date and time to datetime
+      if (updatedEvent.date && updatedEvent.time) {
+        formData.append('datetime', `${updatedEvent.date} ${updatedEvent.time}`);
       }
 
       const res = await API.post("/event/update", formData);
