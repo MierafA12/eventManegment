@@ -36,5 +36,15 @@ class BaseModel {
         $result = $stmt->get_result();
         return $result->fetch_assoc() ?: null;
     }
+
+    public function update($id, $data) {
+    $fields = [];
+    foreach ($data as $key => $value) {
+        $fields[] = "$key = '" . $this->conn->real_escape_string($value) . "'";
+    }
+    $sql = "UPDATE {$this->table} SET " . implode(", ", $fields) . " WHERE id = $id";
+    return $this->conn->query($sql);
+}
+
 }
 ?>
