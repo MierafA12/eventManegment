@@ -2,6 +2,7 @@
 import { Routes, Route } from "react-router-dom";
 import { UserProvider } from "./context/userContext.jsx";
 import { AuthProvider } from "../../admin-panel/src/context/AuthContext.jsx";
+import { ThemeProvider } from "../../admin-panel/src/context/ThemeContext.jsx";
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -20,6 +21,7 @@ function App() {
   return (
     <UserProvider>
       <AuthProvider>
+        <ThemeProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -34,6 +36,7 @@ function App() {
          <Route path="/events/:id/register" element={<ProtectedRoute><EventRegister /></ProtectedRoute>} /> 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </ThemeProvider>
       </AuthProvider>
     </UserProvider>
 

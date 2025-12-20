@@ -8,9 +8,9 @@ export default function Partners() {
   ];
 
   return (
-    <section className="py-20 bg-lightBg">
+    <section className="py-20 bg-lightBg dark:bg-bgDark transition-colors duration-300">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12 text-primary">
+        <h2 className="text-4xl font-bold text-center mb-12 text-primary dark:text-secondary">
           Our Partners
         </h2>
 
