@@ -72,12 +72,15 @@ $routes = [
     return $controller->getMyNotifications();
 },
 
-"POST /notifications/read" => function ($db, $request) {
-    $notificationModel = new NotificationModel($db);
-    $controller = new NotificationController($notificationModel);
-    return $controller->markRead($request);
+"GET /profile" => function ($db, $request) {
+    $controller = new UserController(
+        new UserModel($db),
+        new ParticipantModel($db)
+    );
+    return $controller->getProfile();
 },
-"PUT /profile" => function($db, $request) {
+
+"PUT /profile" => function ($db, $request) {
     $controller = new UserController(
         new UserModel($db),
         new ParticipantModel($db)
@@ -107,6 +110,33 @@ $routes = [
     $headers = getallheaders(); // get headers inside the closure
     return $controller->changePassword($headers, $requestBody);
 },
+"POST /contact/send" => function($db, $requestBody) {
+    $data = json_decode($requestBody, true);
+    $model = new ContactModel($db);
+    $controller = new ContactController($model);
+    return $controller->sendMessage($data);
+},
+
+"GET /contact/messages" => function($db) {
+    $model = new ContactModel($db);
+    $controller = new ContactController($model);
+    $headers = getallheaders(); // fetch headers from HTTP request
+    return $controller->getMessages($headers);
+},
+"POST /user/change-password" => function($db, $requestBody) {
+    $controller = new AdminController(new AdminModel($db)); // or UserModel if separated
+    $headers = getallheaders();
+    return $controller->changePassword($headers, $requestBody);
+},
+
+
+"POST /contact/answer" => function($db, $requestBody, $requestHeaders) {
+    $data = json_decode($requestBody, true);
+    $model = new ContactModel($db);
+    $controller = new ContactController($model);
+    return $controller->answerMessage($data, $requestHeaders);
+},
+
 
 
 
