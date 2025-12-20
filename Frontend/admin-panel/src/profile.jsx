@@ -3,6 +3,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import { useAuth } from "../../admin-panel/src/context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { getProfile, changePassword } from "../src/api/adminApi.jsx";
+import ChangePasswordModal from "../src/components/ChangePassword.jsx";
 
 export default function ProfilePage() {
   const { jwt } = useAuth();
@@ -13,6 +14,7 @@ export default function ProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
 
   // Fetch profile
   useEffect(() => {
@@ -73,13 +75,11 @@ export default function ProfilePage() {
             .toUpperCase()}
         </div>
 
-        {/* Profile info */}
         <div className="flex-1 flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{profile.name}</h2>
           <p className="text-gray-500 dark:text-gray-300 text-lg mt-1">{profile.role}</p>
           <p className="text-gray-500 dark:text-gray-300 text-md mt-1">{profile.email}</p>
 
-          {/* Change password button */}
           <button
             className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
             onClick={() => setShowPasswordModal(true)}
@@ -104,47 +104,13 @@ export default function ProfilePage() {
 
       {/* Change password modal */}
       {showPasswordModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-96 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-            <input
-              type="password"
-              placeholder="Current Password"
-              className="w-full p-2 mb-2 rounded border"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="New Password"
-              className="w-full p-2 mb-2 rounded border"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              className="w-full p-2 mb-4 rounded border"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                onClick={() => setShowPasswordModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                onClick={handleChangePassword}
-              >
-                Update
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <ChangePasswordModal
+    jwt={jwt}
+    onClose={() => setShowPasswordModal(false)}
+    onSuccess={() => alert("Password changed successfully!")}
+    changePasswordApi={changePassword}
+  />
+)}
     </div>
   );
 }
