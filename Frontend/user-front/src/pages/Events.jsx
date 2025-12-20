@@ -23,32 +23,27 @@ export default function Events() {
     ? events
     : events.filter((e) => e.category === selectedCategory);
 
-  // View details WITHOUT login
-  const handleViewDetails = (id) => {
-    navigate(`/events/${id}`);
+  const handleViewDetails = (id) => navigate(`/events/${id}`);
+
+  const handleRegister = (id) => {
+    if (!user) {
+      setNotification({ type: "error", message: "Please login to register!" });
+      setTimeout(() => {
+        setNotification(null);
+        navigate("/login", { state: { from: `/events/${id}/register` } });
+      }, 1500);
+    } else {
+      navigate(`/events/${id}/register`);
+    }
   };
 
-  // Register REQUIRES login
- const handleRegister = (id) => {
-  if (!user) {
-    setNotification({ type: "error", message: "Please login to register!" });
-    setTimeout(() => {
-      setNotification(null);
-      // pass the target page in state
-      navigate("/login", { state: { from: `/events/${id}/register` } });
-    }, 1500);
-  } else {
-    navigate(`/events/${id}/register`);
-  }
-};
-
   const EventsContent = (
-    <section className="pt-32 pb-20 bg-lightBg">
+    <section className="pt-32 pb-20 bg-lightBg dark:bg-bgDark transition-colors duration-300">
       <div className="container mx-auto px-4">
-        <h1 className="text-5xl md:text-6xl font-bold text-center text-primary mb-8">
+        <h1 className="text-5xl md:text-6xl font-bold text-center text-primary dark:text-text1 mb-8">
           Upcoming Events
         </h1>
-        <p className="text-center text-xl text-secondary mb-12">
+        <p className="text-center text-xl text-secondary dark:text-text1 mb-12">
           Discover amazing events happening across Ethiopia
         </p>
 
@@ -57,7 +52,7 @@ export default function Events() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-6 py-4 rounded-full border-2 border-secondary bg-bg text-primary font-medium focus:outline-none focus:border-primary transition shadow-md"
+            className="w-full px-6 py-4 rounded-full border-2 border-secondary bg-bg dark:bg-bgDark text-primary dark:text-text1 font-medium focus:outline-none focus:border-primary transition shadow-md"
           >
             <option value="all">All Categories</option>
             <option value="tech">Technology</option>
@@ -73,7 +68,7 @@ export default function Events() {
           {filteredEvents.map((event) => (
             <div
               key={event.id}
-              className="bg-bg rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-3 duration-300"
+              className="bg-bg dark:bg-bgDark rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-3 duration-300"
             >
               <div className="h-56 relative">
                 <img
@@ -87,17 +82,17 @@ export default function Events() {
               </div>
 
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-primary mb-3">
+                <h3 className="text-2xl font-bold text-primary dark:text-text1 mb-3">
                   {event.title}
                 </h3>
 
-                <div className="space-y-3 text-secondary">
+                <div className="space-y-3 text-secondary dark:text-text1">
                   <div className="flex items-center">
-                    <i className="fas fa-calendar-alt mr-3 text-primary"></i>
+                    <i className="fas fa-calendar-alt mr-3 text-primary dark:text-text1"></i>
                     <span>{event.date}</span>
                   </div>
                   <div className="flex items-center">
-                    <i className="fas fa-map-marker-alt mr-3 text-primary"></i>
+                    <i className="fas fa-map-marker-alt mr-3 text-primary dark:text-text1"></i>
                     <span>{event.location}</span>
                   </div>
                 </div>
@@ -106,14 +101,14 @@ export default function Events() {
                 <div className="grid grid-cols-2 gap-3 mt-6">
                   <button
                     onClick={() => handleViewDetails(event.id)}
-                    className="w-full bg-primary text-text1 py-3 rounded-full font-semibold hover:bg-buttonHover transition"
+                    className="w-full bg-primary dark:bg-secondary text-text1 py-3 rounded-full font-semibold hover:bg-buttonHover dark:hover:bg-primary transition"
                   >
                     View Details
                   </button>
 
                   <button
                     onClick={() => handleRegister(event.id)}
-                    className="w-full bg-green-600 text-text1 py-3 rounded-full font-semibold hover:bg-green-700 transition"
+                    className="w-full bg-green-600 dark:bg-green-500 text-text1 py-3 rounded-full font-semibold hover:bg-green-700 dark:hover:bg-green-600 transition"
                   >
                     Register
                   </button>
