@@ -22,9 +22,19 @@ export const loginUser = (email, password) =>
   API.post("/login", { email, password });
 
 export const getProfile = (jwt) =>
-  API.get("/profile", { headers: { Authorization: `Bearer ${jwt}` } });
+  API.get("/profile", {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
 
 export const updateProfile = (jwt, data) =>
-  API.put("/profile", data, { headers: { Authorization: `Bearer ${jwt}` } });
+  API.put("/profile", data, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+  export const changePassword = (payload, jwt) => 
+  API.post("/user/change-password", payload, {
+    headers: { Authorization: `Bearer ${jwt}` 
+    },
+  });
+
 
 export default API;

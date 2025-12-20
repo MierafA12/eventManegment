@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // 1️⃣ login request
       const { data: loginData } = await axios.post(
         "http://localhost/EthioEvents/Backend/public/login",
         { email, password },
@@ -20,7 +19,6 @@ export const AuthProvider = ({ children }) => {
 
       setJwt(loginData.jwt);
 
-      // 2️⃣ fetch profile
       const { data: profileData } = await axios.get(
         "http://localhost/EthioEvents/Backend/public/profile",
         {
@@ -47,10 +45,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, jwt, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  <AuthContext.Provider
+    value={{
+      user,
+      jwt,
+      login,
+      logout,
+      setUser, 
+    }}
+  >
+    {children}
+  </AuthContext.Provider>
+);
 };
 
 export const useAuth = () => useContext(AuthContext);
