@@ -58,7 +58,7 @@ export default function ProfileBox({ size = "md" }) {
         />
       ) : (
         <div
-          className={`rounded-full border-2 border-secondary bg-gray-300 
+          className={`rounded-full border-2 border-secondary bg-primary 
             flex items-center justify-center font-bold text-white
             ${size === "lg" ? "h-20 w-20 text-2xl" : "h-10 w-10 text-sm"}`}
         >
