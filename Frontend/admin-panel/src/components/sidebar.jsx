@@ -7,7 +7,6 @@ import { adminMenu, superAdminMenu } from "../data/sidebarMenu";
 export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
   const { user, logout } = useAuth();
 
-  // pick menu based on role
   const menu = user?.role === "superadmin" ? superAdminMenu : adminMenu;
 
   return (
