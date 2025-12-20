@@ -6,8 +6,8 @@ export default function Profile() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  // If user not loaded yet, show loading
   if (!user) {
-    navigate("/login");
     return <p className="text-center mt-32">Loading...</p>;
   }
 
@@ -16,12 +16,36 @@ export default function Profile() {
     navigate("/login");
   };
 
+  const goBack = () => {
+    navigate(-1); // goes back to previous page
+  };
+
+  const goEdit = () => {
+    navigate("/editProfile"); // replace with your actual edit route
+  };
+
   return (
-    <div className="min-h-screen bg-lightBg flex justify-center px-4 py-6 mt-8">
-      <div className="bg-bg rounded-3xl shadow-2xl w-full max-w-md p-6 relative">
+    <div className="min-h-screen bg-lightBg px-4 py-6">
+      {/* Back Button */}
+      <button
+        onClick={goBack}
+        className="text-primary font-semibold mb-4 flex items-center gap-2"
+      >
+        ← Back
+      </button>
+
+      <div className="bg-bg rounded-3xl shadow-2xl w-full max-w-md mx-auto p-6 relative">
         {/* ProfileBox with Edit Icon */}
         <div className="relative w-fit mx-auto -mt-16">
-          <ProfileBox size="lg" />
+          <ProfileBox size="lg" onClick={goEdit} />
+          {/* Edit Pencil overlay */}
+          <button
+            onClick={goEdit}
+            className="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full shadow-lg hover:bg-secondary transition"
+            title="Edit Profile"
+          >
+            ✎
+          </button>
         </div>
 
         {/* Name */}
@@ -60,7 +84,7 @@ export default function Profile() {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="mt-6 w-full bg-red-500 text-text1 py-3 rounded-full font-semibold hover:bg-red-600 transition flex items-center justify-center gap-2"
+          className="mt-6 w-full bg-red-500 text-white py-3 rounded-full font-semibold hover:bg-red-600 transition flex items-center justify-center gap-2"
         >
           Log Out
         </button>
