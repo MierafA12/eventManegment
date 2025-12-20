@@ -17,7 +17,10 @@ class BaseModel {
         $columns = implode(", ", array_keys($data));
         $placeholders = implode(", ", array_fill(0, count($data), "?"));
         $types = str_repeat("s", count($data));
-        $stmt = $this->conn->prepare("INSERT INTO {$this->table} ($columns) VALUES ($placeholders)");
+
+        $stmt = $this->conn->prepare(
+            "INSERT INTO {$this->table} ($columns) VALUES ($placeholders)"
+        );
 
         if (!$stmt) return false;
 
@@ -29,22 +32,36 @@ class BaseModel {
         $keys = array_keys($conditions);
         $where = implode(" AND ", array_map(fn($k) => "$k = ?", $keys));
         $types = str_repeat("s", count($conditions));
-        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE $where LIMIT 1");
+
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM {$this->table} WHERE $where LIMIT 1"
+        );
+
         if (!$stmt) return null;
+
         $stmt->bind_param($types, ...array_values($conditions));
         $stmt->execute();
+
         $result = $stmt->get_result();
         return $result->fetch_assoc() ?: null;
     }
 
-    public function update($id, $data) {
-    $fields = [];
-    foreach ($data as $key => $value) {
-        $fields[] = "$key = '" . $this->conn->real_escape_string($value) . "'";
-    }
-    $sql = "UPDATE {$this->table} SET " . implode(", ", $fields) . " WHERE id = $id";
-    return $this->conn->query($sql);
-}
+    // ✅ FIXED UPDATE
+    public function update(array $data, array $conditions): bool {
+        if (empty($data) || empty($conditions)) return false;
 
+        $set = implode(", ", array_map(fn($k) => "$k = ?", array_keys($data)));
+        $where = implode(" AND ", array_map(fn($k) => "$k = ?", array_keys($conditions)));
+
+        $types = str_repeat("s", count($data)) . str_repeat("s", count($conditions));
+        $values = array_merge(array_values($data), array_values($conditions));
+
+        $sql = "UPDATE {$this->table} SET $set WHERE $where";
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) return false;
+
+        $stmt->bind_param($types, ...$values);
+        return $stmt->execute();
+    }
 }
-?>

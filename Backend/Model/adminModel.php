@@ -16,13 +16,27 @@ class AdminModel extends BaseModel {
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
-    return $result->fetch_assoc(); // returns null if not found
+    return $result->fetch_assoc(); 
 }
+// AdminModel.php (or UserModel.php if shared)
 public function updatePassword($id, $hashedPassword): bool {
-    $stmt = $this->conn->prepare("UPDATE users SET password=? WHERE id=? AND role='admin'");
+    // Allow admin, superadmin, and participant to change password
+    $stmt = $this->conn->prepare(
+        "UPDATE users SET password=? WHERE id=? AND role IN ('admin','superadmin','participant')"
+    );
     $stmt->bind_param("si", $hashedPassword, $id);
     return $stmt->execute();
 }
+
+public function getUserById($id) {
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE id=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
+
+
 
 
     public function createAdmin($full_name, $username, $email, $password, $status = 'active'): bool {
