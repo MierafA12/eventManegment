@@ -19,24 +19,30 @@ export default function ManageAdmin() {
   const [status, setStatus] = useState("all");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
+  const [deleteSuccess, setDeleteSuccess] = useState("");
 
-  // Fetch admins
+
   useEffect(() => {
-    const loadAdmins = async () => {
-      try {
-        const res = await getAdmins();
-        // Ensure we get an array
-        setAdmins(Array.isArray(res.data.admins) ? res.data.admins : []);
-      } catch (err) {
-        console.error("Failed to load admins:", err);
-        setAdmins([]);
-      }
-    };
-    loadAdmins();
-  }, []);
+  const loadAdmins = async () => {
+    try {
+      const res = await getAdmins();
 
-  // Toggle status
-// Toggle status
+      const adminList = Array.isArray(res.data.admins)
+        ? res.data.admins
+        : [];
+
+      adminList.sort((a, b) => b.id - a.id);
+
+      setAdmins(adminList);
+    } catch (err) {
+      console.error("Failed to load admins:", err);
+      setAdmins([]);
+    }
+  };
+  loadAdmins();
+}, []);
+
+
 const handleToggleStatus = async (admin) => {
   const newStatus = admin.status === "active" ? "inactive" : "active";
   try {
@@ -51,34 +57,57 @@ const handleToggleStatus = async (admin) => {
   }
 };
 
-// Save edit
+
 const saveUpdated = async (updatedAdmin) => {
   try {
     await updateAdmin(updatedAdmin);
     setAdmins((prev) =>
       prev.map((a) =>
         a.id === updatedAdmin.id
-          ? { ...a, full_name: updatedAdmin.full_name, username: updatedAdmin.username, status: updatedAdmin.status }
+          ? {
+              ...a,
+              full_name: updatedAdmin.full_name,
+              username: updatedAdmin.username,
+              status: updatedAdmin.status,
+            }
           : a
       )
     );
-    setEditTarget(null);
+
+    setEditSuccess("Admin updated successfully");
+
+    setTimeout(() => {
+      setEditSuccess("");
+      setEditTarget(null);
+    }, 2000);
+
   } catch (err) {
     console.error(err);
   }
 };
 
 
-  // Delete
+
   const confirmDelete = async () => {
-    try {
-      await deleteAdmin(deleteTarget.id);
-      setAdmins((prev) => prev.filter((a) => a.id !== deleteTarget.id));
-      setDeleteTarget(null);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  try {
+    await deleteAdmin(deleteTarget.id);
+
+    setAdmins((prev) =>
+      prev.filter((a) => a.id !== deleteTarget.id)
+    );
+
+    setDeleteSuccess("Admin deleted successfully");
+    setDeleteTarget(null);
+
+    setTimeout(() => {
+      setDeleteSuccess("");
+    }, 2000);
+
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
   const filtered = admins.filter((a) => {
     const matchSearch =
@@ -136,7 +165,11 @@ const saveUpdated = async (updatedAdmin) => {
           admin={deleteTarget}
           onClose={() => setDeleteTarget(null)}
           onConfirm={confirmDelete}
-        />
+        />{deleteSuccess && (
+          <div className="mb-4 p-3 rounded-lg bg-green-100 text-green-700">
+            ✓ {deleteSuccess}
+          </div>
+        )}
 
         <AdminEditModal
           admin={editTarget}

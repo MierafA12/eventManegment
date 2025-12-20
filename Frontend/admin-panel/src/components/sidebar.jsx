@@ -21,12 +21,12 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
         ${collapsed ? "w-20 px-3" : "w-64 px-4"}
       `}
     >
-      {/* Profile section */}
+
       <div className="w-full mt-6 flex justify-center">
         {collapsed ? <ProfileBox size="sm" /> : <ProfileBox size="lg" />}
       </div>
 
-      {/* Menu */}
+
       <div className="flex-1 mt-10">
         <ul className="space-y-3">
           {menu.map((item, index) => {
@@ -56,7 +56,6 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
         </ul>
       </div>
 
-      {/* Logout */}
       <div className="absolute bottom-4 left-4 w-[85%]">
         <button
           onClick={logout}

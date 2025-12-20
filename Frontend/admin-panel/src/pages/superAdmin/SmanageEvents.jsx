@@ -11,7 +11,6 @@ export default function SmanageEvents() {
     const fetchEvents = async () => {
       try {
         const res = await getEventsSummary();
-        // Assuming API returns { data: { events: [...] } }
         setEvents(Array.isArray(res.data.events) ? res.data.events : []);
       } catch (err) {
         console.error("Failed to load event detail:", err);
@@ -26,13 +25,13 @@ export default function SmanageEvents() {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen flex flex-col items-center justify-start py-12 px-4 bg-lightBg">
-        <h1 className="text-3xl font-bold text-primary mb-8">Manage Events</h1>
+      <div className="min-h-screen flex flex-col items-center justify-start py-12 px-4 bg-lightBg dark:bg-bgDark">
+        <h1 className="text-3xl font-bold text-primary dark:text-secondary mb-8">Manage Events</h1>
 
         {loading ? (
           <p className="text-secondary text-lg">Loading events...</p>
         ) : (
-          <div className="w-full max-w-5xl overflow-x-auto bg-white rounded-xl shadow-md">
+          <div className="w-full max-w-5xl overflow-x-auto bg-white dark:bg-bgDark rounded-xl shadow-md">
             <table className="w-full text-left border-collapse">
               <thead className="bg-primary text-white">
                 <tr>
