@@ -16,11 +16,10 @@ class ParticipantModel extends BaseModel {
     }
 
     public function getByUserId($user_id) {
-    return $this->findBy(["user_id" => $user_id]);
-}
-  public function updateUser($id, $data) {
-    return $this->update($data, ["id" => $id]);
-}
+        return $this->findBy(["user_id" => $user_id]);
+    }
 
+    public function updateParticipant($id, $data) {
+        return $this->update($data, ["id" => $id]);
+    }
 }
-?>

@@ -6,7 +6,7 @@ class UserModel extends BaseModel {
         parent::__construct($conn, "users");
     }
 
-    public function createUser($username, $email, $password, $role="participant") {
+    public function createUser($username, $email, $password, $role = "participant") {
         $hashed = password_hash($password, PASSWORD_DEFAULT);
         return $this->insert([
             "username" => $username,
@@ -20,11 +20,11 @@ class UserModel extends BaseModel {
         return $this->findBy(["email" => $email]);
     }
 
-   public function getUserById($id) {
-    return $this->findBy(["id" => $id]);
-}
+    public function getUserById($id) {
+        return $this->findBy(["id" => $id]);
+    }
+
     public function updateUser($id, $data) {
-    return $this->update($data, ["id" => $id]);
+        return $this->update($data, ["id" => $id]);
+    }
 }
-}
-?>
