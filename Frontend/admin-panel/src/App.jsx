@@ -17,6 +17,7 @@ import Notifications from "./components/Notification";
 import { ThemeProvider } from "./context/ThemeContext";
 import NotFound from "./pages/404";
 import ProfilePage from "./profile.jsx";
+import Contact from "./components/Contact.jsx";
 
 
 
@@ -139,6 +140,22 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={["superadmin"]}>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/contact"
+            element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <Contact />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contact"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <Contact />
               </ProtectedRoute>
             }
           />
