@@ -66,25 +66,26 @@ class AdminController {
             ]
         ];
     }
-  public function changePassword(array $requestHeaders, string $requestBody) {
+ // AdminController.php
+public function changePassword(array $requestHeaders, string $requestBody) {
     $decoded = decodeJwtToken($requestHeaders);
-    $adminId = $decoded['id'];
+    $userId = $decoded['id']; // works for admin or participant
 
     $data = json_decode($requestBody, true);
     $currentPassword = $data['currentPassword'] ?? '';
     $newPassword = $data['newPassword'] ?? '';
 
-    $admin = $this->model->getAdminById($adminId);
-    if (!$admin) {
-        return ["success" => false, "message" => "Admin not found"];
+    $user = $this->model->getUserById($userId);
+    if (!$user) {
+        return ["success" => false, "message" => "User not found"];
     }
 
-    if (!password_verify($currentPassword, $admin['password'])) {
+    if (!password_verify($currentPassword, $user['password'])) {
         return ["success" => false, "message" => "Current password is incorrect"];
     }
 
     $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
-    $this->model->updatePassword($adminId, $hashed);
+    $this->model->updatePassword($userId, $hashed);
 
     return ["success" => true, "message" => "Password changed successfully"];
 }
