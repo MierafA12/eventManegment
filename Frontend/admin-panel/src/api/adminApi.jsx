@@ -30,8 +30,20 @@ export const updateAdmin = (admin) =>
     email: admin.email,
     status: admin.status
   });
+export const getEventsSummary = () =>
+  API.get("/superadmin/events");
 
+export const getProfile = (jwt) =>
+  API.get("/admin/profile", { headers: { Authorization: `Bearer ${jwt}` } });
 
+export const updateProfile = (profileData, jwt) =>
+  API.put("/profile", profileData, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+  export const changePassword = (data, jwt) =>
+  API.post("/admin/change-password", data, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
 
 
 export default API;
