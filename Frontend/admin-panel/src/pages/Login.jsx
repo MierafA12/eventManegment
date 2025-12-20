@@ -11,13 +11,11 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // Message state
   const [alertMsg, setAlertMsg] = useState("");
-  const [alertType, setAlertType] = useState(""); // "error" | "success"
+  const [alertType, setAlertType] = useState("");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Auto hide message after 4 seconds
   useEffect(() => {
     if (!alertMsg) return;
     const timer = setTimeout(() => setAlertMsg(""), 4000);
@@ -34,38 +32,32 @@ export default function Login() {
     setAlertMsg(msg);
   };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  if (!email) return showError("Email is required");
-  if (!emailRegex.test(email)) return showError("Invalid email format");
-  if (!password) return showError("Password is required");
+    if (!email) return showError("Email is required");
+    if (!emailRegex.test(email)) return showError("Invalid email format");
+    if (!password) return showError("Password is required");
 
-  try {
-    const role = await login(email, password); // 👈 role string
+    const res = await login(email, password);
 
-    if (!role) {
-      showError("Invalid email or password");
+    if (!res.success) {
+      showError(res.message);
       return;
     }
 
     showSuccess("Login successful");
 
     setTimeout(() => {
-      if (role === "admin") {
+      if (res.user.role === "admin") {
         navigate("/admin/AdminDashboard");
-      } else if (role === "superadmin") {
+      } else if (res.user.role === "superadmin") {
         navigate("/superAdmin/SadminDashboard");
       } else {
         showError("Unauthorized access");
       }
     }, 800);
-
-  } catch (err) {
-    console.error(err);
-    showError("Server error. Please try again later.");
-  }
-};
+  };
 
   return (
     <div className="h-screen bg-primary flex items-center justify-center">
@@ -77,40 +69,32 @@ const handleLogin = async (e) => {
         >
           {alertType === "success" ? "✔️" : "❌"}
           <span className="font-bold text-lg">{alertMsg}</span>
-          <button onClick={() => setAlertMsg("")} className="ml-4 font-bold text-white">✕</button>
+          <button onClick={() => setAlertMsg("")} className="ml-4 font-bold">✕</button>
         </div>
       )}
 
       <div className="bg-black/30 shadow-xl rounded-lg px-10 py-12 w-[380px] text-text1">
-        {/* Icon */}
-        <div className="flex justify-center mb-5">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-secondary" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 3a5 5 0 1 0 4.9 6h4.6v3h-3v3h-3v3h-3v-4.1A5 5 0 0 0 12 3z"/>
-          </svg>
-        </div>
-
-        <h1 className="text-center text-2xl font-semibold tracking-wide mb-10">ADMIN PANEL</h1>
+        <h1 className="text-center text-2xl font-semibold mb-10">ADMIN PANEL</h1>
 
         <form onSubmit={handleLogin}>
-          <label className="text-sm tracking-wider">EMAIL</label>
+          <label>EMAIL</label>
           <input
-            type="text"
-            className="w-full bg-transparent border-b-2 mb-8 border-secondary outline-none py-2 text-text1"
+            className="w-full bg-transparent border-b-2 mb-8"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <label className="text-sm tracking-wider">PASSWORD</label>
-          <div className="relative w-full mb-10">
+          <label>PASSWORD</label>
+          <div className="relative mb-10">
             <input
               type={showPassword ? "text" : "password"}
-              className="w-full bg-transparent border-b-2 border-secondary outline-none py-2 pr-10 text-text1"
+              className="w-full bg-transparent border-b-2 pr-10"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
               type="button"
-              className="absolute right-0 top-1/2 -translate-y-1/2 text-secondary"
+              className="absolute right-0 top-1/2 -translate-y-1/2"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? "🙈" : "👁️"}

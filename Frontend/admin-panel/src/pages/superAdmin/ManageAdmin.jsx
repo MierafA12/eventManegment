@@ -98,9 +98,9 @@ const saveUpdated = async (updatedAdmin) => {
           <FilterAdmin value={status} onChange={setStatus} />
         </div>
 
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg dark:text-primary">
+        <div className="overflow-x-auto bg-white dark:bg-bgDark shadow-md rounded-lg dark:text-text1">
           <table className="min-w-full border-collapse">
-            <thead className="bg-gray-200">
+            <thead className="bg-gray-200 dark:bg-bgDark">
               <tr>
 
                 <th className="px-4 py-2 text-left">Full Name</th>
