@@ -52,30 +52,34 @@ export default function EditProfile() {
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await updateProfile(jwt, {
-        fullname: formData.fullname,
-        username: formData.username,
-        email: formData.email,
-        dob: formData.dob,
-        phone: formData.phone,
-      });
+  e.preventDefault();
+  try {
+    const { data } = await updateProfile(jwt, {
+      fullname: formData.fullname,
+      username: formData.username,
+      email: formData.email,
+      dob: formData.dob,
+      phone: formData.phone,
+    });
 
-      if (data.success) {
-        setMessage("Profile updated successfully");
-        setIsError(false);
-        setUser({ ...user, ...formData });
-        setTimeout(() => navigate("/profile"), 1500);
-      } else {
-        setMessage(data.message || "Failed to update profile");
-        setIsError(true);
-      }
-    } catch {
-      setMessage("Server error while updating profile");
+    if (data.success) {
+      setMessage(data.message);
+      setIsError(false);
+
+      setUser(data.profile);
+
+      setTimeout(() => navigate("/profile"), 1200);
+    } else {
+      setMessage(data.message || "Failed to update profile");
       setIsError(true);
     }
-  };
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err.response || err);
+    setMessage("Server error while updating profile");
+    setIsError(true);
+  }
+};
+
 
   if (loading) return <p className="text-center mt-32">Loading profile...</p>;
 
