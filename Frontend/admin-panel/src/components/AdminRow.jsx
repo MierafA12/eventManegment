@@ -27,7 +27,6 @@ export default function AdminRow({ admin, onToggleStatus, onDelete, onEdit }) {
           {admin.status === "active" ? "Deactivate" : "Activate"}
         </button>
 
-        {/* Edit */}
         <button
           onClick={onEdit}
           className="p-2 text-primary hover:bg-lightBg rounded-lg transition dark:text-secondary"
@@ -35,7 +34,6 @@ export default function AdminRow({ admin, onToggleStatus, onDelete, onEdit }) {
           <FiEdit size={18} />
         </button>
 
-        {/* Delete */}
         <button
           onClick={onDelete}
           className="p-2 text-error hover:bg-inactiveBg rounded-lg transition"

@@ -20,7 +20,7 @@ export default function AdminEditModal({ admin, onClose, onSave }) {
   const handleSave = () => {
     onSave({ ...admin, full_name, username, status });
     setSaved(true);
-    setTimeout(() => onClose(), 1000);
+    setTimeout(() => onClose(), 3000);
   };
 
   return (
@@ -41,20 +41,20 @@ export default function AdminEditModal({ admin, onClose, onSave }) {
 
         <div className="flex flex-col gap-4">
           <div>
-            <label className="text-sm font-medium dark:text-text1">Full Name</label>
+            <label className="text-sm font-medium  dark:text-text1">Full Name</label>
             <input
               type="text"
-              className="w-full border px-3 py-2 rounded mt-1"
+              className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
               value={full_name}
               onChange={(e) => setFullName(e.target.value)}
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium dark:text-text1">Username</label>
+            <label className="text-sm font-medium bg-bgDark dark:text-text1">Username</label>
             <input
               type="text"
-              className="w-full border px-3 py-2 rounded mt-1"
+              className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
