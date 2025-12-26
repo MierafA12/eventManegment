@@ -113,11 +113,21 @@ export default function Events() {
     });
   };
 
-  // View details WITHOUT login
-  const handleViewDetails = (id) => {
-    navigate(`/events/${id}`);
+  const handleViewDetails = (id) => navigate(`/events/${id}`);
+
+  const handleRegister = (id) => {
+    if (!user) {
+      setNotification({ type: "error", message: "Please login to register!" });
+      setTimeout(() => {
+        setNotification(null);
+        navigate("/login", { state: { from: `/events/${id}/register` } });
+      }, 1500);
+    } else {
+      navigate(`/events/${id}/register`);
+    }
   };
 
+<<<<<<< HEAD
   // Register REQUIRES login
   const handleRegister = (id) => {
     if (!user) {
@@ -174,6 +184,16 @@ export default function Events() {
         </h1>
         <p className="text-center text-xl text-secondary mb-12 max-w-2xl mx-auto">
           Discover amazing events happening across Ethiopia. Book your tickets now!
+=======
+  const EventsContent = (
+    <section className="pt-32 pb-20 bg-lightBg dark:bg-bgDark transition-colors duration-300">
+      <div className="container mx-auto px-4">
+        <h1 className="text-5xl md:text-6xl font-bold text-center text-primary dark:text-text1 mb-8">
+          Upcoming Events
+        </h1>
+        <p className="text-center text-xl text-secondary dark:text-text1 mb-12">
+          Discover amazing events happening across Ethiopia
+>>>>>>> 8d5c7986c33d21f88159461a0316f0bcf5c5f01f
         </p>
 
         {/* Stats */}
@@ -197,6 +217,7 @@ export default function Events() {
         </div>
 
         {/* Category Selector */}
+<<<<<<< HEAD
         <div className="mb-12">
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             <button
@@ -318,6 +339,72 @@ export default function Events() {
                       {event.fee > 0 ? "Book Now" : "Register"}
                     </button>
                   </div>
+=======
+        <div className="max-w-md mx-auto mb-16">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full px-6 py-4 rounded-full border-2 border-secondary bg-bg dark:bg-bgDark text-primary dark:text-text1 font-medium focus:outline-none focus:border-primary transition shadow-md"
+          >
+            <option value="all">All Categories</option>
+            <option value="tech">Technology</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="Health">Health</option>
+            <option value="sports">Sports</option>
+            <option value="Art">Art</option>
+          </select>
+        </div>
+
+        {/* Event Cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {filteredEvents.map((event) => (
+            <div
+              key={event.id}
+              className="bg-bg dark:bg-bgDark rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-3 duration-300"
+            >
+              <div className="h-56 relative">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-4 right-4 bg-primary text-text1 px-4 py-2 rounded-full text-sm font-bold">
+                  {event.category.toUpperCase()}
+                </div>
+              </div>
+
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-primary dark:text-text1 mb-3">
+                  {event.title}
+                </h3>
+
+                <div className="space-y-3 text-secondary dark:text-text1">
+                  <div className="flex items-center">
+                    <i className="fas fa-calendar-alt mr-3 text-primary dark:text-text1"></i>
+                    <span>{event.date}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <i className="fas fa-map-marker-alt mr-3 text-primary dark:text-text1"></i>
+                    <span>{event.location}</span>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="grid grid-cols-2 gap-3 mt-6">
+                  <button
+                    onClick={() => handleViewDetails(event.id)}
+                    className="w-full bg-primary dark:bg-secondary text-text1 py-3 rounded-full font-semibold hover:bg-buttonHover dark:hover:bg-primary transition"
+                  >
+                    View Details
+                  </button>
+
+                  <button
+                    onClick={() => handleRegister(event.id)}
+                    className="w-full bg-green-600 dark:bg-green-500 text-text1 py-3 rounded-full font-semibold hover:bg-green-700 dark:hover:bg-green-600 transition"
+                  >
+                    Register
+                  </button>
+>>>>>>> 8d5c7986c33d21f88159461a0316f0bcf5c5f01f
                 </div>
               </div>
             ))}
