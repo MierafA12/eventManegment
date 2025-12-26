@@ -37,7 +37,7 @@ export default function Header() {
           {user && (
             <div className="flex items-center space-x-5">
 
-              <Link to="/mytickets" className="text-primary hover:text-secondary font-bold">Mytickets</Link>
+              <Link to="/my-tickets" className="text-primary hover:text-secondary font-bold">Mytickets</Link>
                <Link to="/notifications">
                 <Bell size={24} className="text-primary hover:text-secondary" />
               </Link>

@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useRef } from "react";
+
 import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
 import { Ticket, Calendar, MapPin, User, Mail, QrCode, Download } from "lucide-react";
 import Header from "../component/Header.jsx";
@@ -84,41 +88,49 @@ export default function MyTickets() {
     });
   };
 
-  const handleDownloadTicket = (ticket) => {
-    const ticketData = `
-      EVENT TICKET
-      ============
-      Event: ${ticket.event_title}
-      Date: ${formatDate(ticket.event_date)}
-      Time: ${ticket.event_time}
-      Type: ${ticket.event_type}
-      Location: ${ticket.location}
-      
-      ATTENDEE INFORMATION
-      --------------------
-      Name: ${ticket.attendee_name}
-      Email: ${ticket.attendee_email}
-      
-      TICKET INFORMATION
-      ------------------
-      Ticket Code: ${ticket.ticket_code}
-      Ticket Type: ${ticket.ticket_type}
-      Payment Status: ${ticket.payment_status}
-      
-      IMPORTANT NOTES
-      ---------------
-      1. Present this ticket at entry
-      2. Keep your ticket code secure
-      3. Contact support for assistance
-    `;
-    
-    const blob = new Blob([ticketData], { type: "text/plain" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `ticket-${ticket.ticket_code}.txt`;
-    a.click();
-  };
+
+  const handlePrintTicket = (ticketId) => {
+  const content = document.getElementById(ticketId);
+  if (!content) return;
+
+  const printWindow = window.open("", "", "width=800,height=600");
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Event Ticket</title>
+        <style>
+          body { font-family: Arial; padding: 20px; }
+        </style>
+      </head>
+      <body>
+        ${content.innerHTML}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+};
+
+
+  const handleDownloadTicket = async (ticketRef, ticketCode) => {
+  const element = ticketRef.current;
+
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save(`ticket-${ticketCode}.pdf`);
+};
 
   if (!user) {
     return (
@@ -178,10 +190,13 @@ export default function MyTickets() {
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
               {tickets.map((ticket, index) => (
-                <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div
+  id={`ticket-${index}`}
+  className="bg-white rounded-2xl shadow-lg overflow-hidden"
+>
                   <div className="p-6 border-b border-gray-100">
                     <div className="flex justify-between items-start mb-4">
-                      <div>
+                      <div> 
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                           ticket.event_type === "Physical" 
                             ? "bg-blue-100 text-blue-800" 
@@ -263,12 +278,13 @@ export default function MyTickets() {
                     {/* Actions */}
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleDownloadTicket(ticket)}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
-                      >
-                        <Download className="h-4 w-4" />
-                        Download
-                      </button>
+  onClick={() => handlePrintTicket(`ticket-${index}`)}
+  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+>
+  <Download className="h-4 w-4" />
+  Download
+</button>
+
                       
                       <button
                         onClick={() => window.open(ticket.qr_code, "_blank")}
