@@ -12,6 +12,7 @@ import {
   User,
   CheckCircle
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -35,7 +36,6 @@ export default function Register() {
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validatePassword = (password) => {
-    // Minimum 8 characters, at least one letter, one special character
     return /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
   };
 
@@ -43,7 +43,6 @@ export default function Register() {
     e.preventDefault();
     setErrorMessage('');
 
-    // Front-end validation
     if (!validateEmail(formData.email)) {
       return setErrorMessage('Please enter a valid email address.');
     }
@@ -64,7 +63,7 @@ export default function Register() {
         name: formData.name,
         username: formData.username,
         dob: formData.dob,
-        phone_number: formData.phone, // match backend
+        phone_number: formData.phone,
         email: formData.email,
         password: formData.password,
       };
@@ -97,22 +96,20 @@ export default function Register() {
   };
 
   const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  setFormData(prev => ({
-    ...prev,
-    [name]: type === 'checkbox' ? checked : value,
-  }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
 
-  // Reset error if user types
-  if (errorMessage) setErrorMessage('');
+    if (errorMessage) setErrorMessage('');
 
-  if (name === 'password' || name === 'confirmPassword') {
-    setPasswordMatch(
-      name === 'password' ? value === formData.confirmPassword : formData.password === value
-    );
-  }
-};
-
+    if (name === 'password' || name === 'confirmPassword') {
+      setPasswordMatch(
+        name === 'password' ? value === formData.confirmPassword : formData.password === value
+      );
+    }
+  };
 
   return (
     <MainLayout>
@@ -132,27 +129,28 @@ export default function Register() {
       )}
 
       {/* Register Form */}
-      <div className="min-h-screen bg-lightBg flex items-center justify-center px-4 py-10">
+      <div className="min-h-screen bg-lightBg dark:bg-bgDark flex items-center justify-center px-4 py-10 transition-colors duration-300">
         <div className="w-full max-w-2xl">
-          <div className="bg-bg rounded-3xl shadow-2xl p-10 border border-activeBg">
+          <div className="bg-bg dark:bg-bgDark rounded-3xl shadow-2xl p-10 border border-activeBg dark:border-secondary transition-colors duration-300">
             <div className="text-center mb-10">
-              <h1 className="text-4xl md:text-5xl font-bold text-primary mb-3">Ethio Events</h1>
-              <p className="text-xl text-secondary">Create your account to start managing events</p>
+              <h1 className="text-4xl md:text-5xl font-bold text-primary dark:text-text1 mb-3">Ethio Events</h1>
+              <p className="text-xl text-secondary dark:text-text1">Create your account to start managing events</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+
               {/* Full Name */}
               <div className="relative">
-                <label className="block text-primary font-semibold mb-2">Full Name</label>
+                <label className="block text-primary dark:text-text1 font-semibold mb-2">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-4 text-secondary" size={22} />
+                  <User className="absolute left-4 top-4 text-secondary dark:text-text1" size={22} />
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg outline-none transition"
+                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg dark:border-secondary rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1"
                     placeholder="John Doe"
                   />
                 </div>
@@ -160,32 +158,32 @@ export default function Register() {
 
               {/* Date of Birth */}
               <div>
-                <label className="block text-primary font-semibold mb-2">Date of Birth</label>
+                <label className="block text-primary dark:text-text1 font-semibold mb-2">Date of Birth</label>
                 <div className="relative">
-                  <Calendar className="absolute left-4 top-4 text-secondary" size={22} />
+                  <Calendar className="absolute left-4 top-4 text-secondary dark:text-text1" size={22} />
                   <input
                     type="date"
                     name="dob"
                     value={formData.dob}
                     onChange={handleChange}
                     required
-                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg outline-none transition"
+                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg dark:border-secondary rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1"
                   />
                 </div>
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-primary font-semibold mb-2">Phone Number</label>
+                <label className="block text-primary dark:text-text1 font-semibold mb-2">Phone Number</label>
                 <div className="relative">
-                  <Phone className="absolute left-4 top-4 text-secondary" size={22} />
+                  <Phone className="absolute left-4 top-4 text-secondary dark:text-text1" size={22} />
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg outline-none transition"
+                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg dark:border-secondary rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1"
                     placeholder="+251 912 345 678"
                   />
                 </div>
@@ -193,16 +191,16 @@ export default function Register() {
 
               {/* Username */}
               <div>
-                <label className="block text-primary font-semibold mb-2">Username</label>
+                <label className="block text-primary dark:text-text1 font-semibold mb-2">Username</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-4 text-secondary" size={22} />
+                  <User className="absolute left-4 top-4 text-secondary dark:text-text1" size={22} />
                   <input
                     type="text"
                     name="username"
                     value={formData.username || ''}
                     onChange={handleChange}
                     required
-                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg outline-none transition"
+                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg dark:border-secondary rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1"
                     placeholder="Choose a unique username"
                   />
                 </div>
@@ -210,16 +208,16 @@ export default function Register() {
 
               {/* Email */}
               <div>
-                <label className="block text-primary font-semibold mb-2">Email Address</label>
+                <label className="block text-primary dark:text-text1 font-semibold mb-2">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-4 text-secondary" size={22} />
+                  <Mail className="absolute left-4 top-4 text-secondary dark:text-text1" size={22} />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg outline-none transition"
+                    className="w-full pl-14 pr-4 py-4 border-2 border-activeBg dark:border-secondary rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -227,22 +225,22 @@ export default function Register() {
 
               {/* Password */}
               <div>
-                <label className="block text-primary font-semibold mb-2">Password</label>
+                <label className="block text-primary dark:text-text1 font-semibold mb-2">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-4 text-secondary" size={22} />
+                  <Lock className="absolute left-4 top-4 text-secondary dark:text-text1" size={22} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="w-full pl-14 pr-14 py-4 border-2 border-activeBg rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg outline-none transition"
+                    className="w-full pl-14 pr-14 py-4 border-2 border-activeBg dark:border-secondary rounded-xl focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1"
                     placeholder="Create a strong password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-4 text-secondary hover:text-buttonHover"
+                    className="absolute right-4 top-4 text-secondary dark:text-text1 hover:text-buttonHover"
                   >
                     {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>
@@ -251,26 +249,26 @@ export default function Register() {
 
               {/* Confirm Password */}
               <div>
-                <label className="block text-secondary font-semibold mb-2">Confirm Password</label>
+                <label className="block text-primary dark:text-text1 font-semibold mb-2">Confirm Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-4 text-secondary" size={22} />
+                  <Lock className="absolute left-4 top-4 text-secondary dark:text-text1" size={22} />
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    className={`w-full pl-14 pr-14 py-4 border-2 rounded-xl outline-none transition ${
+                    className={`w-full pl-14 pr-14 py-4 border-2 rounded-xl outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1 ${
                       !passwordMatch && formData.confirmPassword
                         ? 'border-inactiveText'
-                        : 'border-activeBg focus:border-primary focus:ring-4 focus:ring-activeBg'
+                        : 'border-activeBg dark:border-secondary focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary'
                     }`}
                     placeholder="Confirm your password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-4 text-secondary hover:text-buttonHover"
+                    className="absolute right-4 top-4 text-secondary dark:text-text1 hover:text-buttonHover"
                   >
                     {showConfirmPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                   </button>
@@ -288,11 +286,11 @@ export default function Register() {
                   checked={formData.terms}
                   onChange={handleChange}
                   required
-                  className="mt-1 w-5 h-5 text-primary rounded focus:ring-primary"
+                  className="mt-1 w-5 h-5 text-primary rounded focus:ring-primary dark:focus:ring-secondary"
                 />
-                <label className="text-secondary">
+                <label className="text-secondary dark:text-text1">
                   I agree to the{' '}
-                  <a className="text-primary font-bold hover:underline">Terms & Conditions</a>
+                  <a className="text-primary dark:text-secondary font-bold hover:underline">Terms & Conditions</a>
                 </label>
               </div>
 
@@ -300,15 +298,27 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={!formData.terms || !passwordMatch}
-                className="w-full bg-primary text-text1 py-5 rounded-xl font-bold text-xl hover:bg-buttonHover transition transform hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-3"
+                className="w-full bg-primary dark:bg-secondary text-text1 py-5 rounded-xl font-bold text-xl hover:bg-buttonHover dark:hover:bg-primary transition transform hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-3"
               >
                 <span>Create Account</span>
                 <CheckCircle size={28} />
               </button>
+              <div className="mt-8 text-center">
+                    <p className="text-primary dark:text-text1">
+                      Are you already an account?{" "}
+                      <Link
+                        to="/login"
+                        className="text-secondary dark:text-secondary font-bold hover:text-buttonHover dark:hover:text-primary"
+                      >
+                        Login here
+                      </Link>
+                    </p>
+                  </div>
             </form>
           </div>
         </div>
       </div>
+      
     </MainLayout>
   );
 }

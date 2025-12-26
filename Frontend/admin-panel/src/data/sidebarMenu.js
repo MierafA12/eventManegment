@@ -10,7 +10,6 @@ export const superAdminMenu = [
   { name: "Overview", icon: "FiHome", path: "/superAdmin/SadminDashboard" },
   { name: "Create Admins", icon: "FiUsers", path: "/superAdmin/CreateAdmin" },
   { name: "Manage Admins", icon: "FiUsers", path: "/superAdmin/ManageAdmin" },
-  { name: "Manage Events", icon: "FiCalendar", path: "/super/events" },
-  { name: "Reports", icon: "FiActivity", path: "/super/reports" },
+  { name: "Manage Events", icon: "FiCalendar", path: "/superAdmin/SmanageEvents" },
   { name: "System Settings", icon: "FiSettings", path: "/superadmin/SettingsPage" },
 ];

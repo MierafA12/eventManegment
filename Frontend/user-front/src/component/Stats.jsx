@@ -10,7 +10,7 @@ export default function Stats() {
   ];
 
   return (
-    <section className="py-24 bg-bg">
+    <section className="py-24 bg-text1 dark:bg-bgDark transition-colors duration-300">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-16 text-primary">
           Platform Stats
@@ -20,7 +20,7 @@ export default function Stats() {
           {stats.map((stat, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl shadow-lg p-8 text-center transition-transform transform hover:-translate-y-3 hover:shadow-2xl border-t-4 border-secondary"
+              className="bg-text1 dark:bg-primary rounded-2xl shadow-lg p-8 text-center transition-transform transform hover:-translate-y-3 hover:shadow-2xl border-t-4 border-secondary"
             >
               {stat.icon}
               <h3 className="text-xl font-semibold text-primary mb-2">{stat.label}</h3>

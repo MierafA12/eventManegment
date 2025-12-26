@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { NotificationProvider } from "./context/NotificationContext";
 
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -9,16 +10,21 @@ import CreateEvent from "./pages/admin/CreateEvents";
 import CreateAdmin from "./pages/superAdmin/CreateAdmin";
 import ManageAdmin from "./pages/superAdmin/ManageAdmin";
 import ManageEvents from "./pages/admin/ManageEvents";
+import SmanageEvents from "./pages/superAdmin/SmanageEvents";
 import UserRegistration from "./pages/admin/UserRegistration";
 import SettingsPage from "./components/setting";
+import Notifications from "./components/Notification";
 import { ThemeProvider } from "./context/ThemeContext";
 import NotFound from "./pages/404";
+import ProfilePage from "./profile.jsx";
+import Contact from "./components/Contact.jsx";
 
 
 
 export default function App() {
   return (
     <ThemeProvider>
+      <NotificationProvider>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -54,6 +60,14 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={["superadmin"]}>
                 <ManageAdmin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/SmanageEvents"
+            element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <SmanageEvents />
               </ProtectedRoute>
             }
           />
@@ -97,11 +111,60 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/Notifications"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/Notifications"
+            element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/profile"
+            element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/contact"
+            element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <Contact />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contact"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <Contact />
+              </ProtectedRoute>
+            }
+          />
            <Route path="*" element={<NotFound />} />
 
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </NotificationProvider>
     </ThemeProvider>
   );
 }
