@@ -7,10 +7,10 @@ class ParticipantController {
     private $userModel;
     private $participantModel;
 
-public function __construct(mysqli $conn) {
-    $this->userModel = new UserModel($conn);
-    $this->participantModel = new ParticipantModel($conn);
-}
+    public function __construct(mysqli $conn) {
+        $this->userModel = new UserModel($conn);
+        $this->participantModel = new ParticipantModel($conn);
+    }
 
     public function signup($request) {
         $data = json_decode($request, true);
@@ -32,19 +32,28 @@ public function __construct(mysqli $conn) {
             return ["success" => false, "message" => "All fields are required"];
         }
 
-        // Create user
+        // Create user (default role = participant)
         $createUser = $this->userModel->createUser($username, $email, $password);
         if (!$createUser) {
             http_response_code(500);
-            return ["success" => false, "message" => "Failed to create user. Email or username may already exist."];
+            return [
+                "success" => false,
+                "message" => "Failed to create user. Email or username may already exist."
+            ];
         }
 
-        // Get created user ID
+        // Get user ID
         $user = $this->userModel->getByEmail($email);
         $userId = $user["id"];
 
         // Create participant record
-        $saveParticipant = $this->participantModel->createParticipant($userId, $full_name, $dob, $phone_number);
+        $saveParticipant = $this->participantModel->createParticipant(
+            $userId,
+            $full_name,
+            $dob,
+            $phone_number
+        );
+
         if (!$saveParticipant) {
             http_response_code(500);
             return ["success" => false, "message" => "Failed to save participant info"];

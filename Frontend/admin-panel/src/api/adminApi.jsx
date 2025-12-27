@@ -4,6 +4,20 @@ const API = axios.create({
   baseURL: "http://localhost/EthioEvents/Backend/public",
 });
 
+
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); 
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/* ================= ADMIN ================= */
+
 export const getAdmins = () => API.get("/admins");
 
 export const createAdmin = (admin) =>
@@ -14,10 +28,8 @@ export const createAdmin = (admin) =>
     password: admin.password,
   });
 
-
 export const toggleAdminStatus = (id) =>
   API.post("/admin/status", { id });
-
 
 export const deleteAdmin = (id) =>
   API.post("/admin/delete", { id });
@@ -28,22 +40,33 @@ export const updateAdmin = (admin) =>
     full_name: admin.full_name,
     username: admin.username,
     email: admin.email,
-    status: admin.status
+    status: admin.status,
   });
+
+
+
+export const createEvent = (formData) =>
+  API.post("/event/create", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const getAdminEvents = () =>
+  API.get("/admin/events");
+
+
+
 export const getEventsSummary = () =>
   API.get("/superadmin/events");
 
-export const getProfile = (jwt) =>
-  API.get("/admin/profile", { headers: { Authorization: `Bearer ${jwt}` } });
 
-export const updateProfile = (profileData, jwt) =>
-  API.put("/profile", profileData, {
-    headers: { Authorization: `Bearer ${jwt}` },
-  });
-  export const changePassword = (data, jwt) =>
-  API.post("/admin/change-password", data, {
-    headers: { Authorization: `Bearer ${jwt}` },
-  });
 
+export const getProfile = () =>
+  API.get("/admin/profile");
+
+export const updateProfile = (profileData) =>
+  API.put("/profile", profileData);
+
+export const changePassword = (data) =>
+  API.post("/admin/change-password", data);
 
 export default API;

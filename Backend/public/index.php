@@ -28,6 +28,8 @@ require_once "../route/UserRoute.php";
  require_once "../controller/UserController.php";
  require_once "../controller/NotificationController.php";
  require_once "../controller/ContactController.php";
+//  require_once "../route/AdminRoute.php";
+//  require_once "route/EventRoute.php";
 
 // ---------------- ROUTER ----------------
 $method = $_SERVER["REQUEST_METHOD"];
