@@ -5,68 +5,67 @@ const API = axios.create({
 });
 
 
-API.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token"); 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
-/* ================= ADMIN ================= */
 
-export const getAdmins = () => API.get("/admins");
+export const getAdmins = (token) =>
+  API.get("/admins", { headers: { Authorization: `Bearer ${token}` } });
 
-export const createAdmin = (admin) =>
+export const createAdmin = (admin, token) =>
   API.post("/admin/create", {
     full_name: admin.fullName,
     username: admin.username,
     email: admin.email,
     password: admin.password,
-  });
+  }, { headers: { Authorization: `Bearer ${token}` } });
 
-export const toggleAdminStatus = (id) =>
-  API.post("/admin/status", { id });
+export const toggleAdminStatus = (id, token) =>
+  API.post("/admin/status", { id }, { headers: { Authorization: `Bearer ${token}` } });
 
-export const deleteAdmin = (id) =>
-  API.post("/admin/delete", { id });
+export const deleteAdmin = (id, token) =>
+  API.post("/admin/delete", { id }, { headers: { Authorization: `Bearer ${token}` } });
 
-export const updateAdmin = (admin) =>
+export const updateAdmin = (admin, token) =>
   API.post("/admin/update", {
     id: admin.id,
     full_name: admin.full_name,
     username: admin.username,
     email: admin.email,
     status: admin.status,
+  }, { headers: { Authorization: `Bearer ${token}` } });
+
+export const createEvent = (formData, token) =>
+  API.post("/admin/events/create", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`
+    },
   });
 
+export const getAdminEvents = (token) =>
+  API.get("/admin/events", { headers: { Authorization: `Bearer ${token}` } });
 
-
-export const createEvent = (formData) =>
-  API.post("/event/create", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+export const getFilteredAdminEvents = (params, token) =>
+  API.get("/events/search-filter", {
+    params,
+    headers: { Authorization: `Bearer ${token}` }
   });
 
-export const getAdminEvents = () =>
-  API.get("/admin/events");
+export const getEventsSummary = (token) =>
+  API.get("/superadmin/events", { headers: { Authorization: `Bearer ${token}` } });
 
+export const getProfile = (token) =>
+  API.get("/admin/profile", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
+export const updateProfile = (profileData, token) =>
+  API.put("/profile", profileData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
-export const getEventsSummary = () =>
-  API.get("/superadmin/events");
-
-
-
-export const getProfile = () =>
-  API.get("/admin/profile");
-
-export const updateProfile = (profileData) =>
-  API.put("/profile", profileData);
-
-export const changePassword = (data) =>
-  API.post("/admin/change-password", data);
+export const changePassword = (data, token) =>
+  API.post("/admin/change-password", data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
 export default API;

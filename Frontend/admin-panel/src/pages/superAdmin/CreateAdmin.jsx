@@ -28,8 +28,12 @@ export default function CreateAdmin() {
       return;
     }
 
-    if (form.password.length < 8) {
-      setMessage({ text: "Password must be at least 8 characters long.", type: "error" });
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    if (!passwordRegex.test(form.password)) {
+      setMessage({
+        text: "Password must be at least 8 characters long and include both uppercase and lowercase letters.",
+        type: "error"
+      });
       return;
     }
 
@@ -57,11 +61,10 @@ export default function CreateAdmin() {
         {/* Inline message */}
         {message.text && (
           <p
-            className={`mb-4 p-3 rounded ${
-              message.type === "success"
+            className={`mb-4 p-3 rounded ${message.type === "success"
                 ? "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white"
                 : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-white"
-            }`}
+              }`}
           >
             {message.text}
           </p>

@@ -8,6 +8,13 @@ export default function ChangePasswordModal({ jwt, onClose, onSuccess, changePas
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
+    // Password strength validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      setError("Password must be at least 8 characters long and include both uppercase and lowercase letters.");
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       setError("New password and confirm password do not match!");
       return;
