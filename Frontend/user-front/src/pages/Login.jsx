@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import MainLayout from "../layout/mainLayout";
-import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 
 export default function Login() {

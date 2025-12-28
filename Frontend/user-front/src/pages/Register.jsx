@@ -36,7 +36,7 @@ export default function Register() {
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validatePassword = (password) => {
-    return /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
+    return /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password);
   };
 
   const handleSubmit = async (e) => {
@@ -49,7 +49,7 @@ export default function Register() {
 
     if (!validatePassword(formData.password)) {
       return setErrorMessage(
-        'Password must be at least 8 characters and include at least one letter and one special character.'
+        'Password must be at least 8 characters and include both uppercase and lowercase letters.'
       );
     }
 
@@ -258,11 +258,10 @@ export default function Register() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    className={`w-full pl-14 pr-14 py-4 border-2 rounded-xl outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1 ${
-                      !passwordMatch && formData.confirmPassword
+                    className={`w-full pl-14 pr-14 py-4 border-2 rounded-xl outline-none transition bg-lightBg dark:bg-bgDark text-primary dark:text-text1 ${!passwordMatch && formData.confirmPassword
                         ? 'border-inactiveText'
                         : 'border-activeBg dark:border-secondary focus:border-primary focus:ring-4 focus:ring-activeBg dark:focus:ring-secondary'
-                    }`}
+                      }`}
                     placeholder="Confirm your password"
                   />
                   <button
@@ -304,21 +303,21 @@ export default function Register() {
                 <CheckCircle size={28} />
               </button>
               <div className="mt-8 text-center">
-                    <p className="text-primary dark:text-text1">
-                      Are you already an account?{" "}
-                      <Link
-                        to="/login"
-                        className="text-secondary dark:text-secondary font-bold hover:text-buttonHover dark:hover:text-primary"
-                      >
-                        Login here
-                      </Link>
-                    </p>
-                  </div>
+                <p className="text-primary dark:text-text1">
+                  Are you already an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-secondary dark:text-secondary font-bold hover:text-buttonHover dark:hover:text-primary"
+                  >
+                    Login here
+                  </Link>
+                </p>
+              </div>
             </form>
           </div>
         </div>
       </div>
-      
+
     </MainLayout>
   );
 }
