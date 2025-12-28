@@ -72,18 +72,18 @@ public function getUserById($id) {
     $sql = "
         SELECT
             e.id,
-            e.name AS event_name,
+            e.title AS event_name,
             u.full_name AS organizer,
-            COUNT(ra.id) AS total_attendance
+            COUNT(r.id) AS total_attendance
         FROM events e
-        JOIN users u ON e.created_by = u.id
+        JOIN users u ON e.user_id = u.id
         LEFT JOIN registrations r ON r.event_id = e.id
-        LEFT JOIN registration_attendees ra ON ra.registration_id = r.id
         GROUP BY e.id
-        ORDER BY e.date DESC
+        ORDER BY e.event_date DESC
     ";
 
     $result = $this->conn->query($sql);
+    if (!$result) return [];
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 

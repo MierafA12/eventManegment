@@ -8,8 +8,13 @@ class BaseModel {
         $this->table = $table;
     }
 
+    public function getConnection(): mysqli {
+        return $this->conn;
+    }
+
     public function all(): array {
         $result = $this->conn->query("SELECT * FROM {$this->table}");
+        if (!$result) return [];
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 

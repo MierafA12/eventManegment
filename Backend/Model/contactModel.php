@@ -33,9 +33,11 @@ class ContactModel extends BaseModel {
     public function getMessagesForAdmin($adminId): array {
         // Admin sees only messages targeted to them
         $stmt = $this->conn->prepare("
-            SELECT * FROM contacts 
-            WHERE target_admin_id = ?
-            ORDER BY created_at DESC
+            SELECT c.*, e.title as event_title 
+            FROM contacts c
+            LEFT JOIN events e ON c.event_id = e.id
+            WHERE c.target_admin_id = ?
+            ORDER BY c.created_at DESC
         ");
         $stmt->bind_param("i", $adminId);
         $stmt->execute();
@@ -45,9 +47,23 @@ class ContactModel extends BaseModel {
     public function getGeneralMessages(): array {
         // Superadmin sees only general messages (no target)
         $stmt = $this->conn->prepare("
-            SELECT * FROM contacts 
-            WHERE target_admin_id IS NULL
-            ORDER BY created_at DESC
+            SELECT c.*, e.title as event_title
+            FROM contacts c
+            LEFT JOIN events e ON c.event_id = e.id
+            WHERE c.target_admin_id IS NULL
+            ORDER BY c.created_at DESC
+        ");
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getAllMessages(): array {
+        // Superadmin sees everything
+        $stmt = $this->conn->prepare("
+            SELECT c.*, e.title as event_title
+            FROM contacts c
+            LEFT JOIN events e ON c.event_id = e.id
+            ORDER BY c.created_at DESC
         ");
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -57,6 +73,17 @@ class ContactModel extends BaseModel {
         $result = $this->conn->query("SELECT id FROM users WHERE role='superadmin' LIMIT 1");
         $row = $result->fetch_assoc();
         return $row['id'] ?? 1;
+    }
+
+    public function getEventAdminId(int $eventId): ?int {
+        $stmt = $this->conn->prepare("SELECT created_by FROM events WHERE id = ?");
+        $stmt->bind_param("i", $eventId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            return (int)$row['created_by'];
+        }
+        return null;
     }
 }
 
