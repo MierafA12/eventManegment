@@ -1,8 +1,13 @@
 import { useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { Button1 } from "../../components/Button";
+import { useAuth } from "../../context/AuthContext";
+import { createEvent } from "../../api/adminApi";
+import API from "../../api/adminApi";
 
 export default function CreateEvent() {
+  const { jwt } = useAuth();
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -17,22 +22,70 @@ export default function CreateEvent() {
   });
 
   const [preview, setPreview] = useState(null);
+  const [message, setMessage] = useState({ text: "", type: "" }); // For styled messages
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Event Created:", form); // later you will connect to backend
+    setMessage({ text: "", type: "" }); // Clear previous messages
+
+    const formData = new FormData();
+
+    Object.entries(form).forEach(([key, value]) => {
+      if (value !== null && value !== "") {
+        formData.append(key, value);
+      }
+    });
+
+    try {
+      const { data } = await createEvent(formData, jwt);
+
+      if (data.success) {
+        setMessage({ text: "Event created successfully!", type: "success" });
+        setForm({
+          title: "",
+          description: "",
+          category: "",
+          eventType: "",
+          location: "",
+          eventLink: "",
+          datetime: "",
+          fee: "",
+          capacity: "",
+          image: null, // Reset image as well
+        });
+        setPreview(null); // Clear image preview
+        // Optional: Redirect after delay
+      } else {
+        setMessage({ text: data.message || "Failed to create event", type: "error" });
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage({ text: "Error creating event. Please try again.", type: "error" });
+    }
   };
 
   return (
     <AdminLayout>
-      <div className="max-w-2xl mx-auto bg-text1 shadow-lg rounded-xl p-8 dark:bg-bgDark">
-        <h1 className="text-2xl font-semibold text-primary mb-6 dark:text-text1">
+      <div className="max-w-3xl mx-auto bg-text1 dark:bg-bgDark shadow-lg rounded-xl p-8 transition-colors duration-300">
+        <h1 className="text-2xl font-semibold text-primary dark:text-text1 mb-6">
           Create New Event
         </h1>
+
+        {/* Inline Message */}
+        {message.text && (
+          <div
+            className={`mb-6 p-4 rounded-lg text-sm font-medium ${message.type === "success"
+                ? "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white"
+                : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-white"
+              }`}
+          >
+            {message.text}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
@@ -108,7 +161,7 @@ export default function CreateEvent() {
               />
             </div>
           )}
-{/* Online Link (Shown only if Online) */}
+          {/* Online Link (Shown only if Online) */}
           {form.eventType === "Online" && (
             <div>
               <label className="block text-primary font-medium mb-1 dark:text-text1">
@@ -174,24 +227,24 @@ export default function CreateEvent() {
             />
           </div>
 
-     {/* Capacity (shown only if Physical) */}
-{form.eventType === "Physical" && (
-  <div>
-    <label className="block text-primary font-medium mb-1 dark:text-text1">
-      Capacity
-    </label>
-    <input
-      type="number"
-      name="capacity"
-      placeholder="Enter capacity"
-      value={form.capacity}
-      onChange={handleChange}
-      min="1"
-      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
-      required={form.eventType === "Physical"}
-    />
-  </div>
-)}
+          {/* Capacity (shown only if Physical) */}
+          {form.eventType === "Physical" && (
+            <div>
+              <label className="block text-primary font-medium mb-1 dark:text-text1">
+                Capacity
+              </label>
+              <input
+                type="number"
+                name="capacity"
+                placeholder="Enter capacity"
+                value={form.capacity}
+                onChange={handleChange}
+                min="1"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"
+                required={form.eventType === "Physical"}
+              />
+            </div>
+          )}
 
 
           {/* Event Image */}

@@ -9,20 +9,22 @@ export default function EditEventModal({ event, onClose, onSave }) {
     id: "",
     title: "",
     category: "",
+    eventType: "", // Added
     location: "",
+    eventLink: "", // Added
     date: "",
     time: "",
     fee: "",
     capacity: "",
   });
 
-  const [saved, setSaved] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   // Populate form when event changes
   useEffect(() => {
     if (event) {
       setForm({ ...event });
-      setSaved(false);
+      setMessage({ text: "", type: "" });
     }
   }, [event]);
 
@@ -33,19 +35,28 @@ export default function EditEventModal({ event, onClose, onSave }) {
 
   const handleSave = () => {
     // Basic validation
-    const requiredFields = ["title", "category", "location", "date", "time"];
+    const requiredFields = ["title", "category", "eventType", "date", "time"];
     for (let field of requiredFields) {
       if (!form[field]) {
-        alert(`Please fill in ${field}`);
+        setMessage({ text: `Please fill in ${field}`, type: "error" });
         return;
       }
     }
 
-    onSave(form);
-    setSaved(true);
+    if (form.eventType === "Physical" && !form.location) {
+      setMessage({ text: "Please enter a location for physical events", type: "error" });
+      return;
+    }
+    if (form.eventType === "Online" && !form.eventLink) {
+      setMessage({ text: "Please enter a meeting link for online events", type: "error" });
+      return;
+    }
 
-    // Close modal after 1 second
-    setTimeout(() => onClose(), 1000);
+    onSave(form);
+    setMessage({ text: "Event updated successfully!", type: "success" });
+
+    // Close modal after 1.5 seconds
+    setTimeout(() => onClose(), 1500);
   };
 
   return (
@@ -72,31 +83,133 @@ export default function EditEventModal({ event, onClose, onSave }) {
 
         {/* Scrollable Form */}
         <div className="p-6 overflow-y-auto flex-1 space-y-4">
-          {["title", "category", "location", "date", "time", "fee", "capacity"].map((field) => (
-            <div key={field}>
-              <label className="text-sm font-medium dark:text-text1 capitalize">
-                {field}
-              </label>
+          {/* Status Message */}
+          {message.text && (
+            <div
+              className={`p-3 rounded-lg text-sm mb-4 ${message.type === "success"
+                  ? "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white"
+                  : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-white"
+                }`}
+            >
+              {message.text}
+            </div>
+          )}
+
+          {/* Title */}
+          <div>
+            <label className="text-sm font-medium dark:text-text1">Title</label>
+            <input
+              type="text"
+              name="title"
+              className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+              value={form.title}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="text-sm font-medium dark:text-text1">Category</label>
+            <input
+              type="text"
+              name="category"
+              className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+              value={form.category}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Event Type */}
+          <div>
+            <label className="text-sm font-medium dark:text-text1">Event Type</label>
+            <select
+              name="eventType"
+              className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+              value={form.eventType}
+              onChange={handleChange}
+            >
+              <option value="Physical">Physical</option>
+              <option value="Online">Online</option>
+            </select>
+          </div>
+
+          {/* Location (Shown only if Physical) */}
+          {form.eventType === "Physical" && (
+            <div>
+              <label className="text-sm font-medium dark:text-text1">Location</label>
               <input
-                type={
-                  field === "date"
-                    ? "date"
-                    : field === "time"
-                    ? "time"
-                    : field === "capacity"
-                    ? "number"
-                    : "text"
-                }
-                name={field}
+                type="text"
+                name="location"
                 className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
-                value={form[field]}
+                value={form.location || ""}
                 onChange={handleChange}
               />
             </div>
-          ))}
-          {saved && (
-            <p className="text-green-500 text-sm mt-2">Changes saved!</p>
           )}
+
+          {/* Online Link (Shown only if Online) */}
+          {form.eventType === "Online" && (
+            <div>
+              <label className="text-sm font-medium dark:text-text1">Event Link</label>
+              <input
+                type="url"
+                name="eventLink"
+                className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+                value={form.eventLink || ""}
+                onChange={handleChange}
+              />
+            </div>
+          )}
+
+          {/* Date & Time */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium dark:text-text1">Date</label>
+              <input
+                type="date"
+                name="date"
+                className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+                value={form.date}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium dark:text-text1">Time</label>
+              <input
+                type="time"
+                name="time"
+                className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+                value={form.time}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* Fee & Capacity */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium dark:text-text1">Fee (ETB)</label>
+              <input
+                type="number"
+                name="fee"
+                className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+                value={form.fee}
+                onChange={handleChange}
+              />
+            </div>
+            {form.eventType === "Physical" && (
+              <div>
+                <label className="text-sm font-medium dark:text-text1">Capacity</label>
+                <input
+                  type="number"
+                  name="capacity"
+                  className="w-full border px-3 py-2 rounded mt-1 dark:text-text1 dark:bg-bgDark"
+                  value={form.capacity}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer Buttons */}

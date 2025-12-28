@@ -11,9 +11,11 @@ import {
   Legend,
 } from "recharts";
 import StatusCard from "../../components/statusCards";
+import { useAuth } from "../../context/AuthContext";
 import API from "../../api/adminApi";
 
 export default function AdminDashboard() {
+  const { jwt } = useAuth();
   // State for stats
   const [stats, setStats] = useState({
     upcomingEvents: 0,
@@ -29,9 +31,12 @@ export default function AdminDashboard() {
   const [loadingChart, setLoadingChart] = useState(true);
 
   useEffect(() => {
+    if (!jwt) return;
+
     // Fetch dashboard stats
-    // Fetch dashboard stats
-    API.get("/admin/dashboard/stats")
+    API.get("/admin/dashboard/stats", {
+      headers: { Authorization: `Bearer ${jwt}` }
+    })
       .then(res => {
         const data = res.data;
         if (data.success) setStats(data.stats);
@@ -40,14 +45,16 @@ export default function AdminDashboard() {
       .finally(() => setLoadingStats(false));
 
     // Fetch event trend chart
-    API.get("/admin/dashboard/event-trend")
+    API.get("/admin/dashboard/event-trend", {
+      headers: { Authorization: `Bearer ${jwt}` }
+    })
       .then(res => {
         const data = res.data;
         if (data.success) setEventData(data.eventData);
       })
       .catch(err => console.error("Chart fetch error:", err))
       .finally(() => setLoadingChart(false));
-  }, []);
+  }, [jwt]);
 
   return (
     <AdminLayout>

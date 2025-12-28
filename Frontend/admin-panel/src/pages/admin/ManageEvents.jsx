@@ -5,9 +5,12 @@ import Filter from "../../components/FilterE";
 import EventRow from "../../components/EventRow";
 import EventDeleteModal from "../../components/EventDelete";
 import EventEditModal from "./EditEvents";
+import { useAuth } from "../../context/AuthContext";
+import { getAdminEvents, getFilteredAdminEvents } from "../../api/adminApi";
 import API from "../../api/adminApi";
 
 export default function ManageEvents() {
+  const { jwt } = useAuth();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -15,6 +18,7 @@ export default function ManageEvents() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   // Helper to split datetime
   const processEvents = (rawData) => {
@@ -39,15 +43,13 @@ export default function ManageEvents() {
   const fetchEvents = () => {
     setLoading(true);
 
-    // Build query params
-    // Use searchAndFilter if there are filters or search
     if (search || filterType !== "all" || categoryFilter !== "all") {
       const params = {};
       if (search) params.search = search;
       if (filterType !== "all") params.status = filterType;
       if (categoryFilter !== "all") params.category = categoryFilter;
 
-      API.get("/events/search-filter", { params })
+      getFilteredAdminEvents(params, jwt)
         .then((res) => {
           const data = res.data;
           setEvents(processEvents(data));
@@ -58,7 +60,7 @@ export default function ManageEvents() {
         })
         .finally(() => setLoading(false));
     } else {
-      API.get("/events")
+      getAdminEvents(jwt)
         .then((res) => {
           const data = res.data;
           setEvents(processEvents(data));
@@ -69,12 +71,13 @@ export default function ManageEvents() {
         })
         .finally(() => setLoading(false));
     }
-
   };
 
   useEffect(() => {
-    fetchEvents();
-  }, [search, filterType, categoryFilter]);
+    if (jwt) {
+      fetchEvents();
+    }
+  }, [search, filterType, categoryFilter, jwt]);
 
   // ------------------ Save Edited Event ------------------
   const saveUpdated = async (updatedEvent) => {
@@ -92,19 +95,21 @@ export default function ManageEvents() {
         formData.append('datetime', `${updatedEvent.date} ${updatedEvent.time}`);
       }
 
-      const res = await API.post("/event/update", formData);
+      const res = await API.post("/event/update", formData, {
+        headers: { Authorization: `Bearer ${jwt}` }
+      });
       const data = res.data;
 
       if (data.success) {
-        alert("Event updated successfully!");
+        setMessage({ text: "Event updated successfully!", type: "success" });
         fetchEvents(); // Refresh the list
         setEditTarget(null);
       } else {
-        alert("Failed to update event: " + (data.message || "Unknown error"));
+        setMessage({ text: data.message || "Failed to update event", type: "error" });
       }
     } catch (err) {
-      console.error("Error updating event:", err);
-      alert("Error updating event");
+      console.error(err);
+      setMessage({ text: "Error updating event", type: "error" });
     }
   };
 
@@ -116,19 +121,21 @@ export default function ManageEvents() {
       const formData = new FormData();
       formData.append('id', deleteTarget.id);
 
-      const res = await API.post("/event/delete", formData);
+      const res = await API.post("/event/delete", formData, {
+        headers: { Authorization: `Bearer ${jwt}` }
+      });
       const data = res.data;
 
       if (data.success) {
-        alert("Event deleted successfully!");
+        setMessage({ text: "Event deleted successfully!", type: "success" });
         fetchEvents(); // Refresh the list
         setDeleteTarget(null);
       } else {
-        alert("Failed to delete event: " + (data.message || "Unknown error"));
+        setMessage({ text: data.message || "Failed to delete event", type: "error" });
       }
     } catch (err) {
       console.error("Error deleting event:", err);
-      alert("Error deleting event");
+      setMessage({ text: "Error deleting event", type: "error" });
     }
   };
 
@@ -138,6 +145,18 @@ export default function ManageEvents() {
       <h1 className="text-2xl font-semibold text-primary dark:text-text1 mb-6">
         Manage Events
       </h1>
+
+      {/* Styled Message */}
+      {message.text && (
+        <div
+          className={`mb-6 p-4 rounded-lg text-sm font-medium ${message.type === "success"
+              ? "bg-green-100 text-green-700 dark:bg-green-700 dark:text-white"
+              : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-white"
+            }`}
+        >
+          {message.text}
+        </div>
+      )}
 
       {/* Search + Filter */}
       <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
