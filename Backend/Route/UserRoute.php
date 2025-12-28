@@ -10,6 +10,8 @@ require_once "../Model/user.php";
 require_once "../Model/participant.php";
 require_once "../Model/adminModel.php";
 require_once "../Model/statusModel.php";
+require_once "../Model/EventModel.php";
+ require_once "../controller/EventController.php";
 
 $routes = [
 "POST /signup" => function($db, $request) {
@@ -59,26 +61,18 @@ $routes = [
         return $controller->deleteAdmin($request);
     },
      "GET /profile" => function($db, $request) {
-    $userController = new UserController(new UserModel($db), new ParticipantModel($db));
-    return $userController->getProfile($request);
-},
-   "GET /superadmin/events" => function ($db) { 
-    $controller = new AdminController(new AdminModel($db));
-    return $controller->getEventsSummary();
-},
-"GET /notifications" => function($db, $request) {
-    $model = new NotificationModel($db);
-    $controller = new NotificationController($model);
-    return $controller->getMyNotifications();
-},
-
-"GET /profile" => function ($db, $request) {
-    $controller = new UserController(
-        new UserModel($db),
-        new ParticipantModel($db)
-    );
-    return $controller->getProfile();
-},
+        $userController = new UserController(new UserModel($db), new ParticipantModel($db));
+        return $userController->getProfile();
+    },
+    "GET /superadmin/events" => function ($db) { 
+        $controller = new AdminController(new AdminModel($db));
+        return $controller->getEventsSummary(getallheaders());
+    },
+    "GET /notifications" => function($db, $request) {
+        $model = new NotificationModel($db);
+        $controller = new NotificationController($model);
+        return $controller->getMyNotifications();
+    },
 
 "PUT /profile" => function ($db, $request) {
     $controller = new UserController(
@@ -137,10 +131,56 @@ $routes = [
     return $controller->answerMessage($data, $requestHeaders);
 },
 
+"POST /admin/events/create" => function($db) {
+    $controller = new EventController($db);
+    return $controller->createEvent(getallheaders());
+},
+
+
+"GET /admin/events" => function($db) {
+    $controller = new EventController($db);
+    return $controller->getAllEvents(getallheaders());
+},
+
+"GET /events" => function($db) {
+    $controller = new EventController($db);
+    return $controller->getPublicEvents();
+},
+
+"GET /event" => function($db) {
+    $controller = new EventController($db);
+    return $controller->getEvent();
+},
 
 
 
 
+
+
+"GET /admin/dashboard/stats" => function($db) {
+    $controller = new EventController($db);
+    return $controller->getDashboardStats(getallheaders());
+},
+
+"GET /admin/dashboard/event-trend" => function($db) {
+    $controller = new EventController($db);
+    return $controller->getEventTrend(getallheaders());
+},
+
+"GET /events/search-filter" => function($db) {
+    $controller = new EventController($db);
+    return $controller->getFilteredEvents(getallheaders());
+},
+
+"POST /event/update" => function($db) {
+    $controller = new EventController($db);
+    return $controller->updateEvent(getallheaders());
+},
+
+"POST /event/delete" => function($db) {
+    $controller = new EventController($db);
+    return $controller->deleteEvent(getallheaders());
+},
 
 ];
 
