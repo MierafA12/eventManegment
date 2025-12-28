@@ -116,7 +116,7 @@ for ($i = 0; $i < $quantity; $i++) {
     $stmt = $conn->prepare("
         INSERT INTO tickets
         (event_id, user_email, ticket_type, quantity, total_amount, payment_status, tx_ref, ticket_code, issued_at, created_at)
-        VALUES (?,?,?,?,?,'Paid',?,?,NOW(),NOW())
+        VALUES (?,?,?,?,?,'paid',?,?,NOW(),NOW())
     ");
 
     // Each ticket has quantity = 1

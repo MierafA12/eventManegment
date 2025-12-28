@@ -7,6 +7,40 @@ $CHAPA_SECRET_KEY = "CHASECK_TEST-WfCdb1qIebMz2cWx8awCqwM3NgNfbboy"; // REAL KEY
 
 $input = json_decode(file_get_contents("php://input"), true);
 
+include __DIR__ . "/../../config/database.php";
+$db = new Database();
+$conn = $db->getConnection();
+
+$metadata = $input['metadata'] ?? [];
+$event_id = $metadata['event_id'] ?? null;
+$requested_quantity = (int)($metadata['quantity'] ?? 1);
+
+if ($event_id) {
+    // 1. Get event capacity
+    $stmt = $conn->prepare("SELECT capacity, eventType FROM events WHERE id = ?");
+    $stmt->bind_param("i", $event_id);
+    $stmt->execute();
+    $event = $stmt->get_result()->fetch_assoc();
+
+    if ($event && $event['eventType'] === 'Physical' && !empty($event['capacity'])) {
+        $capacity = (int)$event['capacity'];
+
+        // 2. Count current registered tickets
+        $stmtCount = $conn->prepare("SELECT SUM(quantity) as total FROM tickets WHERE event_id = ? AND payment_status = 'paid'");
+        $stmtCount->bind_param("i", $event_id);
+        $stmtCount->execute();
+        $regCount = $stmtCount->get_result()->fetch_assoc()['total'] ?? 0;
+
+        if (($regCount + $requested_quantity) > $capacity) {
+            echo json_encode([
+                "status" => "error",
+                "message" => "Capacity is full, register for other event"
+            ]);
+            exit;
+        }
+    }
+}
+
 $required = ["amount", "currency", "email", "first_name", "last_name", "tx_ref", "return_url"];
 
 foreach ($required as $field) {
