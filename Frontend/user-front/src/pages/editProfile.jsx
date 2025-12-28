@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import { getProfile, updateProfile } from "../api/userApi.jsx";
 
 export default function EditProfile() {
@@ -91,11 +91,10 @@ export default function EditProfile() {
 
         {message && (
           <div
-            className={`mb-4 p-3 rounded-lg text-center font-medium transition-colors duration-300 ${
-              isError
+            className={`mb-4 p-3 rounded-lg text-center font-medium transition-colors duration-300 ${isError
                 ? "bg-red-100 text-red-600 dark:bg-red-800 dark:text-red-400"
                 : "bg-green-100 text-green-600 dark:bg-green-800 dark:text-green-400"
-            }`}
+              }`}
           >
             {message}
           </div>

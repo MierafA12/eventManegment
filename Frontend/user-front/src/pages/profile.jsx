@@ -1,15 +1,16 @@
 // src/pages/Profile.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import ProfileBox from "../component/profileBox.jsx";
-import ChangePasswordModal from "../../../admin-panel/src/components/ChangePassword.jsx"; 
-import { changePassword } from "../api/userApi.jsx"; 
+import ChangePasswordModal from "../../../admin-panel/src/components/ChangePassword.jsx";
+import { changePassword } from "../api/userApi.jsx";
 
 export default function Profile() {
   const { user, logout, jwt } = useAuth();
   const navigate = useNavigate();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
 
   if (!user) {
     return <p className="text-center mt-32 text-primary dark:text-text1">Loading...</p>;
@@ -23,10 +24,15 @@ export default function Profile() {
   const goBack = () => navigate(-1);
   const goEdit = () => navigate("/editProfile");
 
+  const handlePasswordSuccess = () => {
+    setMessage({ text: "Password changed successfully!", type: "success" });
+    setTimeout(() => setMessage({ text: "", type: "" }), 5000);
+  };
+
   return (
     <div className="min-h-screen bg-lightBg dark:bg-bgDark px-4 py-6 transition-colors duration-300">
       <div className="bg-bg dark:bg-bgDark rounded-3xl shadow-2xl dark:shadow-lg w-full max-w-md mx-auto p-6 relative transition-colors duration-300">
-        
+
         {/* Back Button */}
         <button
           onClick={goBack}
@@ -34,6 +40,18 @@ export default function Profile() {
         >
           ← Back
         </button>
+
+        {/* Styled Notification */}
+        {message.text && (
+          <div
+            className={`mb-6 p-4 rounded-lg text-center font-medium border ${message.type === "success"
+                ? "bg-green-100 border-green-400 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400"
+                : "bg-red-100 border-red-400 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400"
+              }`}
+          >
+            {message.text}
+          </div>
+        )}
 
         {/* Profile Avatar */}
         <div className="relative w-fit mx-auto -mt-16">
@@ -95,7 +113,7 @@ export default function Profile() {
           jwt={jwt}
           changePasswordApi={changePassword}
           onClose={() => setShowPasswordModal(false)}
-          onSuccess={() => alert("Password changed successfully!")}
+          onSuccess={handlePasswordSuccess}
         />
       )}
     </div>

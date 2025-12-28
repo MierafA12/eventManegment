@@ -1,4 +1,4 @@
-import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function ProfileBox({ size = "md" }) {
   const { user } = useAuth(); // ✅ uses updated AuthContext

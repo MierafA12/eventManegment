@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
-import API from "../api/adminApi.jsx"; // your axios API instance
+import API from "../api/adminApi.jsx"; 
 
 export default function ProfileBox({ size = "md" }) {
   const { jwt, user } = useAuth();
