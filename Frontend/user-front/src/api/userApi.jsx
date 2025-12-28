@@ -30,11 +30,15 @@ export const updateProfile = (jwt, data) =>
   API.put("/profile", data, {
     headers: { Authorization: `Bearer ${jwt}` },
   });
-  export const changePassword = (payload, jwt) => 
+export const changePassword = (payload, jwt) =>
   API.post("/user/change-password", payload, {
-    headers: { Authorization: `Bearer ${jwt}` 
+    headers: {
+      Authorization: `Bearer ${jwt}`
     },
   });
 
+
+export const getEvents = () => API.get("/events");
+export const getEvent = (id) => API.get(`/event?id=${id}`);
 
 export default API;

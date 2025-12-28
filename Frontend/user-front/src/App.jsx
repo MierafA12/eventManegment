@@ -1,8 +1,8 @@
 // src/App.jsx
 import { Routes, Route } from "react-router-dom";
 import { UserProvider } from "./context/userContext.jsx";
-import { AuthProvider } from "../../admin-panel/src/context/AuthContext.jsx";
-import { ThemeProvider } from "../../admin-panel/src/context/ThemeContext.jsx";
+import { AuthProvider } from "../src/context/AuthContext.jsx";
+import { ThemeProvider } from "../src/context/ThemeContext.jsx";
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -21,7 +21,7 @@ import PaymentSuccess from "./pages/PaymentSuccess.jsx";
 import MyTickets from "./pages/MyTickets.jsx";
 function App() {
   return (
-    <UserProvider>
+
       <AuthProvider>
         <ThemeProvider>
       <Routes>
@@ -42,7 +42,7 @@ function App() {
       </Routes>
       </ThemeProvider>
       </AuthProvider>
-    </UserProvider>
+
 
   );
 }
