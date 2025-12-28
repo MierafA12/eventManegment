@@ -32,6 +32,13 @@ class ParticipantController {
             return ["success" => false, "message" => "All fields are required"];
         }
 
+        // Validate password strength
+        $passValidation = validatePasswordStrength($password);
+        if (!$passValidation['success']) {
+            http_response_code(400);
+            return $passValidation;
+        }
+
         // Create user (default role = participant)
         $createUser = $this->userModel->createUser($username, $email, $password);
         if (!$createUser) {

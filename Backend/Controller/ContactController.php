@@ -44,8 +44,8 @@ class ContactController {
         $role = $decoded['role'];
 
         if ($role === 'superadmin') {
-            // Superadmin sees only general messages
-            $messages = $this->model->getGeneralMessages();
+            // Superadmin sees all messages
+            $messages = $this->model->getAllMessages();
         } else {
             // Admin sees only messages targeted to them
             $messages = $this->model->getMessagesForAdmin($userId);

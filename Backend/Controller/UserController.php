@@ -44,8 +44,8 @@ class UserController {
         $userId = $payload['id'];
         $role = $payload['role'];
 
-        $data = json_decode(trim($request), true);
-        if (!is_array($data)) {
+        $data = is_array($request) ? $request : json_decode($request, true);
+        if (!$data) {
             return ["success" => false, "message" => "Invalid request body"];
         }
 
