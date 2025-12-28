@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../Model/adminModel.php';
 require_once "../helpers/jwt.php";
+require_once __DIR__ . '/../helpers/validation.php';
 
 class AdminController {
     private AdminModel $model;
@@ -14,34 +15,46 @@ class AdminController {
     }
 
     public function toggleStatus($request) {
-        $data = json_decode($request, true);
+        $data = is_array($request) ? $request : json_decode($request, true);
         $this->model->updateStatus($data['id'], $data['status']);
         return ["success" => true, "message" => "Status updated"];
     }
 
     public function addAdmin($request) {
-        $data = json_decode($request, true);
+        $data = is_array($request) ? $request : json_decode($request, true);
+        
+        // Validate password
+        $passValidation = validatePasswordStrength($data['password'] ?? '');
+        if (!$passValidation['success']) {
+            return $passValidation;
+        }
+
         $this->model->createAdmin($data['full_name'], $data['username'], $data['email'], $data['password']);
         return ["success" => true, "message" => "Admin created successfully"];
     }
 
     public function editAdmin($request) {
-        $data = json_decode($request, true);
+        $data = is_array($request) ? $request : json_decode($request, true);
         $this->model->updateAdmin($data['id'], $data['full_name'], $data['username'], $data['email'], $data['status']);
         return ["success" => true, "message" => "Admin updated"];
     }
 
     public function deleteAdmin($request) {
-        $data = json_decode($request, true);
+        $data = is_array($request) ? $request : json_decode($request, true);
         $this->model->deleteAdmin($data['id']);
         return ["success" => true, "message" => "Admin deleted"];
     }
-    public function getEventsSummary() {
-    return [
-        "success" => true,
-        "events" => $this->model->getEventsSummary()
-    ];
-}
+    public function getEventsSummary(array $headers) {
+        $decoded = decodeJwtToken($headers);
+        if ($decoded['role'] !== 'superadmin') {
+            http_response_code(403);
+            return ["success" => false, "message" => "Forbidden: Superadmin access required"];
+        }
+        return [
+            "success" => true,
+            "events" => $this->model->getEventsSummary()
+        ];
+    }
       public function getProfile(array $requestHeaders) {
         // Decode token using helper
         $decoded = decodeJwtToken($requestHeaders);
@@ -67,13 +80,13 @@ class AdminController {
         ];
     }
  // AdminController.php
-public function changePassword(array $requestHeaders, string $requestBody) {
-    $decoded = decodeJwtToken($requestHeaders);
-    $userId = $decoded['id']; // works for admin or participant
+    public function changePassword(array $requestHeaders, $requestBody) {
+        $decoded = decodeJwtToken($requestHeaders);
+        $userId = $decoded['id'];
 
-    $data = json_decode($requestBody, true);
-    $currentPassword = $data['currentPassword'] ?? '';
-    $newPassword = $data['newPassword'] ?? '';
+        $data = is_array($requestBody) ? $requestBody : json_decode($requestBody, true);
+        $currentPassword = $data['currentPassword'] ?? '';
+        $newPassword = $data['newPassword'] ?? '';
 
     $user = $this->model->getUserById($userId);
     if (!$user) {
@@ -82,6 +95,12 @@ public function changePassword(array $requestHeaders, string $requestBody) {
 
     if (!password_verify($currentPassword, $user['password'])) {
         return ["success" => false, "message" => "Current password is incorrect"];
+    }
+
+    // Validate new password strength
+    $passValidation = validatePasswordStrength($newPassword);
+    if (!$passValidation['success']) {
+        return $passValidation;
     }
 
     $hashed = password_hash($newPassword, PASSWORD_DEFAULT);

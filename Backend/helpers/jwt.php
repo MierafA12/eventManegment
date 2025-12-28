@@ -21,7 +21,9 @@ function generateJwtToken($userId, $role) {
 }
 
 function decodeJwtToken(array $headers): array {
-    if (!isset($headers['Authorization'])) {
+    $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null;
+
+    if (!$authHeader) {
         http_response_code(401);
         exit(json_encode([
             "success" => false,
@@ -29,7 +31,6 @@ function decodeJwtToken(array $headers): array {
         ]));
     }
 
-    $authHeader = $headers['Authorization'];
     $token = str_replace("Bearer ", "", $authHeader);
 
     try {
