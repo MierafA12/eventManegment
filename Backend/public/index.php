@@ -22,14 +22,23 @@ require_once "../config/Database.php";
 require_once "../model/User.php";
 require_once "../controller/AuthController.php";
 require_once "../controller/ParticipantController.php";
-require_once "../route/UserRoute.php";
- require_once "../controller/statusController.php";
- require_once "../controller/AdminController.php";
- require_once "../controller/UserController.php";
- require_once "../controller/NotificationController.php";
- require_once "../controller/ContactController.php";
-//  require_once "../route/AdminRoute.php";
-//  require_once "route/EventRoute.php";
+require_once "../controller/statusController.php";
+require_once "../controller/AdminController.php";
+require_once "../controller/UserController.php";
+require_once "../controller/NotificationController.php";
+require_once "../controller/ContactController.php";
+require_once "../model/NotificationModel.php";
+require_once "../model/ContactModel.php";
+require_once "../model/EventModel.php";
+require_once "../controller/EventController.php";
+require_once "../model/participant.php";
+require_once "../model/adminModel.php";
+require_once "../model/statusModel.php";
+
+
+// ---------------- ROUTES ----------------
+// Define your routes array somewhere before using $routes
+ require_once "../route/UserRoute.php";
 
 // ---------------- ROUTER ----------------
 $method = $_SERVER["REQUEST_METHOD"];
@@ -44,13 +53,24 @@ $path = strtolower($path);
 $routeKey = "$method $path";
 session_start();
 
-
 // DB connection
 $db = (new Database())->getConnection();
 
+// Determine request body
+$contentType = $_SERVER["CONTENT_TYPE"] ?? '';
 
-// Request body
-$request = file_get_contents("php://input");
+$request = null;
+
+// JSON requests
+if (strpos($contentType, "application/json") !== false) {
+    $raw = file_get_contents("php://input");
+    $request = json_decode($raw, true);
+}
+
+// FormData requests (like create event)
+if (strpos($contentType, "multipart/form-data") !== false) {
+    $request = $_POST; // files are in $_FILES
+}
 
 // Call route
 if (isset($routes[$routeKey])) {
