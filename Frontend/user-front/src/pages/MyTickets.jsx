@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { useRef } from "react";
 
-import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx";
+
+import { useAuth } from "../context/AuthContext.jsx";
 import { Ticket, Calendar, MapPin, User, Mail, QrCode, Download } from "lucide-react";
 import Header from "../component/Header.jsx";
 
@@ -19,7 +17,7 @@ export default function MyTickets() {
       .then(res => res.json())
       .then(data => {
         console.log("Tickets data:", data); // Debug
-        
+
         if (data.status === "success") {
           // Process the data to flatten attendees
           const processedTickets = [];
@@ -64,7 +62,7 @@ export default function MyTickets() {
               });
             }
           });
-          
+
           setTickets(processedTickets);
         } else {
           setTickets([]);
@@ -90,11 +88,11 @@ export default function MyTickets() {
 
 
   const handlePrintTicket = (ticketId) => {
-  const content = document.getElementById(ticketId);
-  if (!content) return;
+    const content = document.getElementById(ticketId);
+    if (!content) return;
 
-  const printWindow = window.open("", "", "width=800,height=600");
-  printWindow.document.write(`
+    const printWindow = window.open("", "", "width=800,height=600");
+    printWindow.document.write(`
     <html>
       <head>
         <title>Event Ticket</title>
@@ -108,29 +106,29 @@ export default function MyTickets() {
     </html>
   `);
 
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
-};
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
 
 
   const handleDownloadTicket = async (ticketRef, ticketCode) => {
-  const element = ticketRef.current;
+    const element = ticketRef.current;
 
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true
-  });
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true
+    });
 
-  const imgData = canvas.toDataURL("image/png");
+    const imgData = canvas.toDataURL("image/png");
 
-  const pdf = new jsPDF("p", "mm", "a4");
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-  pdf.save(`ticket-${ticketCode}.pdf`);
-};
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`ticket-${ticketCode}.pdf`);
+  };
 
   if (!user) {
     return (
@@ -160,15 +158,15 @@ export default function MyTickets() {
   return (
     <div className="min-h-screen bg-lightBg">
       <Header />
-      
+
       <section className="pt-28 pb-20">
         <div className="container mx-auto px-4 max-w-6xl">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-primary mb-2">My Tickets</h1>
             <p className="text-secondary">
-              {tickets.length === 0 
-                ? "You haven't purchased any tickets yet" 
+              {tickets.length === 0
+                ? "You haven't purchased any tickets yet"
                 : `You have ${tickets.length} ticket${tickets.length !== 1 ? 's' : ''}`}
             </p>
           </div>
@@ -190,18 +188,17 @@ export default function MyTickets() {
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
               {tickets.map((ticket, index) => (
-    <div
-  id={`ticket-${index}`}
-  className="bg-white rounded-2xl shadow-lg overflow-hidden"
->
+                <div
+                  id={`ticket-${index}`}
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden"
+                >
                   <div className="p-6 border-b border-gray-100">
                     <div className="flex justify-between items-start mb-4">
-                      <div> 
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          ticket.event_type === "Physical" 
-                            ? "bg-blue-100 text-blue-800" 
+                      <div>
+                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${ticket.event_type === "Physical"
+                            ? "bg-blue-100 text-blue-800"
                             : "bg-purple-100 text-purple-800"
-                        }`}>
+                          }`}>
                           {ticket.event_type === "Physical" ? "📍 In-Person" : "🌐 Online"}
                         </span>
                         <span className="ml-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
@@ -212,9 +209,9 @@ export default function MyTickets() {
                         <p className="text-xl font-bold text-primary">{ticket.total_amount} ETB</p>
                       </div>
                     </div>
-                    
+
                     <h2 className="text-xl font-bold text-gray-800 mb-3">{ticket.event_title}</h2>
-                    
+
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-2" />
@@ -252,9 +249,9 @@ export default function MyTickets() {
                         <code className="font-mono font-bold text-lg tracking-wider">
                           {ticket.ticket_code}
                         </code>
-                        <img 
-                          src={ticket.qr_code} 
-                          alt="QR Code" 
+                        <img
+                          src={ticket.qr_code}
+                          alt="QR Code"
                           className="h-12 w-12 rounded"
                         />
                       </div>
@@ -278,14 +275,14 @@ export default function MyTickets() {
                     {/* Actions */}
                     <div className="flex gap-2">
                       <button
-  onClick={() => handlePrintTicket(`ticket-${index}`)}
-  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
->
-  <Download className="h-4 w-4" />
-  Download
-</button>
+                        onClick={() => handlePrintTicket(`ticket-${index}`)}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+                      >
+                        <Download className="h-4 w-4" />
+                        Download
+                      </button>
 
-                      
+
                       <button
                         onClick={() => window.open(ticket.qr_code, "_blank")}
                         className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition"

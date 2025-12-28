@@ -1,17 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MainLayout from '../layout/mainLayout';
-import API from '../api/userApi.jsx'; 
+import API, { getEvents } from '../api/userApi.jsx';
 
 export default function Contact() {
-  const [formStatus, setFormStatus] = useState('');
-  
-  // Mock events for dropdown
-  const events = [
-    { id: null, name: 'General Inquiry' },
-    { id: 1, name: 'Summer Gala 2025' },
-    { id: 2, name: 'Tech Conference 2025' },
-    { id: 3, name: 'Music Festival 2025' },
-  ];
+  const [formStatus, setFormStatus] = useState({ text: '', type: '' });
+  const [events, setEvents] = useState([{ id: 'null', name: 'General Inquiry' }]);
+
+  useEffect(() => {
+    getEvents().then(res => {
+      if (res.data.success) {
+        const platformEvents = res.data.events.map(e => ({
+          id: e.id,
+          name: e.title
+        }));
+        setEvents([{ id: 'null', name: 'General Inquiry' }, ...platformEvents]);
+      }
+    }).catch(err => console.error("Error fetching events:", err));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,14 +31,14 @@ export default function Contact() {
 
     try {
       const res = await API.post('/contact/send', data);
-      setFormStatus(res.data.message);
+      setFormStatus({ text: res.data.message, type: 'success' });
       form.reset();
     } catch (err) {
       console.error(err);
-      setFormStatus('Failed to send message.');
+      setFormStatus({ text: 'Failed to send message. Please try again.', type: 'error' });
     }
 
-    setTimeout(() => setFormStatus(''), 5000);
+    setTimeout(() => setFormStatus({ text: '', type: '' }), 5000);
   };
 
   return (
@@ -52,9 +57,12 @@ export default function Contact() {
                 Send us a Message About Events / The Platform
               </h2>
 
-              {formStatus && (
-                <div className="mb-6 p-4 bg-success/20 border border-success text-success rounded-lg text-center font-medium dark:bg-success/30 dark:text-success">
-                  {formStatus}
+              {formStatus.text && (
+                <div className={`mb-6 p-4 rounded-lg text-center font-medium border ${formStatus.type === 'success'
+                  ? 'bg-green-100 border-green-400 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400'
+                  : 'bg-red-100 border-red-400 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400'
+                  }`}>
+                  {formStatus.text}
                 </div>
               )}
 
@@ -83,8 +91,8 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-primary dark:text-text1 font-medium mb-2">Select Event</label>
-                  <select 
-                    name="event_id" 
+                  <select
+                    name="event_id"
                     className="w-full px-4 py-3 border border-secondary dark:border-text1 rounded-lg bg-bg dark:bg-bgDark text-primary dark:text-text1 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300"
                   >
                     {events.map(event => (

@@ -1,8 +1,8 @@
 import { Menu, X, Bell, Moon, Sun } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../../admin-panel/src/context/AuthContext.jsx"; 
-import { useTheme } from "../../../admin-panel/src/context/ThemeContext.jsx"; 
+import { useAuth } from "../context/AuthContext.jsx"; 
+import { useTheme } from "../context/ThemeContext.jsx"; 
 import ProfileBox from "./profileBox";
 
 export default function Header() {
