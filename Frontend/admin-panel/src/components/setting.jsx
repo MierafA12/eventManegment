@@ -39,38 +39,7 @@ export default function SettingsPage() {
           <DarkModeToggle />
         </div>
 
-        {/* ---------------- PROFILE PICTURE UPLOAD ---------------- */}
-        <div className="p-4 rounded-lg border dark:border-gray-700">
-          <h2 className="text-lg font-medium text-primary dark:text-text1 mb-2">
-            Profile Picture
-          </h2>
 
-          {/* Preview */}
-          <div className="flex flex-col items-center gap-3 mb-4">
-            <img
-              src={preview || "https://via.placeholder.com/120"}
-              alt="Profile Preview"
-              className="w-28 h-28 rounded-full object-cover border dark:border-gray-600"
-            />
-
-            <label className="cursor-pointer px-4 py-2 bg-secondary text-white rounded-lg hover:bg-primary transition">
-              Choose Image
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-            </label>
-          </div>
-
-          <button
-            onClick={handleSaveProfile}
-            className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary transition w-full"
-          >
-            Save Profile Picture
-          </button>
-        </div>
 
       </div>
     </AdminLayout>

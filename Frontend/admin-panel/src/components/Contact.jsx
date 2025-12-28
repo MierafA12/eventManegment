@@ -86,10 +86,9 @@ export default function ContactMessages() {
             <div
               key={msg.id}
               className={`w-full p-4 rounded-lg shadow flex justify-between items-center transition
-                ${
-                  msg.status === "answered" || msg.status === "read"
-                    ? "bg-white hover:bg-lightBg dark:bg-bgDark dark:text-secondary"
-                    : "bg-secondary/10 border-l-4 border-primary dark:border-secondary dark:bg-bgDark/50"
+                ${msg.status === "answered" || msg.status === "read"
+                  ? "bg-white hover:bg-lightBg dark:bg-bgDark dark:text-secondary"
+                  : "bg-secondary/10 border-l-4 border-primary dark:border-secondary dark:bg-bgDark/50"
                 }`}
             >
               <div className="flex-1 pr-4">
@@ -97,19 +96,23 @@ export default function ContactMessages() {
                 <p className="text-gray-700 dark:text-text1">
                   <strong>From:</strong> {msg.participant_name} ({msg.participant_email})
                 </p>
-                <p className="text-gray-700 dark:text-text1">{msg.message}</p>
-                <p className="mt-1">
+                {msg.event_title && (
+                  <p className="text-primary dark:text-secondary font-medium text-sm mt-1">
+                    <strong>Regarding Event:</strong> {msg.event_title}
+                  </p>
+                )}
+                <p className="text-gray-700 dark:text-text1 mt-2">{msg.message}</p>
+                <p className="mt-2">
                   <strong>Status:</strong>{" "}
                   <span
-                    className={
-                      msg.status === "answered"
-                        ? "text-success font-medium"
+                    className={`font-medium ${msg.status === "answered"
+                        ? "text-green-600 dark:text-success"
                         : msg.status === "read"
-                        ? "text-info font-medium"
-                        : "text-warning font-medium"
-                    }
+                          ? "text-blue-600 dark:text-info"
+                          : "text-amber-600 dark:text-warning"
+                      }`}
                   >
-                    {msg.status}
+                    {msg.status.charAt(0) + msg.status.slice(1)}
                   </span>
                 </p>
               </div>
@@ -117,7 +120,7 @@ export default function ContactMessages() {
               <div className="flex flex-col items-center gap-2">
                 {msg.status !== "answered" && (
                   <>
-                
+
 
                     <button
                       onClick={() => handleMarkRead(msg.id)}

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { FiArrowLeft } from "react-icons/fi";
-import { useAuth } from "../../admin-panel/src/context/AuthContext.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
-import { getProfile, changePassword } from "../src/api/adminApi.jsx";
-import ChangePasswordModal from "../src/components/ChangePassword.jsx";
+import { getProfile, changePassword } from "./api/adminApi.jsx";
+import ChangePasswordModal from "./components/ChangePassword.jsx";
 
 export default function ProfilePage() {
   const { jwt } = useAuth();
@@ -11,9 +11,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
 
 
   // Fetch profile
@@ -31,25 +29,10 @@ export default function ProfilePage() {
     fetchProfile();
   }, [jwt]);
 
-  const handleChangePassword = async () => {
-    if (newPassword !== confirmPassword) {
-      alert("New password and confirm password do not match!");
-      return;
-    }
-    try {
-      const res = await changePassword({ currentPassword, newPassword }, jwt);
-      if (res.data.success) {
-        alert("Password changed successfully!");
-        setShowPasswordModal(false);
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        alert(res.data.message);
-      }
-    } catch (err) {
-      console.error("Failed to change password:", err);
-    }
+
+  const handlePasswordSuccess = () => {
+    setMessage({ text: "Password changed successfully!", type: "success" });
+    setTimeout(() => setMessage({ text: "", type: "" }), 5000);
   };
 
   if (loading) return <p className="text-center mt-10">Loading profile...</p>;
@@ -64,6 +47,18 @@ export default function ProfilePage() {
       >
         <FiArrowLeft size={20} /> Back
       </button>
+
+      {/* Styled Notification */}
+      {message.text && (
+        <div
+          className={`mb-6 p-4 rounded-lg text-center font-medium border ${message.type === "success"
+            ? "bg-green-100 border-green-400 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400"
+            : "bg-red-100 border-red-400 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400"
+            }`}
+        >
+          {message.text}
+        </div>
+      )}
 
       <div className="flex flex-col md:flex-row gap-6 items-center">
         {/* Profile avatar */}
@@ -104,13 +99,13 @@ export default function ProfilePage() {
 
       {/* Change password modal */}
       {showPasswordModal && (
-  <ChangePasswordModal
-    jwt={jwt}
-    onClose={() => setShowPasswordModal(false)}
-    onSuccess={() => alert("Password changed successfully!")}
-    changePasswordApi={changePassword}
-  />
-)}
+        <ChangePasswordModal
+          jwt={jwt}
+          onClose={() => setShowPasswordModal(false)}
+          onSuccess={handlePasswordSuccess}
+          changePasswordApi={changePassword}
+        />
+      )}
     </div>
   );
 }
