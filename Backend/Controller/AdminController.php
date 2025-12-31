@@ -88,26 +88,38 @@ class AdminController {
         $currentPassword = $data['currentPassword'] ?? '';
         $newPassword = $data['newPassword'] ?? '';
 
-    $user = $this->model->getUserById($userId);
-    if (!$user) {
-        return ["success" => false, "message" => "User not found"];
+        $user = $this->model->getUserById($userId);
+        if (!$user) {
+            return ["success" => false, "message" => "User not found"];
+        }
+
+        if (!password_verify($currentPassword, $user['password'])) {
+            return ["success" => false, "message" => "Current password is incorrect"];
+        }
+
+        // Validate new password strength
+        $passValidation = validatePasswordStrength($newPassword);
+        if (!$passValidation['success']) {
+            return $passValidation;
+        }
+
+        $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
+        $this->model->updatePassword($userId, $hashed);
+
+        return ["success" => true, "message" => "Password changed successfully"];
     }
 
-    if (!password_verify($currentPassword, $user['password'])) {
-        return ["success" => false, "message" => "Current password is incorrect"];
+    public function getRegistrations(array $headers) {
+        $decoded = decodeJwtToken($headers);
+        if (!in_array($decoded['role'], ['admin', 'superadmin'])) {
+            http_response_code(403);
+            return ["success" => false, "message" => "Forbidden"];
+        }
+        return [
+            "success" => true,
+            "events" => $this->model->getRegistrationsByEvent()
+        ];
     }
-
-    // Validate new password strength
-    $passValidation = validatePasswordStrength($newPassword);
-    if (!$passValidation['success']) {
-        return $passValidation;
-    }
-
-    $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
-    $this->model->updatePassword($userId, $hashed);
-
-    return ["success" => true, "message" => "Password changed successfully"];
-}
 
    
 }

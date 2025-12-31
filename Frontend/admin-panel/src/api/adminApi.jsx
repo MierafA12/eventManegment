@@ -68,4 +68,7 @@ export const changePassword = (data, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
+export const getRegistrations = (token) =>
+  API.get("/admin/registrations", { headers: { Authorization: `Bearer ${token}` } });
+
 export default API;

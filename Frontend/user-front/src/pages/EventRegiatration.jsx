@@ -116,7 +116,7 @@ export default function EventRegister() {
         first_name: user.full_name?.split(" ")[0] || user.username || "Customer",
         last_name: user.full_name?.split(" ").slice(1).join(" ") || "User",
         tx_ref: tx_ref,
-        return_url: `http://localhost:5173/payment-success?tx_ref=${tx_ref}&event_id=${event.id}`,
+        return_url: `${window.location.origin}/payment-success?tx_ref=${tx_ref}&event_id=${event.id}`,
         metadata: {
           event_id: event.id,
           ticket_type: event.eventType === "Physical" ? "physical" : "online",

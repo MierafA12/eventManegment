@@ -182,6 +182,12 @@ $routes = [
     return $controller->deleteEvent(getallheaders());
 },
 
+"GET /admin/registrations" => function($db) {
+    $adminModel = new AdminModel($db);
+    $controller = new AdminController($adminModel);
+    return $controller->getRegistrations(getallheaders());
+},
+
 ];
 
 ?>

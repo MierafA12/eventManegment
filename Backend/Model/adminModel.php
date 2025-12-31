@@ -69,23 +69,66 @@ public function getUserById($id) {
         return $stmt->execute();
     }
     public function getEventsSummary(): array {
-    $sql = "
-        SELECT
-            e.id,
-            e.title AS event_name,
-            u.full_name AS organizer,
-            COUNT(r.id) AS total_attendance
-        FROM events e
-        JOIN users u ON e.user_id = u.id
-        LEFT JOIN registrations r ON r.event_id = e.id
-        GROUP BY e.id
-        ORDER BY e.event_date DESC
-    ";
+        $sql = "
+            SELECT 
+                e.id, 
+                e.title AS event_name, 
+                u.full_name AS organizer, 
+                COUNT(ra.id) AS total_attendance
+            FROM events e
+            JOIN users u ON e.user_id = u.id
+            LEFT JOIN tickets t ON t.event_id = e.id
+            LEFT JOIN registration_attendees ra ON ra.registration_id = t.id
+            GROUP BY e.id
+            ORDER BY e.event_date DESC
+        ";
 
-    $result = $this->conn->query($sql);
-    if (!$result) return [];
-    return $result->fetch_all(MYSQLI_ASSOC);
-}
+        $result = $this->conn->query($sql);
+        if (!$result) return [];
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getRegistrationsByEvent(): array {
+        $sql = "
+            SELECT 
+                e.id as event_id,
+                e.title as event_name,
+                e.event_date,
+                e.event_time,
+                ra.attendee_name as fullName,
+                ra.attendee_email as email,
+                ra.id as attendee_id
+            FROM events e
+            JOIN tickets t ON t.event_id = e.id
+            JOIN registration_attendees ra ON ra.registration_id = t.id
+            ORDER BY e.id, ra.id
+        ";
+        $result = $this->conn->query($sql);
+        if (!$result) return [];
+        
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        $events = [];
+        
+        foreach ($data as $row) {
+            $eventId = $row['event_id'];
+            if (!isset($events[$eventId])) {
+                $events[$eventId] = [
+                    'id' => $eventId,
+                    'name' => $row['event_name'],
+                    'date' => $row['event_date'],
+                    'time' => $row['event_time'],
+                    'registeredUsers' => []
+                ];
+            }
+            $events[$eventId]['registeredUsers'][] = [
+                'id' => $row['attendee_id'],
+                'fullName' => $row['fullName'],
+                'email' => $row['email']
+            ];
+        }
+        
+        return array_values($events);
+    }
 
 }
 
