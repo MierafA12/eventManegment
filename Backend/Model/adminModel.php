@@ -73,10 +73,10 @@ public function getUserById($id) {
             SELECT 
                 e.id, 
                 e.title AS event_name, 
-                u.full_name AS organizer, 
+                IFNULL(u.full_name, 'Unknown User') AS organizer, 
                 COUNT(ra.id) AS total_attendance
             FROM events e
-            JOIN users u ON e.user_id = u.id
+            LEFT JOIN users u ON e.user_id = u.id
             LEFT JOIN tickets t ON t.event_id = e.id
             LEFT JOIN registration_attendees ra ON ra.registration_id = t.id
             GROUP BY e.id

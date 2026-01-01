@@ -3,7 +3,7 @@ error_reporting(0); // Suppress warnings
 require_once "../config/Database.php";
 $conn = (new Database())->getConnection(); // Changed $db to $conn for consistency with the new code
 
-$tables = ['registration_attendees'];
+$tables = ['tickets'];
 foreach ($tables as $table) {
     echo "\n\nTABLE: $table\n";
     echo str_pad("Field", 20) . str_pad("Type", 20) . str_pad("Key", 10) . "Extra\n";

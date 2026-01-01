@@ -182,10 +182,23 @@ $routes = [
     return $controller->deleteEvent(getallheaders());
 },
 
-"GET /admin/registrations" => function($db) {
-    $adminModel = new AdminModel($db);
-    $controller = new AdminController($adminModel);
-    return $controller->getRegistrations(getallheaders());
-},
+    "GET /admin/registrations" => function($db) {
+        $adminModel = new AdminModel($db);
+        $controller = new AdminController($adminModel);
+        return $controller->getRegistrations(getallheaders());
+    },
+
+    "GET /notifications" => function($db) {
+        // NotificationController requires NotificationModel
+        $notifModel = new NotificationModel($db);
+        $controller = new NotificationController($notifModel);
+        return $controller->getMyNotifications();
+    },
+
+    "POST /notifications/read" => function($db, $request) {
+        $notifModel = new NotificationModel($db);
+        $controller = new NotificationController($notifModel);
+        return $controller->markRead($request);
+    },
 
 ];

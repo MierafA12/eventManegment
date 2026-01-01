@@ -1,39 +1,49 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+
+// Create Context
+import { getNotifications, markNotificationRead } from "../api/adminApi";
+import { useAuth } from "./AuthContext";
 
 // Create Context
 const NotificationContext = createContext();
 
 // Provider
 export const NotificationProvider = ({ children }) => {
-  // Mock notifications (replace with API later)
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: "New Event Created",
-      message: "Admin John created 'Addis Tech Summit 2025'.",
-      role: "superadmin",
-      read: false,
-    },
-    {
-      id: 2,
-      title: "Event Capacity Full",
-      message: "'Ethio Music Festival' is now full.",
-      role: "admin",
-      read: false,
-    },
-    {
-      id: 3,
-      title: "Download Ticket",
-      message: "You have an undownloaded ticket for 'Startup Pitch Day'.",
-      role: "participant",
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const { jwt, user } = useAuth();
 
-  const markAsRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+  // Fetch notifications when user/jwt changes
+  useEffect(() => {
+    if (jwt && user) {
+      fetchNotifications();
+    } else {
+      setNotifications([]);
+    }
+  }, [jwt, user]);
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await getNotifications(jwt);
+      if (res.data.success) {
+        setNotifications(res.data.notifications);
+      }
+    } catch (err) {
+      console.error("Failed to fetch notifications:", err);
+    }
+  };
+
+  const markAsRead = async (id) => {
+    try {
+      // Optimistic update
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read: true, is_read: 1 } : n))
+      );
+
+      await markNotificationRead(id, jwt);
+      // Optionally refetch to ensure sync
+    } catch (err) {
+      console.error("Failed to mark notification as read:", err);
+    }
   };
 
   return (

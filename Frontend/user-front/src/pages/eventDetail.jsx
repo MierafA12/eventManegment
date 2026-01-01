@@ -173,27 +173,7 @@ export default function EventDetails() {
               </div>
 
               {/* Online Event Link */}
-              {event.eventType === "Online" && event.eventLink && (
-                <div className="mb-8 p-6 bg-blue-50 dark:bg-blue-900/30 rounded-2xl transition-colors duration-300">
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    <div>
-                      <h3 className="font-semibold text-blue-800 dark:text-blue-300 mb-1">Online Event Access</h3>
-                      <p className="text-blue-700 dark:text-blue-400">
-                        Join via:{" "}
-                        <a
-                          href={event.eventLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline font-medium"
-                        >
-                          {event.eventLink}
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Online Event Link Removed - Visible only after payment */}
 
               {/* Register Button */}
               <div className="border-t dark:border-gray-700 pt-8 transition-colors duration-300">
@@ -202,8 +182,8 @@ export default function EventDetails() {
                     onClick={handleRegister}
                     disabled={event.eventType === "Physical" && event.registered_count >= event.capacity}
                     className={`w-full flex items-center justify-center gap-3 py-4 rounded-full font-bold text-lg transition ${event.eventType === "Physical" && event.registered_count >= event.capacity
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-primary dark:bg-secondary text-white hover:bg-buttonHover"
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-primary dark:bg-secondary text-white hover:bg-buttonHover"
                       }`}
                   >
                     {event.eventType === "Physical" && event.registered_count >= event.capacity
