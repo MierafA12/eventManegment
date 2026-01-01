@@ -1,7 +1,25 @@
 <?php
+// Prevent HTML output of errors
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
+
+// Custom error handler to return JSON on fatal errors
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && ($error['type'] === E_ERROR || $error['type'] === E_PARSE || $error['type'] === E_CORE_ERROR || $error['type'] === E_COMPILE_ERROR)) {
+        http_response_code(500);
+        header("Content-Type: application/json");
+        echo json_encode([
+            "status" => "error",
+            "message" => "Fatal Error: " . $error['message'],
+            "file" => $error['file'],
+            "line" => $error['line']
+        ]);
+        // Log to file for debugging
+        file_put_contents(__DIR__ . '/debug_verify.log', date('[Y-m-d H:i:s] ') . "FATAL: " . print_r($error, true) . "\n", FILE_APPEND);
+    }
+});
 
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
@@ -13,63 +31,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require __DIR__ . "/../../config/database.php";
-$db = new Database();
-$conn = $db->getConnection();
-
-$input  = json_decode(file_get_contents("php://input"), true);
-$tx_ref = $input['tx_ref'] ?? $_GET['tx_ref'] ?? null;
-
-if (!$tx_ref) {
-    echo json_encode(["status"=>"failed","message"=>"Missing tx_ref"]);
-    exit;
+function debugLog($msg) {
+    file_put_contents(__DIR__ . '/debug_verify.log', date('[Y-m-d H:i:s] ') . $msg . "\n", FILE_APPEND);
 }
 
-$CHAPA_SECRET_KEY = "CHASECK_TEST-WfCdb1qIebMz2cWx8awCqwM3NgNfbboy";
+debugLog("Request received: " . file_get_contents("php://input"));
 
-// ---------- VERIFY WITH CHAPA ----------
-$ch = curl_init("https://api.chapa.co/v1/transaction/verify/$tx_ref");
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => [
-        "Authorization: Bearer $CHAPA_SECRET_KEY",
-        "Content-Type: application/json"
-    ]
-]);
-$response = curl_exec($ch);
-curl_close($ch);
-
-$result = json_decode($response, true);
-
-if (!$result || $result['status'] !== 'success' || $result['data']['status'] !== 'success') {
-    echo json_encode(["status"=>"failed","message"=>"Payment not confirmed"]);
-    exit;
-}
-
-// ---------- PAYMENT DATA ----------
-$data      = $result['data'];
-$metadata  = $data['meta'] ?? [];
-$attendees = $metadata['attendees'] ?? [];
-$event_id  = (int)($metadata['event_id'] ?? 0);
-$user_email = $data['email'];
-$ticket_type = $metadata['ticket_type'] ?? 'Regular';
-
-if (!$event_id || empty($attendees)) {
-    echo json_encode(["status"=>"failed","message"=>"Invalid metadata"]);
-    exit;
-}
-
-// ---------- IDEMPOTENCY ----------
-$stmt = $conn->prepare("SELECT COUNT(*) AS total FROM tickets WHERE tx_ref=?");
-$stmt->bind_param("s", $tx_ref);
-$stmt->execute();
-if ((int)$stmt->get_result()->fetch_assoc()['total'] > 0) {
-    echo json_encode(["status"=>"success","message"=>"Already processed"]);
-    exit;
-}
-
-// ---------- CREATE TICKETS ----------
 try {
+    // FIX: Case sensitive path
+    require_once __DIR__ . "/../../config/Database.php";
+    
+    $db = new Database();
+    $conn = $db->getConnection();
+
+    $input  = json_decode(file_get_contents("php://input"), true);
+    $tx_ref = $input['tx_ref'] ?? $_GET['tx_ref'] ?? null;
+
+    if (!$tx_ref) {
+        debugLog("Missing tx_ref");
+        echo json_encode(["status"=>"failed","message"=>"Missing tx_ref"]);
+        exit;
+    }
+
+    $CHAPA_SECRET_KEY = "CHASECK_TEST-WfCdb1qIebMz2cWx8awCqwM3NgNfbboy";
+
+    // ---------- VERIFY WITH CHAPA ----------
+    debugLog("Verifying with Chapa: $tx_ref");
+    $ch = curl_init("https://api.chapa.co/v1/transaction/verify/$tx_ref");
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "Authorization: Bearer $CHAPA_SECRET_KEY",
+            "Content-Type: application/json"
+        ]
+    ]);
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        throw new Exception("Curl error: " . curl_error($ch));
+    }
+    curl_close($ch);
+    
+    debugLog("Chapa response: $response");
+
+    $result = json_decode($response, true);
+
+    if (!$result || $result['status'] !== 'success' || $result['data']['status'] !== 'success') {
+        echo json_encode(["status"=>"failed","message"=>"Payment not confirmed"]);
+        exit;
+    }
+
+    // ---------- PAYMENT DATA ----------
+    $data      = $result['data'];
+    $metadata  = $data['meta'] ?? [];
+    $attendees = $metadata['attendees'] ?? [];
+    $event_id  = (int)($metadata['event_id'] ?? 0);
+    $user_email = $data['email'];
+    $ticket_type = $metadata['ticket_type'] ?? 'Regular';
+
+    if (!$event_id || empty($attendees)) {
+        debugLog("Invalid metadata: event_id=$event_id, attendees=" . count($attendees));
+        echo json_encode(["status"=>"failed","message"=>"Invalid metadata"]);
+        exit;
+    }
+
+    // ---------- IDEMPOTENCY ----------
+    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM tickets WHERE tx_ref=?");
+    if (!$stmt) throw new Exception("Prepare failed (check duplicates): " . $conn->error);
+    
+    $stmt->bind_param("s", $tx_ref);
+    $stmt->execute();
+    $count = (int)$stmt->get_result()->fetch_assoc()['total'];
+    
+    if ($count > 0) {
+        debugLog("Already processed: $tx_ref");
+        echo json_encode(["status"=>"success","message"=>"Already processed", "ticket_codes" => []]); // Return mock ticket codes if needed, or handle on frontend
+        exit;
+    }
+
+    // ---------- CREATE TICKETS ----------
     $conn->begin_transaction();
 
     $single_amount = ((float)$data['amount']) / count($attendees);
@@ -84,6 +123,7 @@ try {
             (event_id,user_email,ticket_type,quantity,total_amount,payment_status,tx_ref,ticket_code,issued_at,created_at)
             VALUES (?,?,?,?,?,'paid',?,?,NOW(),NOW())
         ");
+        if (!$stmt) throw new Exception("Prepare failed (insert ticket): " . $conn->error);
 
         $qty = 1;
         $stmt->bind_param(
@@ -96,7 +136,8 @@ try {
             $tx_ref,
             $ticket_code
         );
-        $stmt->execute();
+        if (!$stmt->execute()) throw new Exception("Execute failed (insert ticket): " . $stmt->error);
+        
         $ticket_id = $stmt->insert_id;
 
         $stmtAtt = $conn->prepare("
@@ -104,29 +145,39 @@ try {
             (registration_id,attendee_name,attendee_email,ticket_code)
             VALUES (?,?,?,?)
         ");
+        if (!$stmtAtt) throw new Exception("Prepare failed (insert attendee): " . $conn->error);
 
+        $attName = $attendee['name'];
+        $attEmail = $attendee['email'] ?? $user_email;
+        
         $stmtAtt->bind_param(
             "isss",
             $ticket_id,
-            $attendee['name'],
-            $attendee['email'] ?? $user_email,
+            $attName,
+            $attEmail,
             $ticket_code
         );
-        $stmtAtt->execute();
+        if (!$stmtAtt->execute()) throw new Exception("Execute failed (insert attendee): " . $stmtAtt->error);
 
-        $ticket_codes[] = $ticket_code;
+        $ticket_codes[] = [
+            'ticket_code' => $ticket_code,
+            'attendee_name' => $attName
+        ];
     }
 
     $conn->commit();
+    debugLog("Success! Tickets created: " . count($ticket_codes));
+
+    echo json_encode([
+        "status" => "success",
+        "message" => count($ticket_codes) . " tickets created",
+        "ticket_codes" => $ticket_codes
+    ]);
 
 } catch (Exception $e) {
-    $conn->rollback();
-    echo json_encode(["status"=>"failed","message"=>$e->getMessage()]);
-    exit;
+    if (isset($conn) && $conn->connect_errno === 0) $conn->rollback();
+    debugLog("Exception: " . $e->getMessage());
+    http_response_code(500); 
+    echo json_encode(["status"=>"error","message"=>$e->getMessage()]);
 }
-
-echo json_encode([
-    "status" => "success",
-    "message" => count($ticket_codes) . " tickets created",
-    "tickets" => $ticket_codes
-]);
+?>

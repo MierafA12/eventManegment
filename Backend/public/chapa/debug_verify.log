@@ -1,0 +1,10 @@
+[2026-01-01 09:33:28] Request received: 
+[2026-01-01 09:33:28] Missing tx_ref
+[2026-01-01 09:34:01] Request received: {"tx_ref":"event_1_4_1767256126989","event_id":"1"}
+[2026-01-01 09:34:01] Request received: {"tx_ref":"event_1_4_1767256126989","event_id":"1"}
+[2026-01-01 09:34:01] Verifying with Chapa: event_1_4_1767256126989
+[2026-01-01 09:34:01] Verifying with Chapa: event_1_4_1767256126989
+[2026-01-01 09:34:03] Chapa response: {"message":"Payment details fetched successfully","status":"success","data":{"first_name":"ephrata","last_name":"Abebe","email":"Er@gmail.com","phone_number":null,"currency":"ETB","amount":160,"charge":4,"mode":"test","method":"test","type":"API","status":"success","reference":"APvFNZynko4Lk","tx_ref":"event_1_4_1767256126989","customization":{"title":"Event Ticket","description":"Event Registration","logo":null},"meta":{"event_id":1,"ticket_type":"physical","quantity":1,"attendees":[{"name":"ephrata Abebe","email":"Er@gmail.com"}]},"created_at":"2026-01-01T08:28:57.000000Z","updated_at":"2026-01-01T08:28:57.000000Z"}}
+[2026-01-01 09:34:03] Chapa response: {"message":"Payment details fetched successfully","status":"success","data":{"first_name":"ephrata","last_name":"Abebe","email":"Er@gmail.com","phone_number":null,"currency":"ETB","amount":160,"charge":4,"mode":"test","method":"test","type":"API","status":"success","reference":"APvFNZynko4Lk","tx_ref":"event_1_4_1767256126989","customization":{"title":"Event Ticket","description":"Event Registration","logo":null},"meta":{"event_id":1,"ticket_type":"physical","quantity":1,"attendees":[{"name":"ephrata Abebe","email":"Er@gmail.com"}]},"created_at":"2026-01-01T08:28:57.000000Z","updated_at":"2026-01-01T08:28:57.000000Z"}}
+[2026-01-01 09:34:03] Success! Tickets created: 1
+[2026-01-01 09:34:03] Already processed: event_1_4_1767256126989
