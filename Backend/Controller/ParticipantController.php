@@ -13,7 +13,7 @@ class ParticipantController {
     }
 
     public function signup($request) {
-        $data = json_decode($request, true);
+        $data = $request;
 
         if (!$data) {
             http_response_code(400);

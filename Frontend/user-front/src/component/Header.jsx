@@ -1,14 +1,16 @@
 import { Menu, X, Bell, Moon, Sun } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx"; 
-import { useTheme } from "../context/ThemeContext.jsx"; 
+import { useAuth } from "../context/AuthContext.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 import ProfileBox from "./profileBox";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useAuth(); 
-  const { isDark, toggleTheme } = useTheme(); 
+  const { user, loading } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
+
+  if (loading) return null; // Or a spinner
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-bg shadow-md z-50 dark:bg-bgDark">
@@ -36,7 +38,7 @@ export default function Header() {
 
             {user && (
               <>
-                <Link to="/mytickets" className="text-primary hover:text-secondary font-bold dark:text-text1">Mytickets</Link>
+                <Link to="/my-tickets" className="text-primary hover:text-secondary font-bold dark:text-text1">Mytickets</Link>
                 <Link to="/notifications">
                   <Bell size={24} className="text-primary hover:text-secondary dark:text-text1" />
                 </Link>
@@ -80,7 +82,7 @@ export default function Header() {
 
             {user && (
               <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Link to="/mytickets" className="text-primary hover:text-secondary font-bold dark:text-text1">Mytickets</Link>
+                <Link to="/my-tickets" className="text-primary hover:text-secondary font-bold dark:text-text1">Mytickets</Link>
                 <Link to="/notifications">
                   <Bell size={26} className="text-primary dark:text-text1" />
                 </Link>

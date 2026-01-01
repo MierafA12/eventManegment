@@ -105,7 +105,7 @@ $routes = [
     return $controller->changePassword($headers, $requestBody);
 },
 "POST /contact/send" => function($db, $requestBody) {
-    $data = json_decode($requestBody, true);
+    $data = $requestBody;
     $model = new ContactModel($db);
     $controller = new ContactController($model);
     return $controller->sendMessage($data);
@@ -125,7 +125,7 @@ $routes = [
 
 
 "POST /contact/answer" => function($db, $requestBody, $requestHeaders) {
-    $data = json_decode($requestBody, true);
+    $data = $requestBody;
     $model = new ContactModel($db);
     $controller = new ContactController($model);
     return $controller->answerMessage($data, $requestHeaders);
@@ -189,5 +189,3 @@ $routes = [
 },
 
 ];
-
-?>

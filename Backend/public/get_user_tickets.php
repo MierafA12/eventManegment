@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
@@ -70,4 +72,3 @@ echo json_encode([
 
 $stmt->close();
 $conn->close();
-?>

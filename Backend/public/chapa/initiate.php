@@ -1,58 +1,61 @@
 <?php
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
+
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 
-$CHAPA_SECRET_KEY = "CHASECK_TEST-WfCdb1qIebMz2cWx8awCqwM3NgNfbboy"; // REAL KEY
+$CHAPA_SECRET_KEY = "CHASECK_TEST-WfCdb1qIebMz2cWx8awCqwM3NgNfbboy";
 
 $input = json_decode(file_get_contents("php://input"), true);
 
-include __DIR__ . "/../../config/database.php";
+require __DIR__ . "/../../config/database.php";
 $db = new Database();
 $conn = $db->getConnection();
 
-$metadata = $input['metadata'] ?? [];
-$event_id = $metadata['event_id'] ?? null;
-$requested_quantity = (int)($metadata['quantity'] ?? 1);
+$metadata   = $input['metadata'] ?? [];
+$event_id   = (int)($metadata['event_id'] ?? 0);
+$attendees  = $metadata['attendees'] ?? [];
+$quantity   = count($attendees);
 
-if ($event_id) {
-    // 1. Get event capacity
-    $stmt = $conn->prepare("SELECT capacity, eventType FROM events WHERE id = ?");
+// ---------- CAPACITY CHECK ----------
+if ($event_id > 0) {
+    $stmt = $conn->prepare("SELECT capacity, eventType FROM events WHERE id=?");
     $stmt->bind_param("i", $event_id);
     $stmt->execute();
     $event = $stmt->get_result()->fetch_assoc();
 
-    if ($event && $event['eventType'] === 'Physical' && !empty($event['capacity'])) {
-        $capacity = (int)$event['capacity'];
+    if ($event && $event['eventType'] === 'Physical') {
+        $stmt = $conn->prepare(
+            "SELECT COUNT(*) AS total FROM tickets 
+             WHERE event_id=? AND payment_status='paid'"
+        );
+        $stmt->bind_param("i", $event_id);
+        $stmt->execute();
+        $registered = (int)$stmt->get_result()->fetch_assoc()['total'];
 
-        // 2. Count current registered tickets
-        $stmtCount = $conn->prepare("SELECT SUM(quantity) as total FROM tickets WHERE event_id = ? AND payment_status = 'paid'");
-        $stmtCount->bind_param("i", $event_id);
-        $stmtCount->execute();
-        $regCount = $stmtCount->get_result()->fetch_assoc()['total'] ?? 0;
-
-        if (($regCount + $requested_quantity) > $capacity) {
+        if (($registered + $quantity) > (int)$event['capacity']) {
             echo json_encode([
                 "status" => "error",
-                "message" => "Capacity is full, register for other event"
+                "message" => "Event capacity full"
             ]);
             exit;
         }
     }
 }
 
-$required = ["amount", "currency", "email", "first_name", "last_name", "tx_ref", "return_url"];
-
+// ---------- REQUIRED FIELDS ----------
+$required = ["amount","currency","email","first_name","last_name","tx_ref","return_url"];
 foreach ($required as $field) {
     if (empty($input[$field])) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "Missing field: $field"
-        ]);
+        echo json_encode(["status"=>"error","message"=>"Missing $field"]);
         exit;
     }
 }
 
+// ---------- CHAPA PAYLOAD ----------
 $payload = [
     "amount" => (string)$input["amount"],
     "currency" => $input["currency"],
@@ -60,11 +63,15 @@ $payload = [
     "first_name" => $input["first_name"],
     "last_name" => $input["last_name"],
     "tx_ref" => $input["tx_ref"],
-    "return_url" => $input["return_url"]
+    "return_url" => $input["return_url"],
+    "customization" => [
+        "title" => "Event Ticket",
+        "description" => "Event Registration"
+    ],
+    "meta" => $metadata
 ];
 
 $ch = curl_init("https://api.chapa.co/v1/transaction/initialize");
-
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST => true,
@@ -76,16 +83,14 @@ curl_setopt_array($ch, [
 ]);
 
 $response = curl_exec($ch);
-$error = curl_error($ch);
 curl_close($ch);
 
 $result = json_decode($response, true);
 
-if (!$result || empty($result["status"])) {
+if (!$result || $result['status'] !== 'success') {
     echo json_encode([
         "status" => "error",
-        "message" => "Chapa initialization failed",
-        "debug" => $result ?? $error
+        "message" => "Chapa initialization failed"
     ]);
     exit;
 }
@@ -93,6 +98,6 @@ if (!$result || empty($result["status"])) {
 echo json_encode([
     "status" => "success",
     "data" => [
-        "checkout_url" => $result["data"]["checkout_url"]
+        "checkout_url" => $result['data']['checkout_url']
     ]
 ]);

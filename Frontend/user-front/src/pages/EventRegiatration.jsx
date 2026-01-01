@@ -142,6 +142,15 @@ export default function EventRegister() {
         }
       );
 
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Non-JSON response from initiate.php:", text);
+        setError("Server error: Invalid response format. Check console for details.");
+        return;
+      }
+
       const data = await response.json();
       console.log("Payment response:", data);
 
@@ -149,7 +158,11 @@ export default function EventRegister() {
         // Redirect to Chapa payment page
         window.location.href = data.data.checkout_url;
       } else {
-        setError(data.message || "Payment initialization failed");
+        console.error("Payment initialization failed:", data);
+        const errorMsg = typeof data.message === 'object'
+          ? JSON.stringify(data.message)
+          : (data.message || "Payment initialization failed");
+        setError(errorMsg);
       }
     } catch (err) {
       console.error("Payment error:", err);

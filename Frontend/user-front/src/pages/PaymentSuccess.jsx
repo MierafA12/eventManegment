@@ -6,6 +6,16 @@ import Header from "../component/Header.jsx";
 export default function PaymentSuccess() {
   const [params] = useSearchParams();
   const tx_ref = params.get("tx_ref");
+
+  // Get event_id from URL or extract from tx_ref (format: event_{event_id}_{user_id}_{timestamp})
+  let event_id = params.get("event_id");
+  if (!event_id && tx_ref && tx_ref.startsWith("event_")) {
+    const parts = tx_ref.split("_");
+    if (parts.length >= 2) {
+      event_id = parts[1]; // Extract event_id from tx_ref
+    }
+  }
+
   const [status, setStatus] = useState("verifying"); // verifying, success, error
   const [message, setMessage] = useState("We are verifying your payment with Chapa...");
   const [ticketData, setTicketData] = useState(null);
@@ -20,13 +30,25 @@ export default function PaymentSuccess() {
 
     const verifyPayment = async () => {
       try {
+        console.log("Verifying payment with tx_ref:", tx_ref, "event_id:", event_id);
+
         const response = await fetch("http://localhost/EthioEvents/Backend/public/chapa/verify.php", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ tx_ref }),
+          body: JSON.stringify({ tx_ref, event_id }), // Send both tx_ref and event_id
         });
+
+        // Check if response is JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          const text = await response.text();
+          console.error("Non-JSON response received:", text);
+          setStatus("error");
+          setMessage("Server error: Invalid response format. Please contact support.");
+          return;
+        }
 
         const data = await response.json();
         console.log("Chapa verify response:", data);
@@ -50,7 +72,7 @@ export default function PaymentSuccess() {
     };
 
     verifyPayment();
-  }, [tx_ref, navigate]);
+  }, [tx_ref, event_id, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-bgDark transition-colors duration-300">
