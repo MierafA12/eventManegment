@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import * as Icons from "react-icons/fi";
 import ProfileBox from "./profileBox";
 import { useAuth } from "../context/AuthContext";
@@ -6,6 +6,12 @@ import { adminMenu, superAdminMenu } from "../data/sidebarMenu";
 
 export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const menu = user?.role === "superadmin" ? superAdminMenu : adminMenu;
 
@@ -38,11 +44,10 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3 py-2 rounded-lg transition
-                      ${
-                        isActive
-                          ? "bg-secondary text-primary font-semibold dark:bg-secondaryDark dark:text-primaryDark"
-                          : "hover:bg-buttonHover hover:text-secondary dark:hover:bg-secondaryDark dark:hover:text-primaryDark"
-                      }`
+                      ${isActive
+                      ? "bg-secondary text-primary font-semibold dark:bg-secondaryDark dark:text-primaryDark"
+                      : "hover:bg-buttonHover hover:text-secondary dark:hover:bg-secondaryDark dark:hover:text-primaryDark"
+                    }`
                   }
                 >
                   <Icon className="text-xl" />
@@ -58,7 +63,7 @@ export default function Sidebar({ collapsed, mobileOpen, setMobileOpen }) {
 
       <div className="absolute bottom-4 left-4 w-[85%]">
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="flex items-center gap-3 text-error px-4 py-3 rounded-lg hover:bg-red-100 dark:hover:bg-red-700 w-full transition"
         >
           <Icons.FiLogOut size={20} />

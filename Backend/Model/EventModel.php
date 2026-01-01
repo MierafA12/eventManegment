@@ -52,8 +52,8 @@ class EventModel extends BaseModel {
                 FROM events 
                 WHERE event_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
                 $whereClause
-                GROUP BY MONTH(event_date)
-                ORDER BY event_date ASC";
+                GROUP BY YEAR(event_date), MONTH(event_date)
+                ORDER BY MIN(event_date) ASC";
         $result = $this->conn->query($sql);
         if (!$result) return [];
         return $result->fetch_all(MYSQLI_ASSOC);

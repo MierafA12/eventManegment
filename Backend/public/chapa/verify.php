@@ -10,6 +10,7 @@ register_shutdown_function(function() {
     if ($error && ($error['type'] === E_ERROR || $error['type'] === E_PARSE || $error['type'] === E_CORE_ERROR || $error['type'] === E_COMPILE_ERROR)) {
         http_response_code(500);
         header("Content-Type: application/json");
+        header("Access-Control-Allow-Origin: *"); // Add CORS for errors too
         echo json_encode([
             "status" => "error",
             "message" => "Fatal Error: " . $error['message'],
@@ -21,10 +22,16 @@ register_shutdown_function(function() {
     }
 });
 
+// MOVE HEADERS TO TOP
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -94,19 +101,36 @@ try {
         exit;
     }
 
-    // ---------- IDEMPOTENCY ----------
-    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM tickets WHERE tx_ref=?");
-    if (!$stmt) throw new Exception("Prepare failed (check duplicates): " . $conn->error);
-    
-    $stmt->bind_param("s", $tx_ref);
-    $stmt->execute();
-    $count = (int)$stmt->get_result()->fetch_assoc()['total'];
-    
-    if ($count > 0) {
-        debugLog("Already processed: $tx_ref");
-        echo json_encode(["status"=>"success","message"=>"Already processed", "ticket_codes" => []]); // Return mock ticket codes if needed, or handle on frontend
+    // ---------- LOCKING ----------
+    $lockName = "lock_tx_" . $tx_ref;
+    $lockStmt = $conn->prepare("SELECT GET_LOCK(?, 10)"); // Wait up to 10 seconds
+    $lockStmt->bind_param("s", $lockName);
+    $lockStmt->execute();
+    $lockResult = $lockStmt->get_result()->fetch_row()[0];
+
+    if (!$lockResult) {
+        debugLog("Could not acquire lock for: $tx_ref");
+        echo json_encode(["status"=>"failed", "message"=>"Could not acquire lock"]);
         exit;
     }
+
+
+        // ---------- IDEMPOTENCY ----------
+        // Now safe to check inside the lock
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM tickets WHERE tx_ref=?");
+        if (!$stmt) throw new Exception("Prepare failed (check duplicates): " . $conn->error);
+        
+        $stmt->bind_param("s", $tx_ref);
+        $stmt->execute();
+        $count = (int)$stmt->get_result()->fetch_assoc()['total'];
+        
+        if ($count > 0) {
+            debugLog("Already processed: $tx_ref");
+            echo json_encode(["status"=>"success","message"=>"Already processed", "ticket_codes" => []]); 
+             // Release lock
+            $conn->query("SELECT RELEASE_LOCK('$lockName')");
+            exit;
+        }
 
     // ---------- CREATE TICKETS ----------
     $conn->begin_transaction();
@@ -175,9 +199,21 @@ try {
     ]);
 
 } catch (Exception $e) {
-    if (isset($conn) && $conn->connect_errno === 0) $conn->rollback();
-    debugLog("Exception: " . $e->getMessage());
-    http_response_code(500); 
-    echo json_encode(["status"=>"error","message"=>$e->getMessage()]);
+    if (isset($conn) && $conn->connect_errno === 0) {
+        $conn->rollback();
+        if (isset($lockName)) {
+            $conn->query("SELECT RELEASE_LOCK('$lockName')");
+        }
+    }
+    
+    $msg = "Error processing payment: " . $e->getMessage();
+    debugLog($msg);
+    http_response_code(500);
+    echo json_encode(["status"=>"error", "message"=>$msg]);
+} finally {
+    // Ensure the lock is released even if an exception occurs
+    if (isset($conn) && $conn->connect_errno === 0 && isset($lockName)) {
+        $conn->query("SELECT RELEASE_LOCK('$lockName')");
+    }
 }
 ?>

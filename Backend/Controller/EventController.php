@@ -17,7 +17,6 @@ class EventController {
 
         $userId = $decoded['id'];
 
-        // Use null coalescing operator for safety
         $title       = $_POST['title'] ?? null;
         $description = $_POST['description'] ?? null;
         $category    = $_POST['category'] ?? null;
@@ -28,7 +27,6 @@ class EventController {
         $eventLink   = $_POST['eventLink'] ?? null;
         $capacity    = $_POST['capacity'] ?? null;
 
-        // Validate required fields
         $required = ['title','description','category','eventType','datetime'];
         foreach ($required as $field) {
             if (empty($$field)) {
@@ -36,13 +34,11 @@ class EventController {
             }
         }
 
-        // Split datetime
         if (strpos($datetime, 'T') === false) {
             return ["success" => false, "message" => "Invalid datetime format"];
         }
         [$date, $time] = explode("T", $datetime);
 
-        // Handle image upload
         $imageName = null;
         if (isset($_FILES['image']) && $_FILES['image']['name']) {
             $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -54,7 +50,6 @@ class EventController {
             move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $imageName);
         }
 
-        // Prepare data for DB
         $data = [
             "user_id"     => $userId,
             "title"       => $title,
@@ -71,11 +66,40 @@ class EventController {
             "status"      => "active"
         ];
 
-        if ($this->model->createEvent($data)) {
-            return ["success" => true, "message" => "Event created successfully"];
-        }
+        // Start transaction: create event and notify superadmin atomically
+        $conn = $this->model->getConnection();
+        $conn->begin_transaction();
+        try {
+            $created = $this->model->createEvent($data);
+            if (!$created) {
+                throw new Exception("Event insert failed");
+            }
 
-        return ["success" => false, "message" => "Failed to create event"];
+            // get the inserted event id
+            $newEventId = (int)$conn->insert_id;
+
+            // If creator is an admin, notify superadmin with the real entity_id
+            if ($decoded['role'] === 'admin') {
+                require_once "../Model/NotificationModel.php";
+                $notifModel = new NotificationModel($conn);
+                $notifModel->create([
+                    'user_id' => $userId,
+                    'role' => 'superadmin',
+                    'type' => 'event_created',
+                    'title' => 'New Event Created',
+                    'message' => "An admin has created a new event: " . $title,
+                    'entity_type' => 'event',
+                    'entity_id' => $newEventId
+                ]);
+            }
+
+            $conn->commit();
+            return ["success" => true, "message" => "Event created successfully", "event_id" => $newEventId];
+        } catch (Exception $e) {
+            $conn->rollback();
+            error_log("Event creation failed: " . $e->getMessage());
+            return ["success" => false, "message" => "Failed to create event"];
+        }
     }
 
     public function getAllEvents(array $headers) {
@@ -98,7 +122,6 @@ class EventController {
             return ["success" => false, "message" => "Event ID is required"];
         }
 
-        // Use a subquery for registered_count to be safer across different MySQL modes
         $sql = "
             SELECT *, 
             (SELECT IFNULL(SUM(quantity), 0) FROM tickets WHERE event_id = events.id AND payment_status = 'paid') as registered_count
@@ -121,7 +144,6 @@ class EventController {
             return ["success" => false, "message" => "Event not found"];
         }
 
-        // Ensure all numeric fields are correctly typed
         $event['id'] = (int)$event['id'];
         $event['registered_count'] = (int)$event['registered_count'];
         $event['fee'] = (float)$event['fee'];
@@ -163,7 +185,6 @@ class EventController {
                     $userId = $decoded['id'];
                 }
             } catch (Exception $e) {
-                // Not authenticated or other issue, proceed as public if it's a public route
             }
         }
 
@@ -185,7 +206,6 @@ class EventController {
             if (isset($_POST[$f])) $data[$f] = $_POST[$f];
         }
 
-        // Clean up fields based on eventType if it's being updated
         if (isset($data['eventType'])) {
             if ($data['eventType'] === 'Online') {
                 $data['location'] = null;
