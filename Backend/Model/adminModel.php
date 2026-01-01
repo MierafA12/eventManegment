@@ -88,7 +88,7 @@ public function getUserById($id) {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getRegistrationsByEvent(): array {
+    public function getRegistrationsByEvent($adminId, $role): array {
         $sql = "
             SELECT 
                 e.id as event_id,
@@ -97,13 +97,30 @@ public function getUserById($id) {
                 e.event_time,
                 ra.attendee_name as fullName,
                 ra.attendee_email as email,
-                ra.id as attendee_id
+                ra.ticket_code,
+                ra.id as attendee_id,
+                t.ticket_type,
+                t.payment_status
             FROM events e
-            JOIN tickets t ON t.event_id = e.id
-            JOIN registration_attendees ra ON ra.registration_id = t.id
-            ORDER BY e.id, ra.id
+            LEFT JOIN tickets t ON t.event_id = e.id
+            LEFT JOIN registration_attendees ra ON ra.registration_id = t.id
         ";
-        $result = $this->conn->query($sql);
+
+        if ($role !== 'superadmin') {
+            $sql .= " WHERE e.user_id = ?";
+        }
+
+        $sql .= " ORDER BY e.id, ra.id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if ($role !== 'superadmin') {
+            $stmt->bind_param("i", $adminId);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
         if (!$result) return [];
         
         $data = $result->fetch_all(MYSQLI_ASSOC);
@@ -120,11 +137,16 @@ public function getUserById($id) {
                     'registeredUsers' => []
                 ];
             }
-            $events[$eventId]['registeredUsers'][] = [
-                'id' => $row['attendee_id'],
-                'fullName' => $row['fullName'],
-                'email' => $row['email']
-            ];
+            if ($row['attendee_id']) {
+                $events[$eventId]['registeredUsers'][] = [
+                    'id' => $row['attendee_id'],
+                    'fullName' => $row['fullName'],
+                    'email' => $row['email'],
+                    'ticketCode' => $row['ticket_code'],
+                    'ticketType' => $row['ticket_type'],
+                    'paymentStatus' => $row['payment_status']
+                ];
+            }
         }
         
         return array_values($events);

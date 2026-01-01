@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
+import { FaSpinner as Loader } from "react-icons/fa";
 import AdminLayout from "../../layouts/AdminLayout";
 import { getRegistrations } from "../../api/adminApi";
 import { useAuth } from "../../context/AuthContext";
-import { Loader } from "lucide-react";
 
 export default function RegisteredUsers() {
-  const { token } = useAuth();
+  const { jwt } = useAuth();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRegistrations = async () => {
       try {
-        const response = await getRegistrations(token);
+        const response = await getRegistrations(jwt);
         if (response.data.success) {
           setEvents(response.data.events);
         }
@@ -23,10 +23,12 @@ export default function RegisteredUsers() {
       }
     };
 
-    if (token) {
+    if (jwt) {
       fetchRegistrations();
+    } else {
+      setLoading(false);
     }
-  }, [token]);
+  }, [jwt]);
 
   if (loading) {
     return (
@@ -67,6 +69,9 @@ export default function RegisteredUsers() {
                     <tr>
                       <th className="px-4 py-2 text-left">Full Name</th>
                       <th className="px-4 py-2 text-left">Email</th>
+                      <th className="px-4 py-2 text-left">Ticket Code</th>
+                      <th className="px-4 py-2 text-left">Type</th>
+                      <th className="px-4 py-2 text-left">Status</th>
                     </tr>
                   </thead>
 
@@ -75,6 +80,16 @@ export default function RegisteredUsers() {
                       <tr key={user.id} className="border-b hover:bg-lightBg dark:hover:bg-gray-700">
                         <td className="px-4 py-2 dark:text-gray-300">{user.fullName}</td>
                         <td className="px-4 py-2 dark:text-gray-300">{user.email}</td>
+                        <td className="px-4 py-2 font-mono text-xs dark:text-gray-300">{user.ticketCode}</td>
+                        <td className="px-4 py-2 dark:text-gray-300 capitalize">{user.ticketType}</td>
+                        <td className="px-4 py-2">
+                          <span className={`px-2 py-1 rounded-full text-xs ${user.paymentStatus === 'paid'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                            }`}>
+                            {user.paymentStatus}
+                          </span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

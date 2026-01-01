@@ -117,7 +117,7 @@ class AdminController {
         }
         return [
             "success" => true,
-            "events" => $this->model->getRegistrationsByEvent()
+            "events" => $this->model->getRegistrationsByEvent($decoded['id'], $decoded['role'])
         ];
     }
 
