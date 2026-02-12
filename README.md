@@ -62,7 +62,10 @@ EthioEvents is a web-based Event Management System designed to simplify event di
 ### Architecture
 
 * **MVC (Model–View–Controller)**
+  
+### payment getway
 
+* **Chapa**
 ---
 
 ## 🔒 Security
@@ -92,7 +95,8 @@ EthioEvents is a web-based Event Management System designed to simplify event di
 * Node.js
 * PHP (8+ recommended)
 * MySQL
-* XAMPP / WAMP / LAMP server
+* XAMPP server
+* chapa
 
 ### Steps
 
@@ -127,5 +131,6 @@ npm run dev
 The goal of EthioEvents is to replace manual and inefficient event registration processes with a secure, automated, and user-friendly system that improves event management and accessibility for users and administrators.
 
 ---
+
 
 
